@@ -1,0 +1,55 @@
+{
+  "name": "cc.ttfootball",
+  "version": "1.0.0",
+  "description": "Po naszemu - Piłkarzyki",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --config webpack.config.js",
+    "build": "webpack --mode production",
+    "lint": "eslint --ignore-path .gitignore --fix .",
+    "format": "prettier --ignore-path .gitignore --write \"./**/*.{js,json,scss,html}\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarKust71/CC.TTFootball.git"
+  },
+  "keywords": [
+    "es6",
+    "Table Top Football",
+    "coderscamp"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MarKust71/CC.TTFootball/issues"
+  },
+  "homepage": "https://github.com/MarKust71/CC.TTFootball#readme",
+  "dependencies": {
+    "config": "^3.2.2",
+    "express": "^4.17.1",
+    "helmet": "^3.21.0",
+    "joi": "^14.3.1",
+    "mongoose": "^5.7.0",
+    "path": "^0.12.7",
+    "pug": "^2.0.4",
+    "underscore": "^1.9.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.6.0",
+    "@babel/core": "^7.6.0",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.2.0",
+    "debug": "^4.1.1",
+    "eslint": "^6.3.0",
+    "mini-css-extract-plugin": "^0.8.0",
+    "morgan": "^1.9.1",
+    "node-sass": "^4.12.0",
+    "perm": "^1.0.0",
+    "prettier": "^1.18.2",
+    "sass-loader": "^8.0.0",
+    "style-loader": "^1.0.0",
+    "webpack": "^4.40.1",
+    "webpack-cli": "^3.3.8",
+    "webpack-dev-server": "^3.8.0"
+  }
+}
