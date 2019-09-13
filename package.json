@@ -4,9 +4,7 @@
   "description": "Po naszemu - Piłkarzyki",
   "main": "index.js",
   "scripts": {
-    "start": "node ./server/app.js",
-    "heroku-postbuild": "webpack -p",
-    "front": "webpack --watch"
+    "start": "node ./server/app.js"
   },
   "repository": {
     "type": "git",
