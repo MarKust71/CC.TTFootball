@@ -2,7 +2,7 @@ const path = require("path");
 var MiniCSS = require("mini-css-extract-plugin");
 
 module.exports = {
-  entry: ["./server/app.js", "./client/scss/index.scss"],
+  entry: ["./backend/app.js", "./frontend/scss/index.scss"],
   output: {
     filename: "index.js",
     path: path.resolve(__dirname, "build")
