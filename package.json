@@ -4,8 +4,8 @@
   "description": "Po naszemu - Piłkarzyki",
   "main": "index.js",
   "scripts": {
-    "start": "node ./backend/app.js",
-    "mon": "nodemon ./backend/app.js"
+    "start": "node -r dotenv/config ./backend/app.js",
+    "mon": "nodemon -r dotenv/config ./backend/app.js"
   },
   "repository": {
     "type": "git",
