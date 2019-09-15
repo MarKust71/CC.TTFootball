@@ -18,9 +18,15 @@ async function createTeam(name, players, region) {
         playersId: players,
         regionId: region
     });
-    await team.save()
-        .then( (res) => console.log(res) )
-        .catch( (err) => console.log('Something went wrong:', err.errmsg) );
+    return await team.save()
+        .then( (res) => { 
+            console.log(res); 
+            return res; 
+        } )
+        .catch( (err) => {
+            console.log('Something went wrong (createTeam):', err.errmsg);
+            return err.errmsg;
+        } );
 }
 // createTeam('Team1', ['5d7e7d992da6aa4260a83d23', '5d7e7d992da6aa4260a83d24'], '5d7e7d992da6aa4260a83d22');
 
@@ -32,7 +38,7 @@ async function getTeams() {
         // .then( res => console.log(res) )
         // .then( res => { return res } )
         .catch( err => console.log('Something went wrong...', err));
-    console.log(result);
+    // console.log(result);
     return result;
 }
 // getTeams();
@@ -44,7 +50,16 @@ router.get('/', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-
+    const teamName = req.body.name;
+    const playersArray = req.body.players;
+    const regionId = req.body.region;
+    // createTeam('Team2', ['5d7e7d992da6aa4260a83d23', '5d7e7d992da6aa4260a83d24'], '5d7e7d992da6aa4260a83d22')
+    createTeam(teamName, playersArray, regionId)
+        .then( result => { console.log('res-> ', result); res.send(result) })
+        .catch( err => {
+            console.log('Something went wrong (POST)...', err);
+            res.status(400).send('Bed request');
+        });
 })
 
 
