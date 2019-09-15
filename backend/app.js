@@ -1,9 +1,11 @@
 const express = require('express');
 const app = express();
 
+const mk_db = require('./mk_db');
 const routerHome = require('./routes/home');
 const routerTeams = require('./routes/teams');
 
+app.use(express.json());
 app.use('/', routerHome);
 app.use('/api/teams', routerTeams);
 
