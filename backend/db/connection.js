@@ -13,12 +13,12 @@ const config = {
 const mongoUrl = `mongodb://${config.username}:${config.password}@${config.host}:${config.port}/${config.name}`;
 
 const connectionOnSuccessHandler = connection => {
-  console.log(`[MongoDB] connection to ${mongoUrl} created`);
+  console.log(`[MongoDB] Connection to ${mongoUrl} created`);
   return connection;
 };
 
 const connectionOnErrorHandler = e => {
-  console.log(`[MongoDB] connection to ${mongoUrl} failed with error: ${e}`);
+  console.log(`[MongoDB] Connection to ${mongoUrl} failed with error: ${e}`);
   return Promise.reject(e);
 };
 
