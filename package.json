@@ -4,8 +4,10 @@
   "description": "Po naszemu - Piłkarzyki",
   "main": "index.js",
   "scripts": {
-    "start": "node ./backend/app.js",
-    "mon": "nodemon ./backend/app.js"
+    "start": "node -r dotenv/config ./backend/app.js",
+    "mon": "nodemon -r dotenv/config ./backend/app.js",
+    "lint": "eslint --ignore-path .gitignore --fix .",
+    "format": "prettier --ignore-path .gitignore --write \"./**/*.{js,json,scss,html}\""
   },
   "repository": {
     "type": "git",
@@ -26,11 +28,14 @@
   },
   "homepage": "https://github.com/MarKust71/CC.TTFootball#readme",
   "dependencies": {
+    "bcrypt": "^3.0.6",
     "compression": "^1.7.4",
     "config": "^3.2.2",
+    "dotenv": "^8.1.0",
     "express": "^4.17.1",
     "helmet": "^3.21.0",
     "joi": "^14.3.1",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.7.0",
     "path": "^0.12.7",
     "pug": "^2.0.4",
