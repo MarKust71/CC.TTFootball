@@ -34,7 +34,7 @@ async function createTeam(name, players, region) {
             return err.errmsg;
         } );
 }
-// createTeam('Team3', ['5d7e7d992da6aa4260a83d23', '5d7e7d992da6aa4260a83d24'], '5d7e7d992da6aa4260a83d22');
+// createTeam('Team1', ['5d7e7d992da6aa4260a83d23', '5d7e7d992da6aa4260a83d24'], '5d7e7d992da6aa4260a83d22');
 
 async function getMaxTeamId() {
     return await Team
@@ -51,15 +51,14 @@ async function getTeams(id) {
             .find( { id: id } )
             .populate('regionId', 'name id -_id')
             .populate('playersId')
-            // .then( result => { console.log(result[0]); } )
             .then( result => { return result[0]; } )
             .catch( err => console.log('Something went wrong...', err));
     } else {
-        // const result = await Team
         return await Team
             .find()
             .populate('regionId', 'name id -_id')
             .populate('playersId')
+            .then( result => { return result; } )
             .catch( err => console.log('Something went wrong...', err));
     }
 }
@@ -68,23 +67,24 @@ async function getTeams(id) {
 
 
 router.get('/', (req, res) => {
-    getTeams().then( result => { res.send(result) } )
+    getTeams().then( result => { 
+        if (!result.length) {
+            res.status(404).send(`No teams found`);
+        } else {
+            res.send(result);
+        } 
+    } )
 })
 
 router.get('/:id', (req, res) => {
-    // getTeams(req.params.id)
-    //     .then( result => { res.send(result) } );
-
     getTeams(req.params.id)
         .then( result => { 
-            if (!result) res.status(404).send(`Team ID: ${req.params.id} not found`); 
-            res.send(result); 
+            if (!result) {
+                res.status(404).send(`Team ID: ${req.params.id} not found`);
+            } else {
+                res.send(result); 
+            } 
         } );
-
-        // const id = req.params.id;
-    // const team = await getTeams(id).then( result => { return result; } );
-    // if (!team) res.status(404).send(`Team ID: ${id} not found`);
-    // res.send(team);
 })
 
 router.put('/:id', (req, res) => {
