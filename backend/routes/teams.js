@@ -92,6 +92,23 @@ router.put('/:id', (req, res) => {
     res.send(`put-> ${req.params.id}`);
 })
 
+router.delete('/:id', (req, res) => {
+    getTeams(req.params.id)
+    .then( result => {
+        if (!result) {
+            res.status(404).send(`Team ID: ${req.params.id} not found`);
+        } else {
+        Team.deleteOne( { id: req.params.id } ).then( (result) => {
+            if (result.n) {
+                res.send(`Team ID: ${req.params.id} deleted`);
+            } else {
+                res.status(500).send(`Nothing happened...`);
+            }
+            }); 
+        }
+    } );
+})
+
 router.post('/', (req, res) => {
     const teamName = req.body.name;
     const playersArray = req.body.players;
