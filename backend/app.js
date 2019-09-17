@@ -5,7 +5,9 @@ const routerHome = require('./routes/home');
 const main = async () => {
   const connection = await db.connect();
   const models = db.load(connection);
-  await db.initialize(models);
+  if (process.env.TEST_ENV || process.env.NODE_ENV) {
+    await db.initialize(models);
+  }
 
   const app = express();
   db.register(app, connection, models);
