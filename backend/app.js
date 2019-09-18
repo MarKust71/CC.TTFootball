@@ -1,7 +1,7 @@
 const express = require('express');
 const db = require('./db');
 const routerHome = require('./routes/home');
-const ligue = require('./routes/ligue');
+const league = require('./routes/league');
 
 const main = async () => {
   const connection = await db.connect();
@@ -14,7 +14,7 @@ const main = async () => {
   db.register(app, connection, models);
 
   app.use('/', routerHome);
-  app.use('/', ligue);
+  app.use('/api/leagues', league);
 
   const host = process.env.HOST || '127.0.0.1';
   const port = process.env.PORT || 8080;
