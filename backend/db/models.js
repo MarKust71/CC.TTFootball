@@ -48,12 +48,12 @@ const Division = new Schema({
 });
 
 const League = new Schema({
-  name: { type: String, required: true },
+  name: { type: String, required: true, unique: true },
   description: String,
   division: { type: String, ref: 'Division', required: true },
   numOfTeams: {
-    min: { type: Number, required: true },
-    max: { type: Number, required: true },
+    min: { type: Number },
+    max: { type: Number },
   },
   teams: [
     {
