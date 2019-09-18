@@ -1,7 +1,7 @@
 const login = require('../middleware/login');
 const jwt = require('jsonwebtoken');
-const config = require('config');
 const Joi = require('joi');
+const _ = require('lodash');
 const bcrypt = require('bcrypt');
 const {
   User
@@ -31,14 +31,15 @@ router.post('/', async (req, res) => {
 
   const token = jwt.sign({
     _id: user._id
-  }, config.get('jwtPrivateKey'));
-  res.send(token);
+  }, process.env.JWTPRIVATEKEY);
+
+  res.header('x-auth-token', token).send(_.pick(user,['email']));
 });
 
 function validate(req) {
   const schema = {
     email: Joi.string().min(5).max(255).required().email(),
-    password: Joi.string().min(5).max(255).required()
+    password: Joi.string().min(5).max(1024).required()
   };
 
   return Joi.validate(req, schema);

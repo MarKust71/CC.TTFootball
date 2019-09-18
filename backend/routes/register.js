@@ -22,7 +22,11 @@ router.post('/', async(req, res)=> {
     //const user.password = await bcrypt.hash(user.password, salt); Czeka na model Usera.
     
     await user.save();
-    res.send(_.pick(user,['login','email']));
+
+    const token = jwt.sign({
+      _id: user._id
+    }, process.env.JWTPRIVATEKEY);
+    res.header('x-auth-token', token).send(_.pick(user,['login','email']));
 })
 
 function validate(req) {
