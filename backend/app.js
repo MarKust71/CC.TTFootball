@@ -5,8 +5,10 @@ const path = require('path');
 const db = require('./db');
 const routerHome = require('./routes/home');
 const routerMatch = require('./routes/match');
+const routerRegister = require('./routes/register');
 const errorHandler = require('./middleware/errorHandler');
 const logger = require('./middleware/logger');
+const league = require('./routes/league');
 
 const main = async () => {
   const app = express();
@@ -29,8 +31,10 @@ const main = async () => {
 
   // Routes
   app.use('/', routerHome);
+  app.use('/api/leagues', league);
   app.use('/', routerMatch);
-
+  app.use('/', routerRegister);
+  
   app.use(errorHandler);
 
   // Listening
