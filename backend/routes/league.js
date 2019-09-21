@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
 
   if (error) return res.status(400).send(error.details[0].message);
 
-  let league = await League.findOne({ name: ReadableStream.body.name });
+  let league = await League.findOne({ name: req.body.name });
   if (league) return res.status(400).send('Taka liga juz istnieje!');
 
   league = new League(_.pick(req.body, ['name', 'description', 'division', 'numOfTeams', 'status', 'date']));
@@ -50,6 +50,7 @@ function validate(req) {
       started: Joi.date().required(),
     }),
   };
+  return Joi.validate(req, schema);
 }
 
 module.exports = router;

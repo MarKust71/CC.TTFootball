@@ -8,9 +8,10 @@ const config = {
   name: getByMode(process.env.DB_NAME, process.env.DB_NAME_DEV),
   username: getByMode(process.env.DB_USER, process.env.DB_USER_DEV),
   password: getByMode(process.env.DB_PASS, process.env.DB_PASS_DEV),
+  protocol: getByMode(process.env.DB_PROT, process.env.DB_PROT_DEV),
 };
 
-const mongoUrl = 'mongodb+srv://admin:uExVb5Oy5WcT58nX@cluster0-wcpwy.mongodb.net/ttfootballdb';
+const mongoUrl = `${config.protocol}://${config.username}:${config.password}@${config.host}:${config.port}/${config.name}`;
 
 const connectionOnSuccessHandler = connection => {
   console.log(`[MongoDB] Connection to ${mongoUrl} created`);
