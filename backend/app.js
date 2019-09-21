@@ -1,13 +1,11 @@
-// const config = require('config');
 const express = require('express');
 const app = express();
-// const register = require('./routes/register');
 const routerHome = require('./routes/home');
 const login = require('./routes/login');
+const auth = require('../middleware/auth');
 
 app.use('/', routerHome);
 app.use('/api/login', login);
-// app.use('/api/register', register)
 
 if (!process.env.JWTPRIVATEKEY) {
     console.error('jwtPrivateKey not defined');

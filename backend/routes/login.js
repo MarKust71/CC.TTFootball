@@ -1,4 +1,4 @@
-const login = require('../middleware/login');
+const auth = require('../middleware/auth');
 const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 const _ = require('lodash');
@@ -9,7 +9,7 @@ const {
 const express = require('express');
 const router = express.Router();
 
-router.get('/me', login, async (req, res) => {
+router.get('/me', auth, async (req, res) => {
   const user = await User.findById(req.user._id).select('-password');
   res.send(user);
 });
