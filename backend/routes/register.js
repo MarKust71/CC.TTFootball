@@ -1,13 +1,14 @@
 const Joi = require('joi');
 const bcrypt = require('bcrypt');
-const { User } = require('../db/models');
+// const { User } = require('../db/models');
 const express = require('express');
 const _ = require('lodash');
 const router = express.Router();
 
 router.post('/', async (req, res) => {
+  const { User } = res.locals.models;
   const { error } = validate(req.body);
-
+  console.log(error);
   if (error) return res.status(400).send(error.details[0].message);
 
   const userEmail = await User.findOne({ email: req.body.email });
@@ -16,7 +17,7 @@ router.post('/', async (req, res) => {
   const userLogin = await User.findOne({ login: req.body.nickname });
   if (userLogin) return res.status(400).send('Login zajęty!');
 
-  const user = new User(_.pick(req.body, ['nickname', 'email', 'password', 'name', 'surname']));
+  const user = new User(_.pick(req.body, ['nickname', 'email', 'password', 'name', 'surname', 'division']));
 
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
@@ -42,6 +43,9 @@ function validate(req) {
       .required(),
     name: Joi.string().max(30),
     surname: Joi.string().max(30),
+    division: Joi.string()
+      .max(3)
+      .required(),
   };
 
   return Joi.validate(req, schema);
