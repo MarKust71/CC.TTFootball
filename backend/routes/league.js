@@ -5,12 +5,12 @@ const _ = require('lodash');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const leagues = await League.find().sort('name');
+  const leagues = await res.locals.models.League.find().sort('name');
   res.send(leagues);
 });
 
-router.get('/:id', async (req, res) => {
-  const league = await League.findById(req.params.id);
+router.get('/:name', async (req, res) => {
+  const league = await res.locals.models.League.findOne({ name: req.params.name });
 
   if (!league) return res.status(404).send('Nie znaleziono takiej ligi');
 
@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
 
   if (error) return res.status(400).send(error.details[0].message);
 
-  let league = await League.findOne({ name: req.body.name });
+  let league = await res.locals.models.League.findOne({ name: req.body.name });
   if (league) return res.status(400).send('Taka liga juz istnieje!');
 
   league = new League(_.pick(req.body, ['name', 'description', 'division', 'numOfTeams', 'status', 'date']));
