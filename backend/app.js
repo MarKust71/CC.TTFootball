@@ -9,9 +9,16 @@ const routerRegister = require('./routes/register');
 const errorHandler = require('./middleware/errorHandler');
 const logger = require('./middleware/logger');
 const league = require('./routes/league');
+const login = require('./routes/login');
+const auth = require('../middleware/auth');
 
 const main = async () => {
   const app = express();
+
+  if (!process.env.JWTPRIVATEKEY) {
+    console.error('jwtPrivateKey not defined');
+    process.exit(1);
+  }
 
   // Database configuration
   const connection = await db.connect();
@@ -33,6 +40,7 @@ const main = async () => {
   // Routes
   app.use('/', routerHome);
   app.use('/api/leagues', league);
+  app.use('/api/login', login);
   app.use('/', routerMatch);
   app.use('/', routerRegister);
 
