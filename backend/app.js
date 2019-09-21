@@ -4,13 +4,13 @@ const helmet = require('helmet');
 const path = require('path');
 const db = require('./db');
 const routerHome = require('./routes/home');
+const routerLeague = require('./routes/league');
 const routerMatch = require('./routes/match');
 const routerRegister = require('./routes/register');
+const routerLogin = require('./routes/login');
 const errorHandler = require('./middleware/errorHandler');
 const logger = require('./middleware/logger');
-const league = require('./routes/league');
-const login = require('./routes/login');
-const auth = require('../middleware/auth');
+const auth = require('./middleware/auth');
 
 const main = async () => {
   const app = express();
@@ -39,10 +39,10 @@ const main = async () => {
 
   // Routes
   app.use('/', routerHome);
-  app.use('/api/leagues', league);
-  app.use('/api/login', login);
+  app.use('/api/leagues', routerLeague);
+  app.use('/api/login', routerLogin);
   app.use('/', routerMatch);
-  app.use('/', routerRegister);
+  app.use('/api/register', routerRegister);
 
   app.use(errorHandler);
 

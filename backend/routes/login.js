@@ -3,12 +3,11 @@ const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
-const { User } = require('../db/models');
 const express = require('express');
 const router = express.Router();
 
 router.get('/me', auth, async (req, res) => {
-  const user = await User.findById(req.user._id).select('-password');
+  const user = await res.locals.models.User.findById(req.user._id).select('-password');
   res.send(user);
 });
 
@@ -16,7 +15,7 @@ router.post('/', async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  let user = await User.findOne({
+  let user = await res.locals.models.User.findOne({
     email: req.body.email,
   });
   if (!user) return res.status(400).send('Błędny email lub hasło');
