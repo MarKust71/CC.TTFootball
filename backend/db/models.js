@@ -51,20 +51,16 @@ const League = new Schema({
   name: { type: String, required: true, unique: true },
   description: String,
   division: { type: String, ref: 'Division', required: true },
-  numOfTeams: {
-    min: { type: Number },
-    max: { type: Number },
-  },
   teams: [
     {
-      team: { type: ObjectId, ref: 'Team', required: true, unique: true },
+      team: { type: ObjectId, ref: 'Team', required: true },
       points: { type: Number, required: true, default: 0 },
     },
   ],
-  status: { type: String, required: true, enum: ['created', 'pending', 'closed'] },
+  status: { type: String, enum: ['created', 'pending', 'closed'], default: 'created' },
   date: {
     created: { type: Date, default: Date.now },
-    started: { type: Date, required: true },
+    started: { type: Date, required: true }, 
     closed: Date,
   },
   matches: [{ type: ObjectId, ref: 'Match' }],
