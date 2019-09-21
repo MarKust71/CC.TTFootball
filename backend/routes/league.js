@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require('joi')
 const express = require('express');
 const _ = require('lodash');
 const router = express.Router();
@@ -34,11 +34,10 @@ router.post('/', async (req, res) => {
         .required(),
       status: Joi.string()
         .min(3)
-        .max(15)
-        .required(),
-      date: Joi.object.keys({
-        started: Joi.date().required(),
-      }),
+        .max(15),
+       date: Joi.object({
+         started: Joi.date().required(),
+       }),
     };
     return Joi.validate(req, schema);
   }
@@ -50,10 +49,10 @@ router.post('/', async (req, res) => {
   let league = await res.locals.models.League.findOne({ name: req.body.name });
   if (league) return res.status(400).send('Taka liga juz istnieje!');
 
-  league = new League(_.pick(req.body, ['name', 'description', 'division', 'numOfTeams', 'status', 'date']));
+  league = new League(_.pick(req.body, ['name', 'description', 'division', 'status', 'date']));
 
   await league.save();
-  res.send(league);
+  res.json(league);
 });
 
 router.put('/:id/start', async (req, res) => {
