@@ -32,7 +32,12 @@ const Division = {
 
 const League = {
   methods: () => {},
-  statics: () => {},
+  statics: statics => {
+    statics.findByIdOrName = function(idOrName) {
+      const query = idOrName.match(/^[0-9a-fA-F]{24}$/) ? { _id: idOrName } : { name: idOrName };
+      return this.findOne(query);
+    };
+  },
   query: () => {},
   indexes: () => {},
   virtuals: () => {},
