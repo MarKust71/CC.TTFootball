@@ -1,75 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const mongoose = require('../mk_db.js');
-// const mongoose = require('mongoose');
-const Player = require('./mk_players');
-const Region = require('./mk_regions');
-
-
-const teamSchema = new mongoose.Schema({
-    id: { type: Number, required: true, unique: true },
-    name: { type: String, required: true, unique: true },
-    playersId: [ { type: mongoose.Schema.Types.ObjectId,  ref: 'Player'} ],
-    regionId: { type: mongoose.Schema.Types.ObjectId,  ref: 'Region'},
-    isDeleted: { type: Boolean }
-});
-const Team = mongoose.model('Team', teamSchema);
-async function createTeam(name, players, region) {
-    const team = new Team({
-        id: await getMaxTeamId()
-        .then( (res) => { return res + 1; } )
-        .catch( (err) => { console.log('Something went wrong (new getMax):', err.errmsg); return -1 } ),
-        name: name,
-        playersId: players,
-        regionId: region,
-        isDeleted: false
-    });
-    return await team.save()
-        .then( (res) => { 
-            console.log(res); 
-            return res; 
-        } )
-        .catch( (err) => {
-            console.log('Something went wrong (createTeam):', err.errmsg);
-            return err.errmsg;
-        } );
-}
-// createTeam('Team1', ['5d7e7d992da6aa4260a83d23', '5d7e7d992da6aa4260a83d24'], '5d7e7d992da6aa4260a83d22');
-
-async function getMaxTeamId() {
-    return await Team
-        .find()
-        .sort( {id : -1} )
-        .limit(1)
-        .then( (res) => { return res[0].id } )
-        .catch( (err) => { console.log('Something went wrong (getMax):', err.message); return -1; } );
-}
-
-async function getTeams(id) {
-    if (id) {
-        return await Team
-            .find( { id: id } )
-            .populate('regionId', 'name id -_id')
-            .populate('playersId')
-            .then( result => { return result[0]; } )
-            .catch( err => console.log('Something went wrong...', err));
-    } else {
-        return await Team
-            .find()
-            .populate('regionId', 'name id -_id')
-            .populate('playersId')
-            .then( result => { return result; } )
-            .catch( err => console.log('Something went wrong...', err));
-    }
-}
-// getTeams();
-
 
 
 router.get('/', (req, res) => {
-    getTeams().then( result => { 
+    const Model = res.locals.models.Team;
+    getTeams(Model).then( result => { 
         if (!result.length) {
-            res.status(404).send(`No teams found`);
+            res.status(404).send(`Nie znaleziona żadnych drużyn.`);
         } else {
             res.send(result);
         } 
@@ -77,10 +14,11 @@ router.get('/', (req, res) => {
 })
 
 router.get('/:id', (req, res) => {
-    getTeams(req.params.id)
+    const Model = res.locals.models.Team;
+    getTeams(Model, req.params.id)
         .then( result => { 
             if (!result) {
-                res.status(404).send(`Team ID: ${req.params.id} not found`);
+                res.status(404).send(`Nie znaleziono drużyny o _ID ${req.params.id}.`);
             } else {
                 res.send(result); 
             } 
@@ -88,21 +26,23 @@ router.get('/:id', (req, res) => {
 })
 
 router.put('/:id', (req, res) => {
-    console.log('put->', req.params.id);
-    res.send(`put-> ${req.params.id}`);
+    console.log('put->', req.params);
+    res.send(`put-> ${req.params}`);
 })
 
 router.delete('/:id', (req, res) => {
-    getTeams(req.params.id)
+    const Model = res.locals.models.Team;
+    getTeams(Model, req.params.id)
     .then( result => {
         if (!result) {
-            res.status(404).send(`Team ID: ${req.params.id} not found`);
+            res.status(404).send(`Nie znaleziono drużyny o _ID ${req.params.id}.`);
         } else {
-        Team.deleteOne( { id: req.params.id } ).then( (result) => {
+        // Team.deleteOne( { id: req.params.id } ).then( (result) => {
+        Model.deleteOne( { _id: req.params.id } ).then( (result) => {
             if (result.n) {
-                res.send(`Team ID: ${req.params.id} deleted`);
+                res.send(`Drużyna o _ID ${req.params.id} usunięta.`);
             } else {
-                res.status(500).send(`Nothing happened...`);
+                res.status(500).send(`Nic się nie wydarzyło...`);
             }
             }); 
         }
@@ -110,17 +50,72 @@ router.delete('/:id', (req, res) => {
 })
 
 router.post('/', (req, res) => {
+    const Model = res.locals.models.Team;
     const teamName = req.body.name;
-    const playersArray = req.body.players;
-    const regionId = req.body.region;
-    // createTeam('Team2', ['5d7e7d992da6aa4260a83d23', '5d7e7d992da6aa4260a83d24'], '5d7e7d992da6aa4260a83d22')
-    createTeam(teamName, playersArray, regionId)
-        .then( result => { console.log('res-> ', result); res.send(result) })
-        .catch( err => {
-            console.log('Something went wrong (POST)...', err);
-            res.status(400).send('Bed request');
-        });
+    const playersFirst = req.body.first;
+    const playersSecond = req.body.second;
+    const status = req.body.status;
+    createTeam(Model, teamName, playersFirst, playersSecond, status)
+        .then( 
+            result => {
+                console.log('res-> ', result); 
+                res.send(result)
+            },
+            err => {
+                console.log('Something went wrong (POST)...', err);
+                res.status(400).send('Bed request');
+            }
+        )
 })
+
+async function createTeam(Team, name, player1, player2, status) {
+    const team = new Team({
+        name: name,
+        players: { first: player1, second: player2 },
+        status: status
+    });
+    return await team.save()
+        .then(
+            (res) => { 
+                console.log(res); 
+                return res; 
+            }, 
+            (err) => {
+                console.log('Something went wrong (createTeam):', err.errmsg);
+                return err.errmsg;
+            } 
+        )
+    }
+
+async function getTeams(Team, id) {
+    if (id) {
+        // return await Team
+        return await Team
+            .find( { _id: id } )
+            // .populate('regionId', 'name id -_id')
+            // .populate('playersId')
+            .populate('players.first')
+            .populate('players.second')
+            .then( 
+                result => { return result[0]; },
+                err => console.log('Something went wrong...', err)
+            );
+    } else {
+        // return await Team
+        return await Team
+            .find()
+            // .populate('regionId', 'name id -_id')
+            // .populate('playersId')
+            .populate('players.first')
+            .populate('players.second')
+            .then(
+                result => { return result; },
+                err => console.log('Something went wrong...', err)
+            );   
+    }
+}
+
+
 
 
 module.exports = router;
