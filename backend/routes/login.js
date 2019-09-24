@@ -1,4 +1,4 @@
-const auth = require('../middleware/auth');
+const { auth, getUser } = require('../middleware/auth');
 const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 const _ = require('lodash');
@@ -7,20 +7,36 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/me', auth, async (req, res) => {
-  const user = await res.locals.models.User.findById(req.user._id).select('-password');
-  res.send(user);
+  const user = await getUser(res);
+  res.json(user);
 });
 
 router.post('/', async (req, res) => {
-  const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  function validate(req) {
+    const schema = {
+      email: Joi.string()
+        .min(5)
+        .max(255)
+        .required()
+        .email(),
+      password: Joi.string()
+        .min(5)
+        .max(1024)
+        .required(),
+    };
+
+    return Joi.validate(req, schema);
+  }
+
+  const { error, value } = validate(req.body);
+  if (error) return res.status(400).json(error.details);
 
   let user = await res.locals.models.User.findOne({
-    email: req.body.email,
+    email: value.email,
   });
   if (!user) return res.status(400).send('Błędny email lub hasło');
 
-  const validPassword = await bcrypt.compare(req.body.password, user.password);
+  const validPassword = await bcrypt.compare(value.password, user.password);
   if (!validPassword) return res.status(400).send('Błędny email lub hasło');
 
   const token = jwt.sign(
@@ -32,21 +48,5 @@ router.post('/', async (req, res) => {
 
   res.header('x-auth-token', token).send(_.pick(user, ['email']));
 });
-
-function validate(req) {
-  const schema = {
-    email: Joi.string()
-      .min(5)
-      .max(255)
-      .required()
-      .email(),
-    password: Joi.string()
-      .min(5)
-      .max(1024)
-      .required(),
-  };
-
-  return Joi.validate(req, schema);
-}
 
 module.exports = router;

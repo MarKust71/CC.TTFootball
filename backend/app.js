@@ -11,7 +11,6 @@ const routerRegister = require('./routes/register');
 const routerLogin = require('./routes/login');
 const errorHandler = require('./middleware/errorHandler');
 const logger = require('./middleware/logger');
-const auth = require('./middleware/auth');
 
 const main = async () => {
   const app = express();
@@ -25,8 +24,8 @@ const main = async () => {
   const connection = await db.connect();
   const models = db.load(connection);
   if (process.env.TEST_ENV || process.env.NODE_ENV) {
-    // await connection.dropDatabase();
-    // await db.initialize(models);
+    await connection.dropDatabase();
+    await db.initialize(models);
   }
 
   db.register(app, connection, models);
@@ -41,11 +40,11 @@ const main = async () => {
 
   // Routes
   app.use('/', routerHome);
-  app.use('/api/leagues', routerLeague);
-  app.use('/api/teams', routerTeams);
-  app.use('/api/login', routerLogin);
-  app.use('/', routerMatch);
   app.use('/api/register', routerRegister);
+  app.use('/api/login', routerLogin);
+  app.use('/api/teams', routerTeams);
+  app.use('/api/leagues', routerLeague);
+  app.use('/api/matches', routerMatch);
 
   app.use(errorHandler);
 

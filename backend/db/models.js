@@ -5,10 +5,13 @@ const User = new Schema({
   _id: { type: String, alias: 'nickname' },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  role: { type: String, required: true, enum: ['player', 'admin'], default: 'player' },
   name: String,
   surname: String,
+  status: { type: String, required: true, enum: ['active', 'deleted'], default: 'active' },
   division: { type: String, ref: 'Division', required: true },
   teams: [{ type: ObjectId, ref: 'Team' }],
+  ownedLeagues: [{ type: ObjectId, ref: 'League' }],
   statistics: {
     matches: {
       won: Number,
@@ -27,7 +30,7 @@ const Team = new Schema({
     first: { type: String, ref: 'User', required: true },
     second: { type: String, ref: 'User', required: true },
   },
-  status: { type: String, required: true, enum: ['active', 'deleted'] },
+  status: { type: String, required: true, enum: ['active', 'deleted'], default: 'active' },
   leagues: [{ type: ObjectId, ref: 'League' }],
   statistics: {
     matches: {
@@ -44,13 +47,15 @@ const Team = new Schema({
 const Division = new Schema({
   _id: { type: String, alias: 'name' },
   description: String,
+  status: { type: String, required: true, enum: ['active', 'deleted'], default: 'active' },
   leagues: [{ type: ObjectId, ref: 'League' }],
 });
 
 const League = new Schema({
-  name: { type: String, required: true, unique: true },
+  name: { type: String, required: true },
   description: String,
   division: { type: String, ref: 'Division', required: true },
+  owner: { type: String, ref: 'User', required: true },
   teams: [
     {
       team: { type: ObjectId, ref: 'Team', required: true },
@@ -60,21 +65,23 @@ const League = new Schema({
   status: { type: String, enum: ['created', 'pending', 'closed'], default: 'created' },
   date: {
     created: { type: Date, default: Date.now },
-    started: { type: Date, required: true }, 
+    started: Date,
     closed: Date,
   },
   matches: [{ type: ObjectId, ref: 'Match' }],
 });
 
 const Match = new Schema({
+  league: { type: ObjectId, ref: 'League', required: true },
   teams: {
     first: { type: ObjectId, ref: 'Team', required: true },
     second: { type: ObjectId, ref: 'Team', required: true },
   },
-  status: { type: String, required: true, enum: ['scheduled', 'played'] },
+  status: { type: String, required: true, enum: ['scheduled', 'played', 'aborted'], default: 'scheduled' },
   date: {
     scheduled: { type: Date, required: true },
     played: Date,
+    aborted: Date,
   },
   winner: { type: String, enum: ['first', 'second'] },
   goals: {

@@ -1,26 +1,28 @@
-const Joi = require('joi')
+const Joi = require('joi');
 const express = require('express');
 const _ = require('lodash');
 const router = express.Router();
+const { auth, getUser } = require('../middleware/auth');
 
 router.get('/', async (req, res) => {
-  const League = res.locals.models.League;
+  const { League } = res.locals.models;
 
   const leagues = await League.find().sort('name');
-  res.send(leagues);
+  res.json(leagues);
 });
 
 router.get('/:id', async (req, res) => {
-  const League = res.locals.models.League;
+  const { League } = res.locals.models;
 
   const league = await League.findByIdOrName(req.params.id);
   if (!league) return res.status(404).send('Nie znaleziono takiej ligi');
 
-  res.send(league);
+  res.json(league);
 });
 
-router.post('/', async (req, res) => {
-  const League = res.locals.models.League;
+router.post('/', auth, async (req, res) => {
+  const { League } = res.locals.models;
+
   function validate(req) {
     const schema = {
       name: Joi.string()
@@ -32,80 +34,90 @@ router.post('/', async (req, res) => {
         .min(3)
         .max(20)
         .required(),
-      status: Joi.string()
-        .min(3)
-        .max(15),
-       date: Joi.object({
-         started: Joi.date().required(),
-       }),
+      date: Joi.object({
+        started: Joi.date(),
+      }),
     };
     return Joi.validate(req, schema);
   }
 
-  const { error } = validate(req.body);
+  const { error, value } = validate(req.body);
 
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).json(error.details);
 
-  let league = await res.locals.models.League.findOne({ name: req.body.name });
+  let league = await res.locals.models.League.findOne({ name: value.name });
   if (league) return res.status(400).send('Taka liga juz istnieje!');
 
-  league = new League(_.pick(req.body, ['name', 'description', 'division', 'status', 'date']));
+  const user = await getUser(res);
+  if (!user) return res.status(401).send('Błąd tokena');
+
+  league = new League({ ...value, owner: user });
 
   await league.save();
   res.json(league);
 });
 
-router.put('/:id/start', async (req, res) => {
-  const randomDate = (start, end) => new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-  const parseDates = (now, reqStart, reqEnd) => {
-    const parseDate = (now, reqDate) => {
-      const date = new Date(reqDate);
-      return _.isDate(date) && date > now ? date : now;
+router.put('/:id/start', auth, async (req, res) => {
+  const nextMonth = (date, offset = 1) => new Date(new Date(date).setMonth(new Date(date).getMonth() + offset));
+  const randomDate = (start, end, offset) =>
+    new Date(start.getTime() + Math.random() * (nextMonth(end, offset).getTime() - nextMonth(start, offset).getTime()));
+  const now = new Date(Date.now());
+
+  const validate = req => {
+    const schema = {
+      start: Joi.date()
+        .min(now)
+        .default(now),
+      end: Joi.date()
+        .min(Joi.ref('start'))
+        .default(nextMonth(Joi.ref('start'))),
+      rounds: Joi.number()
+        .min(1)
+        .max(12)
+        .default(1),
     };
-    let start = parseDate(now, reqStart);
-    const newEnd = new Date(new Date(start).setMonth(start.getMonth() + 2));
-    let end = parseDate(now, reqEnd) || newEnd;
-    if (start.getTime() >= end.getTime()) {
-      end = newEnd;
-    }
-    return { start, end };
+    return Joi.validate(req, schema);
   };
 
-  const League = res.locals.models.League;
-  const Match = res.locals.models.Match;
+  const { League, Match } = res.locals.models;
+
+  const { error, value } = validate(req.body);
+  if (error) return res.status(400).send(error.details);
 
   const league = await League.findByIdOrName(req.params.id);
   if (!league) return res.status(404).send('Nie znaleziono takiej ligi');
   if (league.status !== 'created') return res.status(400).send('Ta liga już wystartowała');
 
-  const now = new Date(Date.now());
-  const { start, end } = parseDates(now, req.body.start, req.body.end);
+  const user = await getUser(res);
+  if (!user) return res.status(401).send('Błąd tokena');
+  if (user.nickname != league.owner) return res.status(403).send('Nie możesz edytować tej ligi');
 
-  const teams = _.shuffle(league.teams);
+  const { start, end, rounds } = value;
+
   const matchesData = [];
-  teams.forEach((x, i) => {
-    teams.slice(i + 1, teams.length).forEach(y => {
-      matchesData.push({
-        teams: {
-          first: x.team,
-          second: y.team,
-        },
-        status: 'scheduled',
-        date: { scheduled: randomDate(start, end) },
+  for (let round = 0; round < rounds; ++round) {
+    const teams = _.shuffle(league.teams);
+    teams.forEach((x, i) => {
+      teams.slice(i + 1, teams.length).forEach(y => {
+        matchesData.push({
+          league,
+          teams: {
+            first: x.team,
+            second: y.team,
+          },
+          date: { scheduled: randomDate(start, end, round) },
+        });
       });
     });
-  });
+  }
 
   const session = await League.startSession();
   await session.withTransaction(async () => {
     const matches = await Match.insertMany(matchesData);
-    league.matches.push(...matches);
-    league.status = 'pending';
-    league.date.started = now;
-    await league.save();
+    await league.updateOne({ $push: { matches: matches }, status: 'pending', date: { started: now } });
   });
 
-  res.json(league);
+  res.json(await League.findByIdOrName(req.params.id));
 });
 
 module.exports = router;

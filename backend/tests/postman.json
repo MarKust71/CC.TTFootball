@@ -1,0 +1,210 @@
+{
+  "info": {
+    "_postman_id": "09dd5de5-4958-47dd-9929-78d15421d6da",
+    "name": "TTFootball",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Start league",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "328c3ac5-6006-40ee-940b-710279949cd3",
+            "exec": ["pm.test(\"Status code is 200\", function () {", "    pm.response.to.have.status(200);", "});"],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "name": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "x-auth-token",
+            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJMZWFndWVfVXNlcl8wIiwiaWF0IjoxNTY5MzY3NDU1fQ.TqEut2Pn8Deb6KsyMV5-kIBLw5Or_U7MOk-mbOkJyQc",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"start\":\"2019-09-28T15:11:35.951Z\",\n\t\"end\":\"2019-12-21T15:11:35.951Z\",\n\t\"rounds\": 2\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/leagues/League_League_0/start",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "leagues", "League_League_0", "start"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create league",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "41e21f7f-01c0-46a9-acf5-2b576669a236",
+            "exec": ["pm.test(\"Status code is 200\", function () {", "    pm.response.to.have.status(200);", "});"],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "name": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "x-auth-token",
+            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJMZWFndWVfVXNlcl8wIiwiaWF0IjoxNTY5MzY3NDU1fQ.TqEut2Pn8Deb6KsyMV5-kIBLw5Or_U7MOk-mbOkJyQc",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"name\":\"Unique_league\",\n\t\"division\":\"League_Division_0\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/leagues/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "leagues", ""]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Register",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "83c62edb-35a7-4b24-ba7e-a1ce551ad661",
+            "exec": ["pm.test(\"Status code is 200\", function () {", "    pm.response.to.have.status(200);", "});"],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "name": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"nickname\" : \"Unique_nickname\",\n\t\"email\": \"email@email.com\",\n\t\"password\": \"password\",\n\t\"division\": \"Division_Division_0\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/register/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "register", ""]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "7b91b132-c54d-4635-99cf-a1e3381bcf9b",
+            "exec": ["pm.test(\"Status code is 200\", function () {", "    pm.response.to.have.status(200);", "});"],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "name": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"email\":\"User_User_0@email.com\",\n\t\"password\":\"password\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/login/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "login", ""]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Authentication",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "ae0cedf3-1e9f-4836-bb08-67a749fb0d0d",
+            "exec": ["pm.test(\"Status code is 200\", function () {", "    pm.response.to.have.status(200);", "});"],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-auth-token",
+            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJVc2VyX1VzZXJfMCIsImlhdCI6MTU2OTM2NDg1M30.HbYcLyn1_OODNrCxaWrpRWC1YvWeK1jhAvWA8Bj_ibA",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "name": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/login/me/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "login", "me", ""]
+        }
+      },
+      "response": []
+    }
+  ]
+}
