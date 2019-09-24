@@ -23,7 +23,7 @@ const connectionOnErrorHandler = e => {
   return Promise.reject(e);
 };
 
-const defaultOptions = { useNewUrlParser: true, useUnifiedTopology: true };
+const defaultOptions = { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true };
 
 const connect = (options = defaultOptions) => {
   return mongoose.createConnection(`${mongoUrl}`, options).then(connectionOnSuccessHandler, connectionOnErrorHandler);

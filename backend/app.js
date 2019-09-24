@@ -5,6 +5,7 @@ const path = require('path');
 const db = require('./db');
 const routerHome = require('./routes/home');
 const routerLeague = require('./routes/league');
+const routerTeams = require('./routes/teams');
 const routerMatch = require('./routes/match');
 const routerRegister = require('./routes/register');
 const routerLogin = require('./routes/login');
@@ -24,9 +25,10 @@ const main = async () => {
   const connection = await db.connect();
   const models = db.load(connection);
   if (process.env.TEST_ENV || process.env.NODE_ENV) {
-    await connection.dropDatabase();
-    await db.initialize(models);
+    // await connection.dropDatabase();
+    // await db.initialize(models);
   }
+
   db.register(app, connection, models);
 
   // Global middlewares
@@ -40,6 +42,7 @@ const main = async () => {
   // Routes
   app.use('/', routerHome);
   app.use('/api/leagues', routerLeague);
+  app.use('/api/teams', routerTeams);
   app.use('/api/login', routerLogin);
   app.use('/', routerMatch);
   app.use('/api/register', routerRegister);
