@@ -60,7 +60,7 @@ const League = new Schema({
   status: { type: String, enum: ['created', 'pending', 'closed'], default: 'created' },
   date: {
     created: { type: Date, default: Date.now },
-    started: { type: Date, required: true }, 
+    started: { type: Date, required: true },
     closed: Date,
   },
   matches: [{ type: ObjectId, ref: 'Match' }],

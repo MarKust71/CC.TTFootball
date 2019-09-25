@@ -1,4 +1,4 @@
-const Joi = require('joi')
+const Joi = require('joi');
 const express = require('express');
 const _ = require('lodash');
 const router = express.Router();
@@ -35,9 +35,9 @@ router.post('/', async (req, res) => {
       status: Joi.string()
         .min(3)
         .max(15),
-       date: Joi.object({
-         started: Joi.date().required(),
-       }),
+      date: Joi.object({
+        started: Joi.date().required(),
+      }),
     };
     return Joi.validate(req, schema);
   }
