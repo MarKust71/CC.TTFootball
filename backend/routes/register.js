@@ -7,7 +7,7 @@ const router = express.Router();
 router.post('/', async (req, res) => {
   const { User, Division } = res.locals.models;
   const { error, value } = validate(req.body);
-  if (error) return res.status(400).json(error.details);
+  if (error) return res.status(400).send(error.details);
 
   const userEmail = await User.findOne({ email: value.email });
   if (userEmail) return res.status(400).send('Email zajęty!');
