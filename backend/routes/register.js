@@ -50,4 +50,29 @@ router.post('/', async (req, res) => {
   res.json(_.pick(user, ['nickname', 'email', 'name', 'surname']));
 });
 
+function validate(req) {
+  const schema = {
+    nickname: Joi.string()
+      .min(4)
+      .max(30)
+      .required(),
+    email: Joi.string()
+      .min(5)
+      .max(255)
+      .required()
+      .email(),
+    password: Joi.string()
+      .min(5)
+      .max(1024)
+      .required(),
+    name: Joi.string().max(30),
+    surname: Joi.string().max(30),
+    division: Joi.string()
+      .max(3)
+      .required(),
+  };
+
+  return Joi.validate(req, schema);
+}
+
 module.exports = router;
