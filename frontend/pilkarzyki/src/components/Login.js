@@ -23,7 +23,7 @@ class Login extends React.Component {
             <label htmlFor="Password">Hasło</label>
             <input className="login-input" type="password" name="Password" placeholder="Password" />
           </div>
-          <button type="button" className="ui basic green button" onClick={this.submitLogin}>
+          <button type="button" className="ui primary button" onClick={this.submitLogin}>
             Zaloguj
           </button>
         </form>
