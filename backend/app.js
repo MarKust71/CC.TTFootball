@@ -47,6 +47,7 @@ const main = async () => {
   app.use('/api/leagues', routerLeague);
   app.use('/api/matches', routerMatch);
   app.use('/api/user', routerUser);
+  app.use('/api/division', routerDivision);
 
   app.use(errorHandler);
 
@@ -56,7 +57,7 @@ const main = async () => {
   app.listen(port, host, () =>
     console.log(
       `[App] Server is listening on http://${host}:${port}\n` +
-        '========================================================',
+      '========================================================',
     ),
   );
 };
