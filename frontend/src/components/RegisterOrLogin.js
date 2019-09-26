@@ -1,6 +1,7 @@
 import React from 'react';
 import Login from './Login';
 import Register from './Register';
+import { Button, Segment } from 'semantic-ui-react';
 
 class RegisterOrLogin extends React.Component {
   constructor(props) {
@@ -18,20 +19,20 @@ class RegisterOrLogin extends React.Component {
 
   render() {
     return (
-      <div className="ui container">
-        <div className="ui segment">
-          <div className="ui card" onClick={this.showLoginBox}>
+      <div className="container">
+        <Segment inverted>
+          <Button onClick={this.showLoginBox}>
             Logowanie
-          </div>
-          <div className="ui card" onClick={this.showRegisterBox}>
+          </Button>
+          <Button onClick={this.showRegisterBox}>
             Rejestracja
-          </div>
-        </div>
-        <div className="ui segment">
+          </Button>
+        </Segment> 
+        <Segment inverted>
           {this.state.isLoginOpen && <Login />}
           {this.state.isRegisterOpen && <Register />}
-        </div>
-      </div>
+        </Segment> 
+      </div> 
     );
   }
 }
