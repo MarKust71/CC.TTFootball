@@ -29,7 +29,7 @@ router.post('/', async (req, res) => {
 function validate(req) {
   const schema = {
     nickname: Joi.string()
-      .min(5)
+      .min(4)
       .max(30)
       .required(),
     email: Joi.string()

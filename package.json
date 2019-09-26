@@ -57,7 +57,6 @@
     "perm": "^1.0.0",
     "prettier": "^1.18.2",
     "sass-loader": "^8.0.0",
-    "style-loader": "^1.0.0",
-    "webpack-cli": "^3.3.8"
+    "style-loader": "^1.0.0"
   }
 }

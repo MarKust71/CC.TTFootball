@@ -10,7 +10,7 @@ const routerRegister = require('./routes/register');
 const routerLogin = require('./routes/login');
 const errorHandler = require('./middleware/errorHandler');
 const logger = require('./middleware/logger');
-const auth = require('./middleware/auth');
+// const auth = require('./middleware/auth');
 
 const main = async () => {
   const app = express();

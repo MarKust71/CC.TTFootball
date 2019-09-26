@@ -1,9 +1,15 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import isLogged from '../../utils/isLogged';
 
-const App = () => {
+const AppBar = () => {
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+  };
   return (
     <div className="container">
+      <div className="center">
+        <img alt="nie ma obrazka" src="images/nowelogo.jpg" />
+      </div>
       <nav className="navbar navbar-default">
         <div className="container-fluid">
           <div className="navbar-header">
@@ -19,33 +25,41 @@ const App = () => {
               <span className="icon-bar"></span>
               <span className="icon-bar"></span>
             </button>
-            <a className="navbar-brand">
+            <a className="navbar-brand" href="/">
               <span className="blue">
                 <b>PAN</b>karzyki
               </span>
             </a>
+
+            {isLogged() && (
+              <ul className="nav navbar-nav navbar-left">
+                <li>
+                  <a href="/">Główna</a>
+                </li>
+                <li>
+                  <a href="/">Terminarz</a>
+                </li>
+              </ul>
+            )}
           </div>
           <div className="collapse navbar-collapse" id="navbar">
             <ul className="nav navbar-nav navbar-right">
-              <li>
-                <a href="#">Zapisz się</a>
-              </li>
-              <li>
-                <a href="#">Wejdź</a>
-              </li>
+              {/* <li>
+                <a href="/">Zapisz się</a>
+              </li> */}
+              {isLogged() && (
+                <li>
+                  <a onClick={handleLogout} href="/">
+                    Wyjdź
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
         </div>
       </nav>
-
-      <main>
-        <p>
-          O co chodzi? Gramy ligę!! Dobierz się w drużynę, zapisz do rozgrywek, zapisuj wyniki, sprawdzaj kto kogo
-          złoił. Wyłonimy zwycięzcę! :) Wanna Join?
-        </p>
-      </main>
     </div>
   );
 };
 
-ReactDOM.render(<App />, document.querySelector('#root'));
+export default AppBar;
