@@ -20,19 +20,15 @@ class RegisterOrLogin extends React.Component {
   render() {
     return (
       <div className="container">
-        <Segment inverted>
-          <Button onClick={this.showLoginBox}>
-            Logowanie
-          </Button>
-          <Button onClick={this.showRegisterBox}>
-            Rejestracja
-          </Button>
-        </Segment> 
-        <Segment inverted>
+        <Segment>
+          <Button onClick={this.showLoginBox}>Logowanie</Button>
+          <Button onClick={this.showRegisterBox}>Rejestracja</Button>
+        </Segment>
+        <Segment>
           {this.state.isLoginOpen && <Login />}
           {this.state.isRegisterOpen && <Register />}
-        </Segment> 
-      </div> 
+        </Segment>
+      </div>
     );
   }
 }

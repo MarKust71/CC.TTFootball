@@ -45,9 +45,9 @@ class Register extends React.Component {
 
   render() {
     return (
-      <Segment inverted>
+      <Segment>
         Rejestracja
-        <Form inverted onSubmit={this.onFormSubmit}>
+        <Form onSubmit={this.onFormSubmit}>
           <Form.Input name="nickname" label="Nick" placeholder="Nick" onChange={this.onFormChange} />
           <Form.Input name="email" type="email" label="Email" placeholder="Email" />
           <Form.Input type="password" label="Hasło" placeholder="Hasło" />

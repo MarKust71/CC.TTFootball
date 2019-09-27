@@ -1,9 +1,13 @@
-import React from 'react';
-import isLogged from '../../utils/isLogged';
+import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
+import Store from '../../Store';
 
 const AppBar = () => {
+  const { isLogged, changeStore } = useContext(Store);
   const handleLogout = () => {
     localStorage.removeItem('token');
+    changeStore('isLogged', false);
+    changeStore('me', null);
   };
   return (
     <div className="container">
@@ -25,19 +29,25 @@ const AppBar = () => {
               <span className="icon-bar"></span>
               <span className="icon-bar"></span>
             </button>
-            <a className="navbar-brand" href="/">
+            <Link className="navbar-brand" to="/">
               <span className="blue">
                 <b>PAN</b>karzyki
               </span>
-            </a>
+            </Link>
 
-            {isLogged() && (
+            {isLogged && (
               <ul className="nav navbar-nav navbar-left">
                 <li>
-                  <a href="/">Główna</a>
+                  <Link to="/">Główna</Link>
                 </li>
                 <li>
-                  <a href="/">Terminarz</a>
+                  <Link to="/Schedule">Terminarz</Link>
+                </li>
+                <li>
+                  <Link to="/Leagues">Ligi</Link>
+                </li>
+                <li>
+                  <Link to="/Teams">Załóż drużynę</Link>
                 </li>
               </ul>
             )}
@@ -45,13 +55,13 @@ const AppBar = () => {
           <div className="collapse navbar-collapse" id="navbar">
             <ul className="nav navbar-nav navbar-right">
               {/* <li>
-                <a href="/">Zapisz się</a>
+                <Link to="/">Zapisz się</Link>
               </li> */}
-              {isLogged() && (
+              {isLogged && (
                 <li>
-                  <a onClick={handleLogout} href="/">
+                  <Link onClick={handleLogout} to="/">
                     Wyjdź
-                  </a>
+                  </Link>
                 </li>
               )}
             </ul>
