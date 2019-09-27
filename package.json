@@ -1,6 +1,7 @@
 {
   "name": "cc.ttfootball",
   "version": "1.0.0",
+  "private": true,
   "description": "Po naszemu - Piłkarzyki",
   "main": "index.js",
   "scripts": {
@@ -8,7 +9,8 @@
     "mon": "nodemon -r dotenv/config ./backend/app.js",
     "debug": "node inspect -r dotenv/config ./backend/app.js",
     "lint": "eslint --ignore-path .gitignore --fix .",
-    "format": "prettier --ignore-path .gitignore --write \"./**/*.{js,json,scss,html}\""
+    "format": "prettier --ignore-path .gitignore --write \"./**/*.{js,jsx,json,scss,html}\"",
+    "dev": "concurrently -n react,express -k \"cd frontend && npm run start\" \"npm run mon\""
   },
   "repository": {
     "type": "git",
@@ -30,10 +32,7 @@
   "homepage": "https://github.com/MarKust71/CC.TTFootball#readme",
   "dependencies": {
     "bcrypt": "^3.0.6",
-    "compression": "^1.7.4",
-    "config": "^3.2.2",
     "cookie-parser": "^1.4.4",
-    "create-react-app": "^3.1.2",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
     "helmet": "^3.21.0",
@@ -41,22 +40,19 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
     "mongoose": "^5.7.0",
+    "morgan": "^1.9.1",
     "path": "^0.12.7"
   },
   "devDependencies": {
-    "@babel/cli": "^7.6.0",
-    "@babel/core": "^7.6.0",
-    "babel-loader": "^8.0.6",
-    "css-loader": "^3.2.0",
-    "debug": "^4.1.1",
+    "concurrently": "^4.1.2",
+    "create-react-app": "^3.1.2",
     "eslint": "^6.4.0",
-    "mini-css-extract-plugin": "^0.8.0",
-    "morgan": "^1.9.1",
-    "node-sass": "^4.12.0",
+    "eslint-plugin-flowtype": "^4.3.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^2.1.0",
     "nodemon": "^1.19.2",
-    "perm": "^1.0.0",
-    "prettier": "^1.18.2",
-    "sass-loader": "^8.0.0",
-    "style-loader": "^1.0.0"
+    "prettier": "^1.18.2"
   }
 }

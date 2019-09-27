@@ -39,7 +39,7 @@ const App = () => {
       }
     })();
     setLoading(false);
-  }, []);
+  }, [changeStore, isLogged]);
   return (
     <BrowserRouter>
       <AppBar />
