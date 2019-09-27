@@ -26,8 +26,24 @@ router.get('/:id', (req, res) => {
 })
 
 router.put('/:id', (req, res) => {
-    console.log('put->', req.params);
-    res.send(`put-> ${req.params}`);
+    const Model = res.locals.models.Team;
+    getTeams(Model, req.params.id)
+    .then( result => {
+        if (!result) {
+            res.status(404).send(`Nie znaleziono drużyny o _ID ${req.params.id}.`);
+        } else {
+            console.log(result);
+            Model.findByIdAndUpdate(req.params.id, req.body, { new: true }).then(
+                (r) => { 
+                    res.send(`Zaktualizowano dane drużyny ${r.name}:\n${r}`);
+                },
+                (err) => { 
+                    console.log(err.errmsg); 
+                    res.status(403).send('Bad request!'); 
+                }
+            );
+        }
+    } );
 })
 
 router.delete('/:id', (req, res) => {
