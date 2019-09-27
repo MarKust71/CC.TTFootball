@@ -10,6 +10,7 @@ const routerMatch = require('./routes/match');
 const routerRegister = require('./routes/register');
 const routerLogin = require('./routes/login');
 const routerUser = require('./routes/user');
+const routerDivision = require('./routes/division');
 const errorHandler = require('./middleware/errorHandler');
 const logger = require('./middleware/logger');
 
@@ -63,3 +64,4 @@ const main = async () => {
 };
 
 main();
+
