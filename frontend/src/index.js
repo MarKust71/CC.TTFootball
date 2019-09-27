@@ -8,6 +8,7 @@ import AppBar from './components/AppBar';
 import PrivateRoute from './components/PrivateRoute';
 import Home from './Views/Homepage';
 import Login from './Views/Login';
+import NewLeague from './Views/NewLeague';
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
       <AppBar />
       <Route path="/login" component={Login} />
       <PrivateRoute exact path="/" component={Home} />
+      <Route path="/NewLeague" component={NewLeague} />
     </BrowserRouter>
   );
 };

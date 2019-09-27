@@ -39,6 +39,9 @@ const AppBar = () => {
                 <li>
                   <a href="/">Terminarz</a>
                 </li>
+                <li>
+                  <a href="/NewLeague">Nowa Liga</a>
+                </li>
               </ul>
             )}
           </div>

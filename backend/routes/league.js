@@ -23,17 +23,15 @@ router.get('/:id', async (req, res) => {
 router.post('/', auth, async (req, res) => {
   const { League } = res.locals.models;
 
+  console.log(req.body);
+
   function validate(req) {
     const schema = {
       name: Joi.string()
-        .min(5)
+        .min(3)
         .max(30)
         .required(),
-      description: Joi.string().max(255),
-      division: Joi.string()
-        .min(3)
-        .max(20)
-        .required(),
+      description: Joi.string().max(255).allow(''),
       date: Joi.object({
         started: Joi.date(),
       }),
@@ -49,9 +47,10 @@ router.post('/', auth, async (req, res) => {
   if (league) return res.status(400).send('Taka liga juz istnieje!');
 
   const user = await getUser(res);
+  console.log(user);
   if (!user) return res.status(401).send('Błąd tokena');
 
-  league = new League({ ...value, owner: user });
+  league = new League({ ...value, owner: user, division: user.division });
 
   await league.save();
   res.json(league);
