@@ -9,7 +9,8 @@ const routerTeams = require('./routes/teams');
 const routerMatch = require('./routes/match');
 const routerRegister = require('./routes/register');
 const routerLogin = require('./routes/login');
-const routerUsers = require('./routes/users');
+const routerUser = require('./routes/user');
+const routerDivision = require('./routes/division');
 const errorHandler = require('./middleware/errorHandler');
 const logger = require('./middleware/logger');
 
@@ -47,6 +48,8 @@ const main = async () => {
   app.use('/api/teams', routerTeams);
   app.use('/api/leagues', routerLeague);
   app.use('/api/matches', routerMatch);
+  app.use('/api/user', routerUser);
+  app.use('/api/division', routerDivision);
 
   app.use(errorHandler);
 
@@ -56,9 +59,10 @@ const main = async () => {
   app.listen(port, host, () =>
     console.log(
       `[App] Server is listening on http://${host}:${port}\n` +
-        '========================================================',
+      '========================================================',
     ),
   );
 };
 
 main();
+
