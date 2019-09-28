@@ -1,16 +1,31 @@
 import React from 'react';
+import axios from 'axios';
 import { Button, Checkbox, Form, Segment } from 'semantic-ui-react';
 
 class Register extends React.Component {
   state = {
     division: 'WRO',
+    divisions: [
+      { text: 'Wrocek', value: 'WRO', selected: true },
+      { text: 'Warszawka', value: 'WAR' },
+      { text: 'Kraków', value: 'KRA' },
+    ],
   };
 
-  divisions = [
-    { text: 'Wrocek', value: 'WRO', selected: true },
-    { text: 'Warszawka', value: 'WAR' },
-    { text: 'Kraków', value: 'KRA' },
-  ];
+  componentDidMount() {
+    this.getDivisions();
+  }
+
+  getDivisions = async () => {
+    try {
+      const { data } = await axios.get('/api/division');
+      console.log(data);
+      const divisions = data.filter(({ status }) => status !== 'deleted').map(({ _id }) => ({ value: _id, text: _id }));
+      this.setState({ divisions });
+    } catch (ex) {
+      console.error(ex);
+    }
+  };
 
   onFormChange = ({ target }, { name, value }) => {
     //zamiane na controlled, walidacje i pierdoly zostawiam Tobie Piotrek
@@ -56,7 +71,7 @@ class Register extends React.Component {
           <Form.Input label="Nazwisko" placeholder="Nazwisko" />
           <Form.Select
             name="division"
-            options={this.divisions}
+            options={this.state.divisions}
             label="Dywizja"
             value={this.state.division}
             onChange={this.onFormChange}
