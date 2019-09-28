@@ -33,7 +33,7 @@ router.post('/', auth, async (req, res) => {
         .required(),
       description: Joi.string().max(255).allow(''),
       date: Joi.object({
-        started: Joi.date(),
+        started: Joi.date().greater('now').required(),
       }),
     };
     return Joi.validate(req, schema);

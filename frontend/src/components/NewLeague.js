@@ -2,7 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { Form, Input, TextArea, Button } from 'semantic-ui-react';
-// import DatePicker from './DatePicker';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
 
 class NewLeague extends React.Component {
@@ -22,6 +23,12 @@ class NewLeague extends React.Component {
           [name]: value
         });
     };
+    handleDateChange = (date) => {
+        this.setState ({
+            startDate: date
+        })
+        console.log(this.state.startDate)
+    }
 
     onFormSubmit = async e => {
         e.preventDefault();
@@ -42,33 +49,36 @@ class NewLeague extends React.Component {
             ${postLeague.data.owner.name} - jesteś sędzią głównym w lidze: ${postLeague.data.name}`);
             this.setState({ postSuccessful: true});
           }).catch (postLeague => {
-            alert(postLeague.response.data[0].message)
+            alert(postLeague.response.data[0].message || postLeague.response.data )
           })        
     };
 
     render() {        
         if (this.state.postSuccessful)  return <Redirect to="/" />;
         return (
+            <div className="container">
             <Form onSubmit={this.onFormSubmit}>
                 <Form.Group widths='equal'>
                     <Form.Input
                         name='name'
+                        maxLength="30"
                         control={Input}
                         label='Nazwa'
                         placeholder='Jak nazwiesz ligę?'
                         onChange={this.handleInputChange}
                     />
-                    <Form.Input
-                        name="startDate"
-                        control = {Input}
+                    <DatePicker control={Form.Input}
+                        selected= {this.state.startDate}
+                        onChange= {this.handleDateChange}
+                        minDate= {Date.now()}
                         label='Data startu'
-                        placeholder='rrrr-mm-dd'
-                        onChange = {this.handleInputChange}
+                        placeholderText='Kiedy zaczynacie?'
                     />
                 </Form.Group>
                 <Form.Input
                     name='description'
                     control={TextArea}
+                    maxLength="255"
                     label='Opis (opcjonalny)'
                     placeholder='Dodaj kilka słów, jeśli chcesz'
                     onChange = {this.handleInputChange}
@@ -79,6 +89,7 @@ class NewLeague extends React.Component {
                     content='Załóż'
                 />
             </Form>
+            </div>
         );
     };
 }

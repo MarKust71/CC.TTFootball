@@ -16,7 +16,7 @@ const App = () => {
       <AppBar />
       <Route path="/login" component={Login} />
       <PrivateRoute exact path="/" component={Home} />
-      <Route path="/NewLeague" component={NewLeague} />
+      <PrivateRoute exact path="/NewLeague" component={NewLeague} />
     </BrowserRouter>
   );
 };
