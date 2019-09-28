@@ -1,25 +1,13 @@
 import React from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
-import { Button, Form, Segment, Label, Select, Input } from 'semantic-ui-react';
+import { Button, Form, Segment, Label, Select, Input, Dropdown } from 'semantic-ui-react';
 
 class componentTeams extends React.Component {
   constructor (props) {
     
     super(props);
     
-    // this.optionsDivisions = [
-    //   // powinno się ciągnąć z bazy, ale nie znalazłem endpointa na razie...
-    //   {key: 'WRO', value: 'WRO', text: 'Wrocław'},
-    //   {key: 'KRK', value: 'KRK', text: 'Kraków'},
-    //   {key: 'WAW', value: 'WAW', text: 'Warszawa'},
-    //   {key: 'League_Division_0', value: 'League_Division_0', text: 'League_Division_0'}
-    // ];
-  
-    // this.teamsOfDivision = [];
-    this.teams = this.getTeams();
-    this.users = this.getUsers();
-
     this.state = {
       newTeam: '',
       divisionName: '',
@@ -27,11 +15,15 @@ class componentTeams extends React.Component {
       haveNewTeam: false,
       player1: '',
       player2: '',
-      havePlayers: false
+      playersErrMsg: ''
       // divisionSelected: false
     }
+  
+    // this.teamsOfDivision = this._getDivisions();
+    this.teams = this._getTeams();
+    this.users = this._getUsers();
     
-    }
+  }
 
   // async getTeamsOfDivision(division) {
   //   const teams = await axios(
@@ -62,7 +54,7 @@ class componentTeams extends React.Component {
   //   )
   // }
 
-  async getTeams() {
+  async _getTeams() {
     const teams = await axios(
       {
         url: '/api/teams/',
@@ -82,7 +74,7 @@ class componentTeams extends React.Component {
     )
   }
 
-  getUsers() {
+  _getUsers() {
   // async getUsers() {
     // const users = await axios(
     //   {
@@ -114,6 +106,16 @@ class componentTeams extends React.Component {
     ];
   }
 
+  _getDivisions() {
+    return [
+    // powinno się ciągnąć z bazy, ale nie znalazłem endpointa na razie...
+    {key: 'WRO', value: 'WRO', text: 'Wrocław'},
+      {key: 'KRK', value: 'KRK', text: 'Kraków'},
+      {key: 'WAW', value: 'WAW', text: 'Warszawa'},
+      {key: 'League_Division_0', value: 'League_Division_0', text: 'League_Division_0'}
+    ];
+  }
+
   // onSelectChange = (e) => {
   //   const value = e.target.value;
   //   this.setState({ 
@@ -125,17 +127,48 @@ class componentTeams extends React.Component {
   //   // console.log(this.teamsOfDivision);
   // }
 
-  onSelectChange = (e) => {
-  console.log(e.target);
-    const value = e.target.value;
-    this.setState({ 
-      player1: value,
-    })
+  onSelectChange = (e, id) => {
+// let {value} = e.currentTarget;
+// console.log(value);
+// console.log(this);
+// console.log(e.target);
+// console.log(e.target.props);
+// console.log(e.target.value, id, this.state.player1, this.state.player2);
+console.log(e.currentTarget);
+    const { value } = e.currentTarget;
+    switch(id) {
+      case 1:
+        if (value !== this.state.player2) {
+          this.setState( () => { return { 
+            player1: value,
+            playersErrMsg: ''
+          }})
+        } else {
+          this.setState( () => { return {
+            playersErrMsg: 'No chyba żartujesz...'
+          }})
+        }
+        break;
+      case 2:
+          if (value !== this.state.player1) {
+            this.setState( () => { return { 
+              player2: value,
+              playersErrMsg: ''
+            }})
+          } else {
+            this.setState( () => { return {
+              playersErrMsg: 'No chyba żartujesz...'
+            }})
+          }
+          break;
+        default:
+        break;
+    }
   }
 
   onInputChange = (e) => {
     const value = e.target.value;
-    this.setState({ newTeam: value });
+    this.setState( () => { return { newTeam: value }} );
   }
 
   onFormSubmit = (e) => {
@@ -143,13 +176,13 @@ class componentTeams extends React.Component {
     const team = this.state.newTeam;
     if (team) {
       if (this.teams.filter( (el) => { return el === team; } ).length) {
-        this.setState({ newTeamErrMsg: 'Taka drużyna już istnieje' });
+        this.setState( () => { return { newTeamErrMsg: 'Taka drużyna już istnieje' }} );
       } else {
-        this.setState({ newTeamErrMsg: '' });
-        this.setState({ haveNewTeam: true });
+        this.setState( () => { return { newTeamErrMsg: '' }} );
+        this.setState( () => { return { haveNewTeam: true }} );
       };
     } else {
-      this.setState({ newTeamErrMsg: 'Drużyna bez nazwy nie wchodzi w grę' });
+      this.setState( () => { return { newTeamErrMsg: 'Drużyna bez nazwy nie wchodzi w grę' }} );
     };
     if (this.state.newTeamErrMsg) console.log(this.state.newTeamErrMsg);
   }
@@ -186,21 +219,24 @@ class componentTeams extends React.Component {
           { this.state.haveNewTeam && (
             <Form.Group>
               <Label>Wybierz graczy</Label>
-              <Select 
+              <Dropdown 
                 key="player1"
                 placeholder="Puknij gracza nr 1..." 
-                value={this.state.player1} 
-                options={this.users} onChange={ (e) => { this.onSelectChange(e); } } 
+                selection value={this.state.player1} 
+                options={this.users} 
+                onChange={ (e) => { this.onSelectChange(e, 1); } } 
               />
-              <Select 
+              <Dropdown 
                 key="player2"
                 placeholder="Puknij gracza nr 2..." 
-                value={this.state.player2} 
-                options={this.users} onChange={ (e) => { this.onSelectChange(e); } } 
+                selection value={this.state.player2} 
+                options={this.users} 
+                onChange={ (e) => { this.onSelectChange(e, 2); } } 
               />
+              {this.state.playersErrMsg && <Label style={{color: "red"}}>{this.state.playersErrMsg}</Label>}
             </Form.Group>
           ) }
-          { this.state.havePlayers && (
+          { (this.state.player1 !== '') && (this.state.player2 !== '') && (
             <Button>Zapisz</Button>
           )}
         </Form>
