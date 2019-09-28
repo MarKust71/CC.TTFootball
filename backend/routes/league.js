@@ -20,6 +20,15 @@ router.get('/:id', async (req, res) => {
   res.json(league);
 });
 
+router.get('/:id/matches', async (req, res) => {
+  const { League } = res.locals.models;
+
+  const league = await League.findByIdOrName(req.params.id).populate('matches');
+  if (!league) return res.status(404).send('Nie znaleziono takiej ligi');
+
+  res.json(league.matches.map(x => _.pick(x, ['teams', 'date', '_id', 'league'])));
+});
+
 router.post('/', auth, async (req, res) => {
   const { League } = res.locals.models;
 

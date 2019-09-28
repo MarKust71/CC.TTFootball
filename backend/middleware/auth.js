@@ -13,5 +13,5 @@ module.exports = {
       res.status(400).send('Invalid token.');
     }
   },
-  getUser: res => res.locals.models.User.findById(res.locals.jwt._id).select('-password'),
+  getUser: (res, id = res.locals.jwt._id) => res.locals.models.User.findById(id).select('-password'),
 };

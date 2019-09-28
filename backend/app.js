@@ -9,9 +9,9 @@ const routerTeams = require('./routes/teams');
 const routerMatch = require('./routes/match');
 const routerRegister = require('./routes/register');
 const routerLogin = require('./routes/login');
+const routerUsers = require('./routes/users');
 const errorHandler = require('./middleware/errorHandler');
 const logger = require('./middleware/logger');
-// const auth = require('./middleware/auth');
 
 const main = async () => {
   const app = express();
@@ -43,6 +43,7 @@ const main = async () => {
   app.use('/', routerHome);
   app.use('/api/register', routerRegister);
   app.use('/api/login', routerLogin);
+  app.use('/api/users', routerUsers);
   app.use('/api/teams', routerTeams);
   app.use('/api/leagues', routerLeague);
   app.use('/api/matches', routerMatch);

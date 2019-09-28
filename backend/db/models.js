@@ -14,12 +14,12 @@ const User = new Schema({
   ownedLeagues: [{ type: ObjectId, ref: 'League' }],
   statistics: {
     matches: {
-      won: Number,
-      lost: Number,
+      won: { type: Number, default: 0 },
+      lost: { type: Number, default: 0 },
     },
     goals: {
-      for: Number,
-      against: Number,
+      for: { type: Number, default: 0 },
+      against: { type: Number, default: 0 },
     },
   },
 });
@@ -34,12 +34,12 @@ const Team = new Schema({
   leagues: [{ type: ObjectId, ref: 'League' }],
   statistics: {
     matches: {
-      won: Number,
-      lost: Number,
+      won: { type: Number, default: 0 },
+      lost: { type: Number, default: 0 },
     },
     goals: {
-      for: Number,
-      against: Number,
+      for: { type: Number, default: 0 },
+      against: { type: Number, default: 0 },
     },
   },
 });
@@ -59,7 +59,16 @@ const League = new Schema({
   teams: [
     {
       team: { type: ObjectId, ref: 'Team', required: true },
-      points: { type: Number, required: true, default: 0 },
+      statistics: {
+        matches: {
+          won: { type: Number, default: 0 },
+          lost: { type: Number, default: 0 },
+        },
+        goals: {
+          for: { type: Number, default: 0 },
+          against: { type: Number, default: 0 },
+        },
+      },
     },
   ],
   status: { type: String, enum: ['created', 'pending', 'closed'], default: 'created' },

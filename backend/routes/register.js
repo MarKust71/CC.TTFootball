@@ -40,12 +40,12 @@ function validate(req) {
       .email(),
     password: Joi.string()
       .min(5)
-      .max(1024)
+      .max(32)
       .required(),
-    name: Joi.string().max(30),
-    surname: Joi.string().max(30),
+    name: Joi.string().max(32),
+    surname: Joi.string().max(32),
     division: Joi.string()
-      .max(3)
+      .max(32)
       .required(),
   };
 

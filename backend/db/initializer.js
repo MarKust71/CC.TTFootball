@@ -63,6 +63,14 @@ const createTeams = async (prefix, users, models) => {
   return await createModelBatch(models.Team, teamsData);
 };
 
+const alignLeaguesToTeams = async leagues => {
+  for (let league of leagues) {
+    for (let leagueTeam of league.teams) {
+      await leagueTeam.team.updateOne({ $push: { leagues: league } });
+    }
+  }
+};
+
 const createLeagues = async (prefix, count, manyTeams, division, owner, models) => {
   const leagueData = arrayWithCount(count)(x => {
     return {
@@ -76,6 +84,7 @@ const createLeagues = async (prefix, count, manyTeams, division, owner, models) 
   });
 
   const leagues = await createModelBatch(models.League, leagueData);
+  await alignLeaguesToTeams(leagues);
   await owner.updateOne({ $push: { ownedLeagues: { $each: leagues } } });
   return leagues;
 };
@@ -83,6 +92,31 @@ const createLeagues = async (prefix, count, manyTeams, division, owner, models) 
 const createLeague = async (prefix, teams, division, owner, models) => {
   const leagues = await createLeagues(prefix, 1, [teams], division, owner, models);
   return leagues[0];
+};
+
+const createMatchesData = (league, scheduled) => {
+  const matchesData = [];
+  const teams = [...league.teams];
+  teams.forEach((x, i) => {
+    teams.slice(i + 1, teams.length).forEach(y => {
+      matchesData.push({
+        league,
+        teams: {
+          first: x.team,
+          second: y.team,
+        },
+        date: { scheduled },
+      });
+    });
+  });
+  return matchesData;
+};
+
+const startLeague = async (prefix, league, models) => {
+  const now = new Date(Date.now());
+  const matchesData = createMatchesData(league, now);
+  const matches = await models.Match.insertMany(matchesData);
+  await league.updateOne({ $push: { matches: matches }, status: 'pending', date: { started: now } });
 };
 
 const alignTeamsToUsers = async teams => {
@@ -119,7 +153,7 @@ const divisionInitializer = async models => {
 const leagueInitializer = async models => {
   const prefix = 'League_';
   const division = await createDivision(prefix, models);
-  const users = await createUsers(prefix, 10, division, models);
+  const users = await createUsers(prefix, 4, division, models);
   const owner = users.find(val => val.nickname === 'League_User_0');
   const teams = await createTeams(prefix, users, models);
   await alignTeamsToUsers(teams);
@@ -127,7 +161,17 @@ const leagueInitializer = async models => {
   await alignLeaguesToDivision([league], division);
 };
 
-const matchInitializer = async () => {};
+const matchInitializer = async models => {
+  const prefix = 'Match_';
+  const division = await createDivision(prefix, models);
+  const users = await createUsers(prefix, 10, division, models);
+  const owner = users.find(val => val.nickname === 'Match_User_0');
+  const teams = await createTeams(prefix, users, models);
+  await alignTeamsToUsers(teams);
+  const league = await createLeague(prefix, teams, division, owner, models);
+  await alignLeaguesToDivision([league], division);
+  await startLeague(prefix, league, models);
+};
 
 const defaultInitializers = new Map([
   ['User', userInitializer],
