@@ -2,7 +2,7 @@ const Joi = require('joi');
 const express = require('express');
 const _ = require('lodash');
 const router = express.Router();
-const { auth } = require('../middleware/auth');
+const { auth, getUser } = require('../middleware/auth');
 
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
@@ -25,7 +25,7 @@ router.post('/', auth, async (req, res) => {
 
   function validate(req) {
     const schema = {
-      _id: Joi.string()
+      name: Joi.string()
         .min(3)
         .max(3),
       description: Joi.string().max(255),
@@ -37,8 +37,11 @@ router.post('/', auth, async (req, res) => {
 
   if (error) return res.status(400).json(error.details);
 
-  let division = await res.locals.models.Division.findOne({ _id: value._id });
+  let division = await res.locals.models.Division.findOne({ _id: value.name });
   if (division) return res.status(400).send('Dywizja o podanym id juz istnieje!');
+
+  const user = await getUser(res);
+  if (!user) return res.status(401).send('Błąd tokena');
 
   division = new Division({ ...value });
 
