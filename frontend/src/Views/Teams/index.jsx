@@ -1,7 +1,8 @@
 import React from 'react';
+import ComponentTeams from '../../components/Teams'
 
 const Teams = () => {
-  return <div>Teams</div>;
+  return ( <ComponentTeams /> );
 };
 
 export default Teams;
