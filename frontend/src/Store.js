@@ -3,7 +3,7 @@ import React from 'react';
 const Context = React.createContext();
 
 export class StoreProvider extends React.Component {
-  state = { isLogged: false, me: null };
+  state = { isLogged: localStorage.getItem('token') ? true : false, me: null };
 
   changeStore = (name, value) => {
     this.setState({ [name]: value });

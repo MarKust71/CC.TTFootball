@@ -31,6 +31,7 @@ class Login extends React.Component {
       localStorage.setItem('token', token);
       await response.json();
       this.context.changeStore('isLogged', true);
+      this.setState({ isLogged: true });
     } else {
       this.setState({ invalidData: true });
     }
