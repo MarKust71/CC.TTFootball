@@ -14,6 +14,7 @@ import Teams from './Views/Teams';
 import Leagues from './Views/Leagues';
 import Schedule from './Views/Schedule';
 import Loader from './components/Loader';
+import NewLeague from './Views/NewLeague';
 
 const App = () => {
   const { isLogged, changeStore } = useContext(Store);
@@ -55,6 +56,7 @@ const App = () => {
           <Route render={() => <Redirect to="/" />} />
         </Switch>
       )}
+      <PrivateRoute exact path="/NewLeague" component={NewLeague} />
     </BrowserRouter>
   );
 };

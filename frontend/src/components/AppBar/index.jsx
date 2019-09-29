@@ -49,6 +49,9 @@ const AppBar = () => {
                 <li>
                   <Link to="/Teams">Drużyny</Link>
                 </li>
+                <li>
+                  <a href="/NewLeague">Nowa Liga</a>
+                </li>
               </ul>
             )}
           </div>
