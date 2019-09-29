@@ -64,8 +64,8 @@ router.delete('/:id', (req, res) => {
 router.post('/', (req, res) => {
   const Model = res.locals.models.Team;
   const teamName = req.body.name;
-  const playersFirst = req.body.first;
-  const playersSecond = req.body.second;
+  const playersFirst = req.body.players.first;
+  const playersSecond = req.body.players.second;
   const status = req.body.status;
   createTeam(Model, teamName, playersFirst, playersSecond, status).then(
     result => {
