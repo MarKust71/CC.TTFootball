@@ -89,10 +89,9 @@ class componentTeams extends React.Component {
     const { activeItem } = this.state;
     return (
       <div className="container" style={{textAlign: "left"}}>
-{/* ============================= */}
         <Grid>
 
-          <Grid.Column width={2}>
+          <Grid.Column stretched width={2}>
             <Menu fluid vertical tabular>
               <Menu.Item
                 name='przejrzyj'
@@ -108,11 +107,10 @@ class componentTeams extends React.Component {
           </Grid.Column>
 
           <Grid.Column stretched width={14}>
-            <TeamCreate />
+            { (this.state.activeItem === 'dodaj') && <TeamCreate /> }
           </Grid.Column>
 
         </Grid>
-{/* ============================= */}
       </div>
     )
   }
