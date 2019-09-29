@@ -53,10 +53,11 @@ const App = () => {
           <PrivateRoute path="/Leagues" component={Leagues} />
           <PrivateRoute path="/Teams" component={Teams} />
           <PrivateRoute exact path="/" component={Home} />
+          <PrivateRoute exact path="/NewLeague" component={NewLeague} />
           <Route render={() => <Redirect to="/" />} />
         </Switch>
       )}
-      <PrivateRoute exact path="/NewLeague" component={NewLeague} />
+      
     </BrowserRouter>
   );
 };
