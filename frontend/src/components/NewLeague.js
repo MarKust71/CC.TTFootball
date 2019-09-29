@@ -27,7 +27,6 @@ class NewLeague extends React.Component {
         this.setState ({
             startDate: date
         })
-        console.log(this.state.startDate)
     }
 
     onFormSubmit = async e => {
