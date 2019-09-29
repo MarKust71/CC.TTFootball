@@ -47,7 +47,7 @@ const AppBar = () => {
                   <Link to="/Leagues">Ligi</Link>
                 </li>
                 <li>
-                  <Link to="/Teams">Załóż drużynę</Link>
+                  <Link to="/Teams">Drużyny</Link>
                 </li>
               </ul>
             )}

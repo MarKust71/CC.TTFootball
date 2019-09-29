@@ -1,7 +1,6 @@
 import React from 'react';
-import axios from 'axios';
-import { Redirect } from 'react-router-dom';
-import { Form, Segment, Label, Input, Message, FormGroup } from 'semantic-ui-react';
+import { Grid, Menu } from 'semantic-ui-react';
+import TeamCreate from './TeamCreate';
 
 class componentTeams extends React.Component {
   constructor (props) {
@@ -9,18 +8,12 @@ class componentTeams extends React.Component {
     super(props);
     
     this.state = {
-      postSuccess: false,
-      newTeam: '',
-      player1: '',
-      player2: '',
-      errHeader: '',
-      errMessage: ''
+      term: '',
+      activeItem: 'dodaj',
       // divisionSelected: false
     }
   
     // this.teamsOfDivision = this._getDivisions();
-    this.teams = this._getTeams();
-    this.users = this._getUsers();
 
   }
 
@@ -53,59 +46,6 @@ class componentTeams extends React.Component {
   //   )
   // }
 
-  async _getTeams() {
-    const teams = await axios(
-      {
-        url: '/api/teams/',
-        method: 'get',
-        data: {},
-        headers:
-        {
-          // 'x-auth-token': localStorage.getItem('token')
-          'x-auth-token': localStorage.token
-        }
-      }
-    ).then(
-      (res) => { 
-        this.teams = res.data.map( (element) => { return element.name; } );
-        // console.log(this.teams); 
-      },
-      (err) => { console.log(err.errmsg); }
-    )
-  }
-
-  _getUsers() {
-  // async getUsers() {
-    // const users = await axios(
-    //   {
-    //     url: '/api/users/',
-    //     method: 'get',
-    //     data: {},
-    //     headers:
-    //     {
-    //       'x-auth-token': localStorage.getItem('token')
-    //     }
-    //   }
-    // ).then(
-    //   (res) => { 
-    //     this.users = res.data.map( (el) => { return {
-    //       key: el._id, 
-    //       value: `${el.surname}, ${el.name}`, 
-    //       text: `${el._id}: ${el.surname}, ${el.name}`
-    //     }; } );
-    //     console.log(this.users); 
-    //   },
-    //   (err) => { console.log(err.errmsg); }
-    // )
-    return [
-      // powinno się ciągnąć z bazy, ale nie znalazłem endpointa na razie...
-      {key: 'John', value: 'Front, John', text: 'Front, John'},
-      {key: 'kris', value: 'stoiczkow, kristof', text: 'stoiczkow, kristof'},
-      {key: 'Marcin', value: 'Woś, Marcin', text: 'Woś, Marcin'},
-      {key: 'MareK', value: 'K, Marek', text: 'K, Marek'}
-    ];
-  }
-
   _getDivisions() {
     return [
     // powinno się ciągnąć z bazy, ale nie znalazłem endpointa na razie...
@@ -116,192 +56,61 @@ class componentTeams extends React.Component {
     ];
   }
 
-  onSelectChange = (e, { value, name }) => {
-    switch(name) {
-      case 'player1':
-        this.setState( () => { return { 
-          player1: value,
-          errHeader: '',
-          errMessage: ''
-        }})
-        break;
-      case 'player2':
-        this.setState( () => { return { 
-          player2: value,
-          errHeader: '',
-          errMessage: ''
-          }})
-        break;
-      default:
-        break;
-    }
-  
-  }
+  // onInputChange = (e) => {
+  //   const value = e.target.value;
+  //   this.setState( () => { return { 
+  //     // player1: '',
+  //     // player2: '',
+  //     errHeader: '', 
+  //     errMessage: '' ,
+  //     newTeam: value
+  //   }} );
+  // }
 
   onInputChange = (e) => {
-    const value = e.target.value;
-    this.setState( () => { return { 
-      // player1: '',
-      // player2: '',
-      errHeader: '', 
-      errMessage: '' ,
-      newTeam: value
-    }} );
-  }
+    this.props.onChange(this.state.term);
+  };
 
-  onFormSubmit = (e, d) => {
-    e.preventDefault();
-    if (d.name !== 'btnCancel') {
-      if (this._validateForm()) {
-        this._postTeam();
-      };
-    }
-  }
+  onSelectChange = (e, { value, name } ) => {
+    this.props.onChange(this.state.term);
+  };
 
-  onClickCancel = (e, d) => {
-    console.log(e, d);
-    this.setState( () => {return {postSuccess: true}; } );
-  }
+  onFormSubmit = () => {
+    this.props.onSubmit(this.state.term);
+  };
 
-  _validateForm = () => {
-    let teamOK = true;
-    let playersOK = true;
-    const team = this.state.newTeam;
-    if (team) {
-      if (this.teams.filter( (el) => { return el === team; } ).length) {
-        this.setState( () => { return { 
-          errHeader: 'BŁĄD!',
-          errMessage: 'Drużyna o takiej nazwie już istnieje.'
-        }} );
-        // return false;
-        teamOK = false;
-      } else {
-        this.setState( () => { return { 
-          errHeader: '', 
-          errMessage: '' 
-        }} );
-      };
-    } else {
-      this.setState( () => { return { 
-        errHeader: 'BŁĄD!',
-        errMessage: 'Drużyna bez nazwy nie wchodzi w grę'
-      }} );
-      // return false;
-      teamOK = false;
-    };
+  onClickCancel = () => {
+    this.props.onSubmit(this.state.term);
+  };
 
-    if (!teamOK) { return false };
-
-    if (!this.state.player1 || !this.state.player2) {
-      this.setState( () => { return { 
-        errHeader: 'BŁĄD!',
-        errMessage: 'Nie wybrano zawodników'
-      }} );
-      // return false;
-      playersOK = false;
-    }
-    if (this.state.player1 && this.state.player2 && (this.state.player1 === this.state.player2)) {
-      this.setState( () => { return { 
-        errHeader: 'BŁĄD!',
-        errMessage: 'Drużyna to dwie różne osoby'
-      }} );
-      // return false;
-      playersOK = false;
-    }
-    return playersOK;
-  }
-
-  async _postTeam() {
-    const teams = await axios(
-      {
-        url: '/api/teams/',
-        method: 'post',
-        data: {
-          name: this.state.newTeam,
-          players: {
-            first: this.users.filter( (el) => { return el.value === this.state.player1; } )[0].key,
-            second: this.users.filter( (el) => { return el.value === this.state.player2; } )[0].key
-          },
-          status: 'active'
-        },
-        headers:
-        {
-          // 'x-auth-token': localStorage.getItem('token')
-          'x-auth-token': localStorage.token
-        }
-      }
-    ).then(
-      (res) => {
-        this.setState( () => {return {postSuccess: true}; } );
-      },
-      (err) => { console.log(err.errmsg); }
-    )
-  }
+  handleItemClick = (e, { name }) => this.setState( () => { return { activeItem: name }; });
 
   render() {
-    if (this.state.postSuccess) return <Redirect to="/" />;
+    const { activeItem } = this.state;
     return (
       <div className="container" style={{textAlign: "left"}}>
-        <Segment.Group horizontal>
-          <Segment>          
-            {/* <Form onSubmit={this, this.onFormSubmit}> */}
-            <Form onSubmit={this.onFormSubmit}>
-              <Form.Group>
-                <Form.Field>
-                  <Label>Nazwij jakoś drużynę</Label>
-                  <Input 
-                    type="text" 
-                    placeholder="wprowadź nazwę..." 
-                    value={this.state.newTeam} 
-                    onChange={ (e) => { this.onInputChange(e); } } 
-                  />
-                </Form.Field>
-              </Form.Group>
-              <Form.Group>
-                <Form.Field>
-                  <Label>Wybierz graczy</Label>
-                  <Form.Group inline>
-                    <Form.Dropdown 
-                      key="player1"
-                      name="player1"
-                      placeholder="puknij gracza nr 1..." 
-                      selection value={this.state.player1} 
-                      options={ this.users } 
-                      onChange={ (e, v) => this.onSelectChange(e, v) } 
-                    />
-                    <Form.Dropdown 
-                      key="player2"
-                      name="player2"
-                      placeholder="puknij gracza nr 2..." 
-                      selection value={this.state.player2} 
-                      options={this.users} 
-                      onChange={ (e, v) => this.onSelectChange(e, v) } 
-                    />
-                  </Form.Group>
-                </Form.Field>
-              </Form.Group>
-              <FormGroup>
-                <Form.Button name="btnSave">Zapisz</Form.Button>
-                <Form.Button 
-                  name="btnCancel" 
-                  onClick={ this.onClickCancel }
-                >Anuluj</Form.Button>
-              </FormGroup>
-            </Form>
-            { (this.state.errHeader + this.state.errMessage !== '') && (
-              <Form error>
-                <Message
-                  error
-                  header={ this.state.errHeader }
-                  content={ this.state.errMessage }
-                />
-              </Form>
-            )}
-          </Segment>
-          <Segment>
+        <Grid>
 
-          </Segment>
-        </Segment.Group>
+          <Grid.Column stretched width={2}>
+            <Menu fluid vertical tabular>
+              <Menu.Item
+                name='przejrzyj'
+                active={activeItem === 'przejrzyj'}
+                onClick={this.handleItemClick}
+              />
+              <Menu.Item
+                name='dodaj'
+                active={activeItem === 'dodaj'}
+                onClick={this.handleItemClick}
+              />
+            </Menu>
+          </Grid.Column>
+
+          <Grid.Column stretched width={14}>
+            { (this.state.activeItem === 'dodaj') && <TeamCreate /> }
+          </Grid.Column>
+
+        </Grid>
       </div>
     )
   }
