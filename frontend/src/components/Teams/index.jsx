@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-// import { Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { Form, Segment, Label, Input, Message, FormGroup } from 'semantic-ui-react';
 
 class componentTeams extends React.Component {
@@ -9,6 +9,7 @@ class componentTeams extends React.Component {
     super(props);
     
     this.state = {
+      postSuccess: false,
       newTeam: '',
       player1: '',
       player2: '',
@@ -148,11 +149,18 @@ class componentTeams extends React.Component {
     }} );
   }
 
-  onFormSubmit = (e) => {
+  onFormSubmit = (e, d) => {
     e.preventDefault();
-    if (this._validateForm()) {
-      this._postTeam();
-    };
+    if (d.name !== 'btnCancel') {
+      if (this._validateForm()) {
+        this._postTeam();
+      };
+    }
+  }
+
+  onClickCancel = (e, d) => {
+    console.log(e, d);
+    this.setState( () => {return {postSuccess: true}; } );
   }
 
   _validateForm = () => {
@@ -218,20 +226,20 @@ class componentTeams extends React.Component {
         },
         headers:
         {
-          // 'Content-Type': 'application/json',
           // 'x-auth-token': localStorage.getItem('token')
           'x-auth-token': localStorage.token
         }
       }
     ).then(
-      (res) => { 
-        console.log('poszło', res);
+      (res) => {
+        this.setState( () => {return {postSuccess: true}; } );
       },
       (err) => { console.log(err.errmsg); }
     )
   }
 
   render() {
+    if (this.state.postSuccess) return <Redirect to="/" />;
     return (
       <div className="container" style={{textAlign: "left"}}>
         <Segment.Group horizontal>
@@ -273,7 +281,11 @@ class componentTeams extends React.Component {
                 </Form.Field>
               </Form.Group>
               <FormGroup>
-                <Form.Button>Zapisz</Form.Button>
+                <Form.Button name="btnSave">Zapisz</Form.Button>
+                <Form.Button 
+                  name="btnCancel" 
+                  onClick={ this.onClickCancel }
+                >Anuluj</Form.Button>
               </FormGroup>
             </Form>
             { (this.state.errHeader + this.state.errMessage !== '') && (
