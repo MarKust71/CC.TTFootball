@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
-import { Redirect } from 'react-router-dom';
-import { Button, Form, Segment, Label, Select, Input, Dropdown } from 'semantic-ui-react';
+// import { Redirect } from 'react-router-dom';
+import { Form, Segment, Label, Input, Message, FormGroup } from 'semantic-ui-react';
 
 class componentTeams extends React.Component {
   constructor (props) {
@@ -10,19 +10,17 @@ class componentTeams extends React.Component {
     
     this.state = {
       newTeam: '',
-      divisionName: '',
-      newTeamErrMsg: '',
-      haveNewTeam: false,
       player1: '',
       player2: '',
-      playersErrMsg: ''
+      errHeader: '',
+      errMessage: ''
       // divisionSelected: false
     }
   
     // this.teamsOfDivision = this._getDivisions();
     this.teams = this._getTeams();
     this.users = this._getUsers();
-    
+
   }
 
   // async getTeamsOfDivision(division) {
@@ -62,7 +60,8 @@ class componentTeams extends React.Component {
         data: {},
         headers:
         {
-          'x-auth-token': localStorage.getItem('token')
+          // 'x-auth-token': localStorage.getItem('token')
+          'x-auth-token': localStorage.token
         }
       }
     ).then(
@@ -99,147 +98,198 @@ class componentTeams extends React.Component {
     // )
     return [
       // powinno się ciągnąć z bazy, ale nie znalazłem endpointa na razie...
-      {key: 'John', value: 'Front, John', text: 'John: Front, John'},
-      {key: 'kris', value: 'stoiczkow, kristof', text: 'kris: stoiczkow, kristof'},
-      {key: 'Marcin', value: 'Woś, Marcin', text: 'Marcin: Woś, Marcin'},
-      {key: 'MareK', value: 'K, Marek', text: 'MareK: K, Marek'}
+      {key: 'John', value: 'Front, John', text: 'Front, John'},
+      {key: 'kris', value: 'stoiczkow, kristof', text: 'stoiczkow, kristof'},
+      {key: 'Marcin', value: 'Woś, Marcin', text: 'Woś, Marcin'},
+      {key: 'MareK', value: 'K, Marek', text: 'K, Marek'}
     ];
   }
 
   _getDivisions() {
     return [
     // powinno się ciągnąć z bazy, ale nie znalazłem endpointa na razie...
-    {key: 'WRO', value: 'WRO', text: 'Wrocław'},
+      {key: 'WRO', value: 'WRO', text: 'Wrocław'},
       {key: 'KRK', value: 'KRK', text: 'Kraków'},
       {key: 'WAW', value: 'WAW', text: 'Warszawa'},
       {key: 'League_Division_0', value: 'League_Division_0', text: 'League_Division_0'}
     ];
   }
 
-  // onSelectChange = (e) => {
-  //   const value = e.target.value;
-  //   this.setState({ 
-  //     divisionName: value,
-  //     divisionSelected: true 
-  //   })
-  //   this.getTeamsOfDivision(value);
-  //   this.getTeamsOfDivision('League_Division_0');
-  //   // console.log(this.teamsOfDivision);
-  // }
-
-  onSelectChange = (e, id) => {
-// let {value} = e.currentTarget;
-// console.log(value);
-// console.log(this);
-// console.log(e.target);
-// console.log(e.target.props);
-// console.log(e.target.value, id, this.state.player1, this.state.player2);
-console.log(e.currentTarget);
-    const { value } = e.currentTarget;
-    switch(id) {
-      case 1:
-        if (value !== this.state.player2) {
-          this.setState( () => { return { 
-            player1: value,
-            playersErrMsg: ''
-          }})
-        } else {
-          this.setState( () => { return {
-            playersErrMsg: 'No chyba żartujesz...'
-          }})
-        }
+  onSelectChange = (e, { value, name }) => {
+    switch(name) {
+      case 'player1':
+        this.setState( () => { return { 
+          player1: value,
+          errHeader: '',
+          errMessage: ''
+        }})
         break;
-      case 2:
-          if (value !== this.state.player1) {
-            this.setState( () => { return { 
-              player2: value,
-              playersErrMsg: ''
-            }})
-          } else {
-            this.setState( () => { return {
-              playersErrMsg: 'No chyba żartujesz...'
-            }})
-          }
-          break;
-        default:
+      case 'player2':
+        this.setState( () => { return { 
+          player2: value,
+          errHeader: '',
+          errMessage: ''
+          }})
+        break;
+      default:
         break;
     }
+  
   }
 
   onInputChange = (e) => {
     const value = e.target.value;
-    this.setState( () => { return { newTeam: value }} );
+    this.setState( () => { return { 
+      // player1: '',
+      // player2: '',
+      errHeader: '', 
+      errMessage: '' ,
+      newTeam: value
+    }} );
   }
 
   onFormSubmit = (e) => {
     e.preventDefault();
+    if (this._validateForm()) {
+      this._postTeam();
+    };
+  }
+
+  _validateForm = () => {
+    let teamOK = true;
+    let playersOK = true;
     const team = this.state.newTeam;
     if (team) {
       if (this.teams.filter( (el) => { return el === team; } ).length) {
-        this.setState( () => { return { newTeamErrMsg: 'Taka drużyna już istnieje' }} );
+        this.setState( () => { return { 
+          errHeader: 'BŁĄD!',
+          errMessage: 'Drużyna o takiej nazwie już istnieje.'
+        }} );
+        // return false;
+        teamOK = false;
       } else {
-        this.setState( () => { return { newTeamErrMsg: '' }} );
-        this.setState( () => { return { haveNewTeam: true }} );
+        this.setState( () => { return { 
+          errHeader: '', 
+          errMessage: '' 
+        }} );
       };
     } else {
-      this.setState( () => { return { newTeamErrMsg: 'Drużyna bez nazwy nie wchodzi w grę' }} );
+      this.setState( () => { return { 
+        errHeader: 'BŁĄD!',
+        errMessage: 'Drużyna bez nazwy nie wchodzi w grę'
+      }} );
+      // return false;
+      teamOK = false;
     };
-    if (this.state.newTeamErrMsg) console.log(this.state.newTeamErrMsg);
+
+    if (!teamOK) { return false };
+
+    if (!this.state.player1 || !this.state.player2) {
+      this.setState( () => { return { 
+        errHeader: 'BŁĄD!',
+        errMessage: 'Nie wybrano zawodników'
+      }} );
+      // return false;
+      playersOK = false;
+    }
+    if (this.state.player1 && this.state.player2 && (this.state.player1 === this.state.player2)) {
+      this.setState( () => { return { 
+        errHeader: 'BŁĄD!',
+        errMessage: 'Drużyna to dwie różne osoby'
+      }} );
+      // return false;
+      playersOK = false;
+    }
+    return playersOK;
+  }
+
+  async _postTeam() {
+    const teams = await axios(
+      {
+        url: '/api/teams/',
+        method: 'post',
+        data: {
+          name: this.state.newTeam,
+          players: {
+            first: this.users.filter( (el) => { return el.value === this.state.player1; } )[0].key,
+            second: this.users.filter( (el) => { return el.value === this.state.player2; } )[0].key
+          },
+          status: 'active'
+        },
+        headers:
+        {
+          // 'Content-Type': 'application/json',
+          // 'x-auth-token': localStorage.getItem('token')
+          'x-auth-token': localStorage.token
+        }
+      }
+    ).then(
+      (res) => { 
+        console.log('poszło', res);
+      },
+      (err) => { console.log(err.errmsg); }
+    )
   }
 
   render() {
     return (
       <div className="container" style={{textAlign: "left"}}>
-        <Form onSubmit={this,this.onFormSubmit}>
-          {/* <Form.Group>
-            <Label>Na początek może dywizja...</Label>
-            <Select 
-              placeholder="Puknij dywizję..." 
-              value={this.state.divisionName} 
-              options={this.optionsDivisions} onChange={ (e) => { this.onSelectChange(e); } } 
-            />
-          </Form.Group> */}
-          {/* { this.state.divisionSelected && 
-            ( */}
-            <Form.Group>
-              <Form.Field>
-                <Label>Nazwij jakoś drużynę</Label>
-                <Input 
-                  type="text" 
-                  placeholder="wprowadź nazwę..." 
-                  value={this.state.newTeam} 
-                  onChange={ (e) => { this.onInputChange(e); } } 
+        <Segment.Group horizontal>
+          <Segment>          
+            {/* <Form onSubmit={this, this.onFormSubmit}> */}
+            <Form onSubmit={this.onFormSubmit}>
+              <Form.Group>
+                <Form.Field>
+                  <Label>Nazwij jakoś drużynę</Label>
+                  <Input 
+                    type="text" 
+                    placeholder="wprowadź nazwę..." 
+                    value={this.state.newTeam} 
+                    onChange={ (e) => { this.onInputChange(e); } } 
+                  />
+                </Form.Field>
+              </Form.Group>
+              <Form.Group>
+                <Form.Field>
+                  <Label>Wybierz graczy</Label>
+                  <Form.Group inline>
+                    <Form.Dropdown 
+                      key="player1"
+                      name="player1"
+                      placeholder="puknij gracza nr 1..." 
+                      selection value={this.state.player1} 
+                      options={ this.users } 
+                      onChange={ (e, v) => this.onSelectChange(e, v) } 
+                    />
+                    <Form.Dropdown 
+                      key="player2"
+                      name="player2"
+                      placeholder="puknij gracza nr 2..." 
+                      selection value={this.state.player2} 
+                      options={this.users} 
+                      onChange={ (e, v) => this.onSelectChange(e, v) } 
+                    />
+                  </Form.Group>
+                </Form.Field>
+              </Form.Group>
+              <FormGroup>
+                <Form.Button>Zapisz</Form.Button>
+              </FormGroup>
+            </Form>
+            { (this.state.errHeader + this.state.errMessage !== '') && (
+              <Form error>
+                <Message
+                  error
+                  header={ this.state.errHeader }
+                  content={ this.state.errMessage }
                 />
-                <Button>Sprawdź</Button>
-                {this.state.newTeamErrMsg && <Label style={{color: "red"}}>{this.state.newTeamErrMsg}</Label>}                
-              </Form.Field>
-            </Form.Group>
-            {/* )
-          } */}
-          { this.state.haveNewTeam && (
-            <Form.Group>
-              <Label>Wybierz graczy</Label>
-              <Dropdown 
-                key="player1"
-                placeholder="Puknij gracza nr 1..." 
-                selection value={this.state.player1} 
-                options={this.users} 
-                onChange={ (e) => { this.onSelectChange(e, 1); } } 
-              />
-              <Dropdown 
-                key="player2"
-                placeholder="Puknij gracza nr 2..." 
-                selection value={this.state.player2} 
-                options={this.users} 
-                onChange={ (e) => { this.onSelectChange(e, 2); } } 
-              />
-              {this.state.playersErrMsg && <Label style={{color: "red"}}>{this.state.playersErrMsg}</Label>}
-            </Form.Group>
-          ) }
-          { (this.state.player1 !== '') && (this.state.player2 !== '') && (
-            <Button>Zapisz</Button>
-          )}
-        </Form>
+              </Form>
+            )}
+          </Segment>
+          <Segment>
+
+          </Segment>
+        </Segment.Group>
       </div>
     )
   }
