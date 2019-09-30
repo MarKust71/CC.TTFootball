@@ -71,10 +71,6 @@ class TeamCreate extends Teams {
     this.setState( () => {return {postSuccess: true}; } );
   }
 
-  // ====  async _getTeams() {
-    
-  // ==== _getUsers() {
-
   _validateForm = () => {
     let teamOK = true;
     let playersOK = true;

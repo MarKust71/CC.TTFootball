@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Grid, Menu, Header, Icon, Segment } from 'semantic-ui-react';
 import Teams from './Teams';
 import TeamCreate from './TeamCreate';
+import TeamView from './TeamView';
 
 // === pobiera obiekt zalogowanego użytkownika      ===
 // === i zapisuje go w localStorage w zmiennej 'me' ===
@@ -32,7 +33,7 @@ class ComponentTeams extends Teams {
     
     this.state = {
       term: '',
-      activeItem: 'dodaj',
+      activeItem: 'przejrzyj',
       // divisionSelected: false
     }
   
@@ -130,6 +131,7 @@ class ComponentTeams extends Teams {
 
             <Grid.Column stretched width={14}>
               { (this.state.activeItem === 'dodaj') && <TeamCreate /> }
+              { (this.state.activeItem === 'przejrzyj') && <TeamView /> }
             </Grid.Column>
 
           </Grid>

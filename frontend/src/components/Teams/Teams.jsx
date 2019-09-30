@@ -34,7 +34,7 @@ class Teams extends React.Component {
     ];
   }  
 
-  async _getTeams() {
+  async _getTeams(type = 'names') {
     // eslint-disable-next-line
     const teams = await axios(
       {
@@ -49,7 +49,22 @@ class Teams extends React.Component {
       }
     ).then(
       (res) => { 
-        this.teams = res.data.map( (element) => { return element.name; } );
+        switch(type) {
+          case 'names':
+            this.teams = res.data.map( (el) => { return el.name; } );
+            break;
+          case 'forSelect':
+            this.teams = res.data.map( (el) => { 
+              return {
+                key: el._id,
+                value: el.name,
+                text: el.name
+              }; 
+            } );
+            break;
+          default:
+            this.teams = res.data.map( (element) => { return element.name; } );
+          };
         // console.log(this.teams); 
       },
       (err) => { console.log(err.errmsg); }
