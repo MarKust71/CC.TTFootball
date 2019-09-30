@@ -4,6 +4,8 @@ import React from 'react';
 import Teams from './Teams';
 // import { Form, Segment, Label, Input, Message, } from 'semantic-ui-react';
 import { Form, Segment, Label } from 'semantic-ui-react';
+import Store from '../../Store';
+import { timingSafeEqual } from 'crypto';
 
 // class TeamCreate extends React.Component {
 class TeamView extends Teams {
@@ -16,35 +18,47 @@ class TeamView extends Teams {
       team: ''
     };
 
-    this.teams = this._getTeams();
-    this.users = this._getUsers();
+    this.teams = [];
+    this.teamsAll = [];
 
   }
 
+  static contextType = Store;
+
   componentDidMount() {
-    this.setState( () => { return { team: this.users[0].text }; } );
-    console.log(this.teams);
+    // console.log(this.context);
+
+    const gt = async (type) => {
+      let ret;
+      try { 
+        ret = await this._getTeams(type); 
+        switch(type) {
+          case 'forSelect':
+            this.teams = ret;
+            this.teams.sort( (a, b) => { return (a.text.toLowerCase() < b.text.toLowerCase()) ? -1 : 1; } ); 
+            this.setState( () => { return { team: this.teams[0].text }; } );
+            break;
+          case 'all':
+            this.teamsAll = ret;
+            console.log(this.teamsAll);
+            break;
+          default:
+            break;
+        }
+      }
+      catch (e) { console.log('Coś nie tak', e.errmsg); };
+    }
+    gt('forSelect');
+    gt('all');
+
   }
 
   onSelectChange = (e, { value, name }) => {
-    // switch(name) {
-    //   case 'player1':
-    //     this.setState( () => { return { 
-    //       player1: value,
-    //       errHeader: '',
-    //       errMessage: ''
-    //     }})
-    //     break;
-    //   case 'player2':
-    //     this.setState( () => { return { 
-    //       player2: value,
-    //       errHeader: '',
-    //       errMessage: ''
-    //       }})
-    //     break;
-    //   default:
-    //     break;
-    // }  
+    this.setState( () => { return { 
+      team: value,
+      errHeader: '',
+      errMessage: ''
+    }})
   }
 
   onFormSubmit = (e, d) => {
@@ -59,16 +73,16 @@ class TeamView extends Teams {
             <Form.Group>
               <Form.Field>
                 <Label>Zgłoszone drużyny</Label>
-                <Form.Group>
+                {/* <Form.Group> */}
                   <Form.Dropdown 
                     key="teamsSelect"
                     name="teamsSelect"
-                    // placeholder="puknij gracza nr 1..." 
+                    // placeholder="puknij gracza nr 1..."    // potrzebne, kiedy nie ma domyślnej wartości
                     selection value={this.state.team} 
-                    options={ this.users } 
+                    options={ this.teams } 
                     onChange={ (e, v) => this.onSelectChange(e, v) } 
                   />
-                </Form.Group>
+                {/* </Form.Group> */}
               </Form.Field>
             </Form.Group>
         </Segment>

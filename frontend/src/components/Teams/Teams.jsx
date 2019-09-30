@@ -1,7 +1,11 @@
 import React from 'react';
 import axios from 'axios';
+import Store from '../../Store';
 
 class Teams extends React.Component {
+  
+  static contextType = Store;
+
   _getUsers() {
   // async getUsers() {
     // const users = await axios(
@@ -36,7 +40,7 @@ class Teams extends React.Component {
 
   async _getTeams(type = 'names') {
     // eslint-disable-next-line
-    const teams = await axios(
+    await axios(
       {
         url: '/api/teams/',
         method: 'get',
@@ -62,13 +66,16 @@ class Teams extends React.Component {
               }; 
             } );
             break;
+          case 'all':
+            this.teams = res.data;
+            break;
           default:
-            this.teams = res.data.map( (element) => { return element.name; } );
-          };
-        // console.log(this.teams); 
+            this.teams = res.data.map( (el) => { return el.name; } );
+        };
       },
       (err) => { console.log(err.errmsg); }
     )
+    return this.teams;
   }
 
   _getDivisions() {

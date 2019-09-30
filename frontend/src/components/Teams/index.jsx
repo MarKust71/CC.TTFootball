@@ -38,7 +38,7 @@ class ComponentTeams extends Teams {
     }
   
     // this.teamsOfDivision = this._getDivisions();
-    console.log(localStorage);
+    // console.log(localStorage);
 
   }
 
