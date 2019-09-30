@@ -1,8 +1,31 @@
 import React from 'react';
-import { Grid, Menu } from 'semantic-ui-react';
+import axios from 'axios';
+import { Grid, Menu, Header, Icon, Segment } from 'semantic-ui-react';
+import Teams from './Teams';
 import TeamCreate from './TeamCreate';
 
-class componentTeams extends React.Component {
+// === pobiera obiekt zalogowanego użytkownika      ===
+// === i zapisuje go w localStorage w zmiennej 'me' ===
+async function getMe () {
+  const me = await axios(
+    {
+      url: '/api/login/me',
+      method: 'get',
+      data: {},
+      headers:
+      {
+        'x-auth-token': localStorage.token
+      }
+    }
+  ).then( (res) => { return res.data; } ); 
+  localStorage.setItem( 'me', JSON.stringify(me) );
+}
+getMe();
+// ====================================================
+
+
+// class componentTeams extends React.Component {
+class ComponentTeams extends Teams {
   constructor (props) {
     
     super(props);
@@ -14,6 +37,7 @@ class componentTeams extends React.Component {
     }
   
     // this.teamsOfDivision = this._getDivisions();
+    console.log(localStorage);
 
   }
 
@@ -45,16 +69,6 @@ class componentTeams extends React.Component {
   //     (err) => { console.log(err.errmsg); }
   //   )
   // }
-
-  _getDivisions() {
-    return [
-    // powinno się ciągnąć z bazy, ale nie znalazłem endpointa na razie...
-      {key: 'WRO', value: 'WRO', text: 'Wrocław'},
-      {key: 'KRK', value: 'KRK', text: 'Kraków'},
-      {key: 'WAW', value: 'WAW', text: 'Warszawa'},
-      {key: 'League_Division_0', value: 'League_Division_0', text: 'League_Division_0'}
-    ];
-  }
 
   // onInputChange = (e) => {
   //   const value = e.target.value;
@@ -89,32 +103,43 @@ class componentTeams extends React.Component {
     const { activeItem } = this.state;
     return (
       <div className="container" style={{textAlign: "left"}}>
-        <Grid>
 
-          <Grid.Column stretched width={2}>
-            <Menu fluid vertical tabular>
-              <Menu.Item
-                name='przejrzyj'
-                active={activeItem === 'przejrzyj'}
-                onClick={this.handleItemClick}
-              />
-              <Menu.Item
-                name='dodaj'
-                active={activeItem === 'dodaj'}
-                onClick={this.handleItemClick}
-              />
-            </Menu>
-          </Grid.Column>
+        <Header as='h2' textAlign='center' style={{paddingLeft: "40px"}}>
+          <Icon name='group' />
+          <Header.Content>Zarządzaj drużynami</Header.Content>
+        </Header>
 
-          <Grid.Column stretched width={14}>
-            { (this.state.activeItem === 'dodaj') && <TeamCreate /> }
-          </Grid.Column>
+        <Segment>
 
-        </Grid>
+          <Grid>
+
+            <Grid.Column stretched width={2}>
+              <Menu fluid vertical tabular>
+                <Menu.Item
+                  name='przejrzyj'
+                  active={activeItem === 'przejrzyj'}
+                  onClick={this.handleItemClick}
+                />
+                <Menu.Item
+                  name='dodaj'
+                  active={activeItem === 'dodaj'}
+                  onClick={this.handleItemClick}
+                />
+              </Menu>
+            </Grid.Column>
+
+            <Grid.Column stretched width={14}>
+              { (this.state.activeItem === 'dodaj') && <TeamCreate /> }
+            </Grid.Column>
+
+          </Grid>
+
+        </Segment>
+
       </div>
     )
   }
 
 }
 
-export default componentTeams;
+export {Teams, ComponentTeams};

@@ -1,9 +1,11 @@
 import React from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+import Teams from './Teams';
 import { Form, Segment, Label, Input, Message, } from 'semantic-ui-react';
 
-class TeamCreate extends React.Component {
+// class TeamCreate extends React.Component {
+class TeamCreate extends Teams {
 
   constructor (props) {
     super(props);
@@ -16,7 +18,7 @@ class TeamCreate extends React.Component {
       errHeader: '',
       errMessage: '',
       postSuccess: false
- };
+    };
 
     this.teams = this._getTeams();
     this.users = this._getUsers();
@@ -69,59 +71,9 @@ class TeamCreate extends React.Component {
     this.setState( () => {return {postSuccess: true}; } );
   }
 
-  async _getTeams() {
-    // eslint-disable-next-line
-    const teams = await axios(
-      {
-        url: '/api/teams/',
-        method: 'get',
-        data: {},
-        headers:
-        {
-          // 'x-auth-token': localStorage.getItem('token')
-          'x-auth-token': localStorage.token
-        }
-      }
-    ).then(
-      (res) => { 
-        this.teams = res.data.map( (element) => { return element.name; } );
-        // console.log(this.teams); 
-      },
-      (err) => { console.log(err.errmsg); }
-    )
-  }
-
-_getUsers() {
-  // async getUsers() {
-    // const users = await axios(
-    //   {
-    //     url: '/api/users/',
-    //     method: 'get',
-    //     data: {},
-    //     headers:
-    //     {
-    //       'x-auth-token': localStorage.getItem('token')
-    //     }
-    //   }
-    // ).then(
-    //   (res) => { 
-    //     this.users = res.data.map( (el) => { return {
-    //       key: el._id, 
-    //       value: `${el.surname}, ${el.name}`, 
-    //       text: `${el._id}: ${el.surname}, ${el.name}`
-    //     }; } );
-    //     console.log(this.users); 
-    //   },
-    //   (err) => { console.log(err.errmsg); }
-    // )
-    return [
-      // powinno się ciągnąć z bazy, ale nie znalazłem endpointa na razie...
-      {key: 'John', value: 'Front, John', text: 'Front, John'},
-      {key: 'kris', value: 'stoiczkow, kristof', text: 'stoiczkow, kristof'},
-      {key: 'Marcin', value: 'Woś, Marcin', text: 'Woś, Marcin'},
-      {key: 'MareK', value: 'K, Marek', text: 'K, Marek'}
-    ];
-  }
+  // ====  async _getTeams() {
+    
+  // ==== _getUsers() {
 
   _validateForm = () => {
     let teamOK = true;
@@ -203,7 +155,8 @@ _getUsers() {
     if (this.state.postSuccess) return <Redirect to="/" />;
     return (
       <Segment.Group horizontal>
-        <Segment width={6}>          
+        {/* <Segment width={6}>           */}
+        <Segment>          
           {/* <Form onSubmit={this, this.onFormSubmit}> */}
           <Form onSubmit={this.onFormSubmit}>
             <Form.Group>
@@ -258,9 +211,9 @@ _getUsers() {
             </Form>
           )}
         </Segment>
-        <Segment width={6}>
+        {/* <Segment width={6}>
   
-        </Segment>
+        </Segment> */}
       </Segment.Group>
     );
   }
