@@ -77,13 +77,6 @@ class TeamCreate extends Teams {
     });
   };
 
-<<<<<<< HEAD
-  // ====  async _getTeams() {
-
-  // ==== _getUsers() {
-
-=======
->>>>>>> frontend-teams-view-cont2
   _validateForm = () => {
     let teamOK = true;
     let playersOK = true;

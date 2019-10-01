@@ -41,27 +41,6 @@ class Teams extends React.Component {
   async _getTeams(resType = 'names', id) {
     let ret;
     // eslint-disable-next-line
-<<<<<<< HEAD
-    const teams = await axios({
-      url: '/api/teams/',
-      method: 'get',
-      data: {},
-      headers: {
-        // 'x-auth-token': localStorage.getItem('token')
-        'x-auth-token': localStorage.token,
-      },
-    }).then(
-      res => {
-        this.teams = res.data.map(element => {
-          return element.name;
-        });
-        // console.log(this.teams);
-      },
-      err => {
-        console.log(err.errmsg);
-      },
-    );
-=======
     await axios(
       {
         url: '/api/teams/',
@@ -103,7 +82,6 @@ class Teams extends React.Component {
     )
     // return this.teams;
     return ret;
->>>>>>> frontend-teams-view-cont2
   }
 
   _getDivisions() {
