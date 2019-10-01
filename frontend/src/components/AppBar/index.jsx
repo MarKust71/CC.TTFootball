@@ -1,11 +1,7 @@
 import React, { useContext } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Menu, Segment } from 'semantic-ui-react';
+import { Menu } from 'semantic-ui-react';
 import Store from '../../Store';
-
-const MyLink = () => {
-  return <NavLink></NavLink>;
-};
 
 const AppBar = () => {
   const { isLogged, changeStore } = useContext(Store);
@@ -15,9 +11,9 @@ const AppBar = () => {
     changeStore('me', null);
   };
   return (
-    <div className="container">
+    <div>
       <div className="center">
-        <img alt="nie ma obrazka" src="images/nowelogo.jpg" />
+        <img alt="nie ma obrazka" src="/images/nowelogo.jpg" />
       </div>
       <Menu secondary>
         <Menu.Item as={Link} name="PANkarzyki" to="/" />

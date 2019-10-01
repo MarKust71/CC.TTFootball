@@ -31,7 +31,7 @@ class NewLeague extends React.Component {
   onFormSubmit = async e => {
     e.preventDefault();
 
-    const postLeague = await axios({
+    await axios({
       url: '/api/leagues',
       method: 'post',
       data: {
