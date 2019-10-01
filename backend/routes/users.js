@@ -7,7 +7,7 @@ router.use('/', auth);
 
 router.get('/', async (req, res) => {
   const { User } = res.locals.models;
-  const { division } = req.headers;
+  const { division } = req.query;
 
   const users = await User.find().sort('name');
   if (division) {
