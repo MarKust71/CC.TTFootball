@@ -1,9 +1,8 @@
 import React from 'react';
 import NewLeague from '../../components/NewLeague';
 
-
 const CreateLeague = () => {
-  return ( <NewLeague /> );
-  };
+  return <NewLeague />;
+};
 
-export default CreateLeague
+export default CreateLeague;

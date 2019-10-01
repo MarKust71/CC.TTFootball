@@ -1,6 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
-import { Button, Form, Segment, Message } from 'semantic-ui-react';
+import { Button, Form, Segment } from 'semantic-ui-react';
+import NegativeMessage from './NegativeMessage';
 
 import Store from '../Store';
 
@@ -42,7 +43,7 @@ class Login extends React.Component {
     return (
       <Segment>
         Logowanie
-        {this.state.invalidData && <NegativeMessage />}
+        {this.state.invalidData && <NegativeMessage header="Błędny email lub hasło" />}
         <Form onSubmit={this.onFormSubmit}>
           <Form.Input
             name="email"
@@ -65,12 +66,5 @@ class Login extends React.Component {
     );
   }
 }
-
-const NegativeMessage = () => (
-  <Message negative>
-    <Message.Header>Błędny email lub hasło</Message.Header>
-    <p>Spróbuj ponownie</p>
-  </Message>
-);
 
 export default Login;

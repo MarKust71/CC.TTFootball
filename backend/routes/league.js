@@ -40,9 +40,13 @@ router.post('/', auth, async (req, res) => {
         .min(3)
         .max(30)
         .required(),
-      description: Joi.string().max(255).allow(''),
+      description: Joi.string()
+        .max(255)
+        .allow(''),
       date: Joi.object({
-        started: Joi.date().greater('now').required(),
+        started: Joi.date()
+          .greater('now')
+          .required(),
       }),
     };
     return Joi.validate(req, schema);

@@ -6,39 +6,35 @@ import TeamCreate from './TeamCreate';
 
 // === pobiera obiekt zalogowanego użytkownika      ===
 // === i zapisuje go w localStorage w zmiennej 'me' ===
-async function getMe () {
-  const me = await axios(
-    {
-      url: '/api/login/me',
-      method: 'get',
-      data: {},
-      headers:
-      {
-        'x-auth-token': localStorage.token
-      }
-    }
-  ).then( (res) => { return res.data; } ); 
-  localStorage.setItem( 'me', JSON.stringify(me) );
+async function getMe() {
+  const me = await axios({
+    url: '/api/login/me',
+    method: 'get',
+    data: {},
+    headers: {
+      'x-auth-token': localStorage.token,
+    },
+  }).then(res => {
+    return res.data;
+  });
+  localStorage.setItem('me', JSON.stringify(me));
 }
 getMe();
 // ====================================================
 
-
 // class componentTeams extends React.Component {
 class ComponentTeams extends Teams {
-  constructor (props) {
-    
+  constructor(props) {
     super(props);
-    
+
     this.state = {
       term: '',
       activeItem: 'dodaj',
       // divisionSelected: false
-    }
-  
+    };
+
     // this.teamsOfDivision = this._getDivisions();
     console.log(localStorage);
-
   }
 
   // async getTeamsOfDivision(division) {
@@ -53,7 +49,7 @@ class ComponentTeams extends Teams {
   //       }
   //     }
   //   ).then(
-  //     (res) => { 
+  //     (res) => {
   //       var list = res.data;
   //       console.log('1->', list);
   //       list = list.filter( (element) => { return (element.division === division && element.status === 'active'); } );
@@ -64,7 +60,7 @@ class ComponentTeams extends Teams {
   //       //   .filter( (element) => { return element.name === this.state.divisionName; } )
   //       //   .map( (element) => { return element.name; } )
   //       //   ;
-  //       // console.log(this.teamsOfDivision); 
+  //       // console.log(this.teamsOfDivision);
   //     },
   //     (err) => { console.log(err.errmsg); }
   //   )
@@ -72,20 +68,20 @@ class ComponentTeams extends Teams {
 
   // onInputChange = (e) => {
   //   const value = e.target.value;
-  //   this.setState( () => { return { 
+  //   this.setState( () => { return {
   //     // player1: '',
   //     // player2: '',
-  //     errHeader: '', 
+  //     errHeader: '',
   //     errMessage: '' ,
   //     newTeam: value
   //   }} );
   // }
 
-  onInputChange = (e) => {
+  onInputChange = e => {
     this.props.onChange(this.state.term);
   };
 
-  onSelectChange = (e, { value, name } ) => {
+  onSelectChange = (e, { value, name }) => {
     this.props.onChange(this.state.term);
   };
 
@@ -97,49 +93,37 @@ class ComponentTeams extends Teams {
     this.props.onSubmit(this.state.term);
   };
 
-  handleItemClick = (e, { name }) => this.setState( () => { return { activeItem: name }; });
+  handleItemClick = (e, { name }) =>
+    this.setState(() => {
+      return { activeItem: name };
+    });
 
   render() {
     const { activeItem } = this.state;
     return (
-      <div className="container" style={{textAlign: "left"}}>
-
-        <Header as='h2' textAlign='center' style={{paddingLeft: "40px"}}>
-          <Icon name='group' />
+      <div className="container" style={{ textAlign: 'left' }}>
+        <Header as="h2" textAlign="center" style={{ paddingLeft: '40px' }}>
+          <Icon name="group" />
           <Header.Content>Zarządzaj drużynami</Header.Content>
         </Header>
 
         <Segment>
-
           <Grid>
-
             <Grid.Column stretched width={2}>
               <Menu fluid vertical tabular>
-                <Menu.Item
-                  name='przejrzyj'
-                  active={activeItem === 'przejrzyj'}
-                  onClick={this.handleItemClick}
-                />
-                <Menu.Item
-                  name='dodaj'
-                  active={activeItem === 'dodaj'}
-                  onClick={this.handleItemClick}
-                />
+                <Menu.Item name="przejrzyj" active={activeItem === 'przejrzyj'} onClick={this.handleItemClick} />
+                <Menu.Item name="dodaj" active={activeItem === 'dodaj'} onClick={this.handleItemClick} />
               </Menu>
             </Grid.Column>
 
             <Grid.Column stretched width={14}>
-              { (this.state.activeItem === 'dodaj') && <TeamCreate /> }
+              {this.state.activeItem === 'dodaj' && <TeamCreate />}
             </Grid.Column>
-
           </Grid>
-
         </Segment>
-
       </div>
-    )
+    );
   }
-
 }
 
-export {Teams, ComponentTeams};
+export { Teams, ComponentTeams };
