@@ -1,7 +1,11 @@
 import React from 'react';
 import axios from 'axios';
+import Store from '../../Store';
 
 class Teams extends React.Component {
+  
+  static contextType = Store;
+
   _getUsers() {
     // async getUsers() {
     // const users = await axios(
@@ -34,8 +38,10 @@ class Teams extends React.Component {
     ];
   }
 
-  async _getTeams() {
+  async _getTeams(resType = 'names', id) {
+    let ret;
     // eslint-disable-next-line
+<<<<<<< HEAD
     const teams = await axios({
       url: '/api/teams/',
       method: 'get',
@@ -55,6 +61,49 @@ class Teams extends React.Component {
         console.log(err.errmsg);
       },
     );
+=======
+    await axios(
+      {
+        url: '/api/teams/',
+        method: 'get',
+        data: {},
+        headers:
+        {
+          // 'x-auth-token': localStorage.getItem('token')
+          'x-auth-token': localStorage.token
+        }
+      }
+    ).then(
+      (res) => { 
+        switch(resType) {
+          case 'names':
+            // this.teams = res.data.map( (el) => { return el.name; } );
+            ret = res.data.map( (el) => { return el.name; } );
+            break;
+          case 'forSelect':
+            // this.teams = res.data.map( (el) => { 
+            ret = res.data.map( (el) => { 
+              return {
+                key: el._id,
+                value: el.name,
+                text: el.name
+              }; 
+            } );
+            break;
+          case 'all':
+            // this.teamsAll = res.data;
+            ret = res.data;
+            break;
+          default:
+            // this.teams = res.data.map( (el) => { return el.name; } );
+            ret = res.data.map( (el) => { return el.name; } );
+        };
+      },
+      (err) => { console.log(err.errmsg); }
+    )
+    // return this.teams;
+    return ret;
+>>>>>>> frontend-teams-view-cont2
   }
 
   _getDivisions() {
