@@ -105,6 +105,7 @@ async function getTeams(Team, id) {
       // .populate('playersId')
       .populate('players.first')
       .populate('players.second')
+      .populate('leagues')
       .then(
         result => {
           return result[0];
@@ -118,6 +119,7 @@ async function getTeams(Team, id) {
       // .populate('playersId')
       .populate('players.first')
       .populate('players.second')
+      .populate('leagues')
       .then(
         result => {
           return result;
