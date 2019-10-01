@@ -15,6 +15,7 @@ import Leagues from './Views/Leagues';
 import Schedule from './Views/Schedule';
 import Loader from './components/Loader';
 import NewLeague from './Views/NewLeague';
+import { Container } from 'semantic-ui-react';
 
 const App = () => {
   const { isLogged, changeStore } = useContext(Store);
@@ -43,20 +44,22 @@ const App = () => {
   }, [changeStore, isLogged]);
   return (
     <BrowserRouter>
-      <AppBar />
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <Switch>
-          <Route path="/login" component={Login} />
-          <PrivateRoute path="/Schedule" component={Schedule} />
-          <PrivateRoute path="/Leagues" component={Leagues} />
-          <PrivateRoute path="/Teams" component={Teams} />
-          <PrivateRoute exact path="/" component={Home} />
-          <PrivateRoute exact path="/NewLeague" component={NewLeague} />
-          <Route render={() => <Redirect to="/" />} />
-        </Switch>
-      )}
+      <Container>
+        <AppBar />
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <Switch>
+            <Route path="/login" component={Login} />
+            <PrivateRoute path="/Schedule" component={Schedule} />
+            <PrivateRoute path="/Leagues" component={Leagues} />
+            <PrivateRoute path="/Teams" component={Teams} />
+            <PrivateRoute exact path="/" component={Home} />
+            <PrivateRoute exact path="/NewLeague" component={NewLeague} />
+            <Route render={() => <Redirect to="/" />} />
+          </Switch>
+        )}
+      </Container>
     </BrowserRouter>
   );
 };
