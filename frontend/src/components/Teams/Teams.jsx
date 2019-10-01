@@ -38,7 +38,8 @@ class Teams extends React.Component {
     ];
   }  
 
-  async _getTeams(type = 'names') {
+  async _getTeams(resType = 'names', id) {
+    let ret;
     // eslint-disable-next-line
     await axios(
       {
@@ -53,12 +54,14 @@ class Teams extends React.Component {
       }
     ).then(
       (res) => { 
-        switch(type) {
+        switch(resType) {
           case 'names':
-            this.teams = res.data.map( (el) => { return el.name; } );
+            // this.teams = res.data.map( (el) => { return el.name; } );
+            ret = res.data.map( (el) => { return el.name; } );
             break;
           case 'forSelect':
-            this.teams = res.data.map( (el) => { 
+            // this.teams = res.data.map( (el) => { 
+            ret = res.data.map( (el) => { 
               return {
                 key: el._id,
                 value: el.name,
@@ -67,15 +70,18 @@ class Teams extends React.Component {
             } );
             break;
           case 'all':
-            this.teams = res.data;
+            // this.teamsAll = res.data;
+            ret = res.data;
             break;
           default:
-            this.teams = res.data.map( (el) => { return el.name; } );
+            // this.teams = res.data.map( (el) => { return el.name; } );
+            ret = res.data.map( (el) => { return el.name; } );
         };
       },
       (err) => { console.log(err.errmsg); }
     )
-    return this.teams;
+    // return this.teams;
+    return ret;
   }
 
   _getDivisions() {

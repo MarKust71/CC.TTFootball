@@ -3,9 +3,8 @@ import React from 'react';
 // import { Redirect } from 'react-router-dom';
 import Teams from './Teams';
 // import { Form, Segment, Label, Input, Message, } from 'semantic-ui-react';
-import { Form, Segment, Label } from 'semantic-ui-react';
+import { Form, Segment, Label, Input } from 'semantic-ui-react';
 import Store from '../../Store';
-import { timingSafeEqual } from 'crypto';
 
 // class TeamCreate extends React.Component {
 class TeamView extends Teams {
@@ -15,7 +14,8 @@ class TeamView extends Teams {
 
     this.state = { 
       term: '',
-      team: ''
+      team: '',
+      teamId: 0
     };
 
     this.teams = [];
@@ -26,7 +26,7 @@ class TeamView extends Teams {
   static contextType = Store;
 
   componentDidMount() {
-    // console.log(this.context);
+    console.log(this.context);
 
     const gt = async (type) => {
       let ret;
@@ -36,11 +36,15 @@ class TeamView extends Teams {
           case 'forSelect':
             this.teams = ret;
             this.teams.sort( (a, b) => { return (a.text.toLowerCase() < b.text.toLowerCase()) ? -1 : 1; } ); 
-            this.setState( () => { return { team: this.teams[0].text }; } );
+            this.setState( () => { return { 
+              team: this.teams[0].text,
+              teamId:  this.teams[0].key
+            }; } );
+            // console.log('1->', this.teams);
             break;
           case 'all':
             this.teamsAll = ret;
-            console.log(this.teamsAll);
+            // console.log('2->', this.teamsAll);
             break;
           default:
             break;
@@ -54,10 +58,12 @@ class TeamView extends Teams {
   }
 
   onSelectChange = (e, { value, name }) => {
+// console.log( this.teams[ this.teams.map( (el) => { return el.value; } ).indexOf(value) ].key );
     this.setState( () => { return { 
       team: value,
       errHeader: '',
-      errMessage: ''
+      errMessage: '',
+      teamId: this.teams[ this.teams.map( (el) => { return el.value; } ).indexOf(value) ].key
     }})
   }
 
@@ -67,8 +73,8 @@ class TeamView extends Teams {
 
   render() {
     return (
-      <Segment.Group horizontal>
-        <Segment>
+      <Segment.Group horizontal width={12}>
+        <Segment width={2}>
           <Form onSubmit={this.onFormSubmit}></Form>
             <Form.Group>
               <Form.Field>
@@ -85,6 +91,13 @@ class TeamView extends Teams {
                 {/* </Form.Group> */}
               </Form.Field>
             </Form.Group>
+        </Segment>
+        <Segment width={10}>
+          <Input 
+            label="_id"
+            value={ this.state.teamId } 
+            disabled
+          />
         </Segment>
       </Segment.Group>
     )
