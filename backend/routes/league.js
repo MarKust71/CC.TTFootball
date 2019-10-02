@@ -4,10 +4,18 @@ const _ = require('lodash');
 const router = express.Router();
 const { auth, getUser } = require('../middleware/auth');
 
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
   const { League } = res.locals.models;
-
-  const leagues = await League.find().sort('name');
+  const status = req.query.status;
+  let leagues = [];
+  if (!status) {
+    leagues = await League.find().sort('name');
+  } else if (status === 'owner') {
+    const user = await getUser(res);
+    leagues = await League.find({ owner: user }).sort('name');
+  } else {
+    leagues = await League.find({ status }).sort('name');
+  }
   res.json(leagues);
 });
 
