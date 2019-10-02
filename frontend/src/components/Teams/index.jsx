@@ -30,7 +30,7 @@ class ComponentTeams extends Teams {
 
     this.state = {
       term: '',
-      activeItem: 'view',
+      activeItem: 'przejrzyj',
       isMe: false
       // divisionSelected: false
     };
@@ -115,7 +115,7 @@ class ComponentTeams extends Teams {
       <div className="container" style={{ textAlign: 'left' }}>
         <Header as="h2" textAlign="center" style={{ paddingLeft: '40px' }}>
           <Icon name="group" />
-          <Header.Content>Teams Management</Header.Content>
+          <Header.Content>Zarządzanie drużynami</Header.Content>
         </Header>
 
         {!this.state.isMe && (
@@ -126,14 +126,14 @@ class ComponentTeams extends Teams {
           <Grid>
             <Grid.Column stretched width={2}>
               <Menu fluid vertical tabular>
-                <Menu.Item name="view" active={activeItem === 'view'} onClick={this.handleItemClick} />
-                <Menu.Item name="create" active={activeItem === 'create'} onClick={this.handleItemClick} />
+                <Menu.Item name="przejrzyj" active={activeItem === 'przejrzyj'} onClick={this.handleItemClick} />
+                <Menu.Item name="dodaj" active={activeItem === 'dodaj'} onClick={this.handleItemClick} />
               </Menu>
             </Grid.Column>
 
             <Grid.Column stretched width={14}>
-              { (this.state.activeItem === 'create') && <TeamCreate /> }
-              { (this.state.activeItem === 'view') && <TeamView /> }
+              { (this.state.activeItem === 'dodaj') && <TeamCreate /> }
+              { (this.state.activeItem === 'przejrzyj') && <TeamView /> }
             </Grid.Column>
           </Grid>
         </Segment>

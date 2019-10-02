@@ -19,10 +19,21 @@ class TeamView extends Teams {
       players: {
         first: { 
           _id: '', 
-          name: '' },
+          name: ''
+        },
         second: { 
           _id: '',
           name: '' 
+        }
+      },
+      statistics: {
+        matches: { 
+          won: 0, 
+          lost: 0
+        },
+        goals: { 
+          for: 0,
+          against: 0 
         }
       }
     };
@@ -33,10 +44,10 @@ class TeamView extends Teams {
     this._gt('forSelect');
     this._gt('all');
 
-    this.matchesWon = 0;
-    this.matchesLost = 0;
-    this.goalsFor = 0;
-    this.goalsAgainst = 0;
+    // this.matchesWon = 0;
+    // this.matchesLost = 0;
+    // this.goalsFor = 0;
+    // this.goalsAgainst = 0;
   }
 
   static contextType = Store;
@@ -66,13 +77,23 @@ class TeamView extends Teams {
           _id: players.second._id,
           name: `${players.second.surname || '(brak)'}, ${players.second.name || '(brak)'}`
         }
+      },
+      statistics: {
+        matches: { 
+          won: stats.matches.won || 0, 
+          lost: stats.matches.lost || 0
+        },
+        goals: { 
+          for: stats.goals.for || 0,
+          against: stats.goals.against || 0 
+        }
       }
     }})
   // console.log('test1->', this.state, this.teams, this.teamsAll, index);
-    this.matchesWon = stats.matches.won || 0;
-    this.matchesLost = stats.matches.lost || 0;
-    this.goalsFor = stats.goals.for || 0;
-    this.goalsAgainst = stats.goals.against || 0;
+    // this.matchesWon = stats.matches.won || 0;
+    // this.matchesLost = stats.matches.lost || 0;
+    // this.goalsFor = stats.goals.for || 0;
+    // this.goalsAgainst = stats.goals.against || 0;
   }
 
   onClickEdit = (e, d) => {
@@ -97,7 +118,7 @@ class TeamView extends Teams {
           <Form onSubmit={this.onFormSubmit}></Form>
             <Form.Group>
               <Form.Field>
-                <Label>Reported Teams</Label>
+                <Label>Zgłoszone drużyny</Label>
                 {/* <Form.Group> */}
                   <Form.Dropdown 
                     key="teamsSelect"
@@ -123,16 +144,16 @@ class TeamView extends Teams {
             <Divider horizontal>
               <Header as='h4'>
                 <Icon name='group' />
-                Players
+                Gracze
               </Header>
             </Divider>
             <Input 
-              label="Player 1:"
+              label="Gracz 1:"
               value={ this.state.players.first.name }
               readOnly={ true }
             />
             <Input 
-              label="Player 2:"
+              label="Gracz 2:"
               value={ this.state.players.second.name }
               readOnly={ true }
             />
@@ -142,7 +163,7 @@ class TeamView extends Teams {
           <Divider horizontal>
             <Header as='h4'>
               <Icon name='columns' />
-              Leagues
+              Ligi
             </Header>
           </Divider>
           <br />
@@ -150,28 +171,32 @@ class TeamView extends Teams {
           <Divider horizontal>
             <Header as='h4'>
               <Icon name='bar chart' />
-              Statistics
+              Statystyka
             </Header>
           </Divider>
           <Table celled textAlign={"center"}>
             <Table.Header>
               <Table.Row>
-                <Table.HeaderCell colSpan={2} >Matches</Table.HeaderCell>
-                <Table.HeaderCell colSpan={2}>Goals</Table.HeaderCell>
+                <Table.HeaderCell colSpan={2}>Mecze</Table.HeaderCell>
+                <Table.HeaderCell colSpan={2}>Bramki</Table.HeaderCell>
               </Table.Row>
               <Table.Row>
-                <Table.HeaderCell>Won</Table.HeaderCell>
-                <Table.HeaderCell>Lost</Table.HeaderCell>
-                <Table.HeaderCell>For</Table.HeaderCell>
-                <Table.HeaderCell>Against</Table.HeaderCell>
+                <Table.HeaderCell>Wygrane</Table.HeaderCell>
+                <Table.HeaderCell>Przegrane</Table.HeaderCell>
+                <Table.HeaderCell>Zdobyte</Table.HeaderCell>
+                <Table.HeaderCell>Stracone</Table.HeaderCell>
               </Table.Row>
             </Table.Header>
             <Table.Body>
               <Table.Row>
-                <Table.Cell>{this.matchesWon}</Table.Cell>
+                {/* <Table.Cell>{this.matchesWon}</Table.Cell>
                 <Table.Cell>{this.matchesLost}</Table.Cell>
                 <Table.Cell>{this.goalsFor}</Table.Cell>
-                <Table.Cell>{this.goalsAgainst}</Table.Cell>
+                <Table.Cell>{this.goalsAgainst}</Table.Cell> */}
+                <Table.Cell>{this.state.statistics.matches.won}</Table.Cell>
+                <Table.Cell>{this.state.statistics.matches.lost}</Table.Cell>
+                <Table.Cell>{this.state.statistics.goals.for}</Table.Cell>
+                <Table.Cell>{this.state.statistics.goals.against}</Table.Cell>
               </Table.Row>
             </Table.Body>
             {/* <Table.Footer>
@@ -187,9 +212,9 @@ class TeamView extends Teams {
       </Segment.Group>
       <Form>
         <Form.Group>
-          { !this.state.editable && <Form.Button name="btnEdit" onClick={this.onClickEdit}>Edit</Form.Button> }
-          { this.state.editable && <Form.Button name="btnSave" onClick={this.onFormSubmit}>Save</Form.Button> }
-          <Form.Button name="btnCancel" onClick={this.onClickCancel}>Cancel</Form.Button>
+          { !this.state.editable && <Form.Button name="btnEdit" onClick={this.onClickEdit}>Edytuj</Form.Button> }
+          { this.state.editable && <Form.Button name="btnSave" onClick={this.onFormSubmit}>Zapisz</Form.Button> }
+          <Form.Button name="btnCancel" onClick={this.onClickCancel}>Anuluj</Form.Button>
         </Form.Group>
       </Form>
     </>

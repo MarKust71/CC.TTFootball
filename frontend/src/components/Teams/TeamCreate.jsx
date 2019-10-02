@@ -103,7 +103,7 @@ class TeamCreate extends Teams {
     let playersOK = true;
     const team = this.state.newTeam;
     if (team) {
-      console.log(this.teams.value);
+      console.log('_validateForm', this.teams.value);
       if (
         this.teams.filter(el => {
           return el === team;
@@ -111,8 +111,8 @@ class TeamCreate extends Teams {
       ) {
         this.setState(() => {
           return {
-            errHeader: 'ERROR!',
-            errMessage: 'Team that name already exists.',
+            errHeader: 'BŁĄD!',
+            errMessage: 'Drużyna o tej nazwie już istnieje',
           };
         });
         // return false;
@@ -128,8 +128,8 @@ class TeamCreate extends Teams {
     } else {
       this.setState(() => {
         return {
-          errHeader: 'ERROR!',
-          errMessage: 'There is no way to play without the team\'s name.',
+          errHeader: 'BŁĄD!',
+          errMessage: 'Drużyna musi mieć nazwę',
         };
       });
       // return false;
@@ -143,8 +143,8 @@ class TeamCreate extends Teams {
     if (!this.state.player1 || !this.state.player2) {
       this.setState(() => {
         return {
-          errHeader: 'ERROR!',
-          errMessage: 'You must pick players.',
+          errHeader: 'BŁĄD!',
+          errMessage: 'Wskaż graczy',
         };
       });
       // return false;
@@ -153,8 +153,8 @@ class TeamCreate extends Teams {
     if (this.state.player1 && this.state.player2 && this.state.player1 === this.state.player2) {
       this.setState(() => {
         return {
-          warnHeader: 'WARNING!',
-          warnMessage: 'You\'ve just created the team consisting of one player only.',
+          warnHeader: 'UWAGA!',
+          warnMessage: 'Właśnie utworzyłeś drużynę jednoosobową',
         };
       });
       // return false;
@@ -191,7 +191,7 @@ class TeamCreate extends Teams {
         });
       },
       err => {
-        console.log(err.errmsg);
+        console.log('_postTeam', err.errmsg);
       },
     );
   }
@@ -206,10 +206,10 @@ class TeamCreate extends Teams {
             <Form onSubmit={this.onFormSubmit}>
               <Form.Group>
                 <Form.Field>
-                  <Label>Name your team somehow</Label>
+                  <Label>Nazwa drużyny</Label>
                   <Input
                     type="text"
-                    placeholder="Enter name..."
+                    placeholder="wprowadź nazwę drużyny..."
                     value={this.state.newTeam}
                     onChange={e => {
                       this.onInputChange(e);
@@ -219,12 +219,12 @@ class TeamCreate extends Teams {
               </Form.Group>
               <Form.Group>
                 <Form.Field>
-                  <Label>Chose players</Label>
+                  <Label>Wybierz graczy</Label>
                   <Form.Group inline>
                     <Form.Dropdown
                       key="player1"
                       name="player1"
-                      placeholder="pick player 1..."
+                      placeholder="wskaż gracza 1..."
                       selection
                       value={this.state.player1}
                       options={this.users}
@@ -233,7 +233,7 @@ class TeamCreate extends Teams {
                     <Form.Dropdown
                       key="player2"
                       name="player2"
-                      placeholder="pick player 2..."
+                      placeholder="wskaż gracza 2..."
                       selection
                       value={this.state.player2}
                       options={this.users}
@@ -259,11 +259,11 @@ class TeamCreate extends Teams {
             )}
           </Segment>
         </Segment.Group>
-        {this.state.warnHeader + this.state.warnMessage == '' && (
+        {this.state.warnHeader + this.state.warnMessage === '' && (
           <Form>
             <Form.Group>
-              <Form.Button name="btnSave" onClick={this.onFormSubmit}>Save</Form.Button>
-              <Form.Button name="btnCancel" onClick={this.onClickCancel}>Cancel</Form.Button>
+              <Form.Button name="btnSave" onClick={this.onFormSubmit}>Zapisz</Form.Button>
+              <Form.Button name="btnCancel" onClick={this.onClickCancel}>Anuluj</Form.Button>
             </Form.Group>
           </Form>
         )}

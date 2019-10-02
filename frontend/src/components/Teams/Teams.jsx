@@ -34,7 +34,7 @@ class Teams extends React.Component {
           text: `${el._id}: ${el.surname || '(brak)'}, ${el.name || '(brak)'}`
         }; } );
       },
-      (err) => { console.log(err.errmsg); }
+      (err) => { console.log('getUsers->', err.errmsg); }
     )
   }
 
@@ -138,7 +138,7 @@ class Teams extends React.Component {
             ret = res.data.map( (el) => { return el.name; } );
         };
       },
-      (err) => { console.log(err.errmsg); }
+      (err) => { console.log('_getTeams->', err.errmsg); }
     )
     // return this.teams;
     return ret;
@@ -164,6 +164,7 @@ class Teams extends React.Component {
           this.teamsAll = ret;
           // console.log('2->', this.teamsAll);
           // console.log('3->', this.teamsAll[0].players.first.surname || '(brak)');
+          this.teamsAll.sort( (a, b) => { return (a.name.toLowerCase() < b.name.toLowerCase()) ? -1 : 1; } ); 
           this.setState( 
             () => { return { 
               players: {
@@ -175,6 +176,16 @@ class Teams extends React.Component {
                   _id: this.teamsAll[0].players.second._id,
                   name: `${this.teamsAll[0].players.second.surname || '(brak)'}, ${this.teamsAll[0].players.second.name || '(brak)'}`
                 }
+              },
+              statistics: {
+                matches: {
+                  won: this.teamsAll[0].statistics.matches.won,
+                  lost: this.teamsAll[0].statistics.matches.lost
+                },
+                goals: {
+                  for: this.teamsAll[0].statistics.goals.for,
+                  against: this.teamsAll[0].statistics.goals.against
+                }
               }
             }}
           );
@@ -183,7 +194,7 @@ class Teams extends React.Component {
           break;
       }
     }
-    catch (e) { console.log('Coś nie tak', e.errmsg); };
+    catch (e) { console.log('_gt: Coś nie tak', e.errmsg); };
   }
 
   _getDivisions() {
