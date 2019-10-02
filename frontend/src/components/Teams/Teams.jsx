@@ -8,19 +8,14 @@ class Teams extends React.Component {
 
   componentDidMount() {
     console.log('Teams->', this.context);
-    // console.log('Teams->', this.context.me.division);
-    // console.log('Teams->', localStorage.token);
   }
 
   async getUsers(division = '') {
     await axios(
       {
         url: `/api/users?division=${this.context.me.division}`,
-        // url: `/api/users`,
         method: 'get',
         data: {},
-        // data: { 'division': division },
-        // data: { 'division': this.context.me.division },
         headers:
         {
           'x-auth-token': localStorage.token
@@ -37,67 +32,6 @@ class Teams extends React.Component {
       (err) => { console.log('getUsers->', err.errmsg); }
     )
   }
-
-  // _gu = async (type) => {
-  //   let ret = [];
-  //   try { 
-  //     ret = await this.getUsers(type); 
-  //     switch(type) {
-  //       case 'forSelect':
-  //         this.users = ret;
-  //         break;
-  //       case 'all':
-  //         this.users = ret;
-  //         break;
-  //       default:
-  //         this.users = ret.map( (el) => { return {
-  //           key: el._id,
-  //           value: `${el.surname}, ${el.name}`,
-  //           text: `${el._id}: ${el.surname}, ${el.name}`
-  //         }; } );
-  //         break;
-  //     }
-  //   }
-  //   catch (e) { console.log('Coś nie tak', e); };
-  // }
-
-  // _gu = async (type) => {
-  //   // try { 
-  //     const ret = await this.getUsers(type)
-  //       .then( 
-  //         (res) => {
-  //           console.log('1->', res);
-  //     // switch(type) {
-  //     //   case 'forSelect':
-  //     //     this.users = ret;
-  //     //     break;
-  //     //   case 'all':
-  //     //     this.users = ret;
-  //     //     break;
-  //     //   default:
-  //     //     this.users = ret.map( (el) => { return {
-  //     //       key: el._id,
-  //     //       value: `${el.surname}, ${el.name}`,
-  //     //       text: `${el._id}: ${el.surname}, ${el.name}`
-  //     //     }; } );
-  //     //     break;
-  //     // }
-  //       },
-  //         (err) => { console.log('Coś nie tak', err); }
-  //       ); 
-  //   // }
-  //   // catch (e) { console.log('Coś nie tak', e); };
-  // }
-
-  // _getUsers() {
-  //   return [
-  //     // powinno się ciągnąć z bazy, ale nie znalazłem endpointa na razie...
-  //     { key: 'John', value: 'Front, John', text: 'Front, John' },
-  //     { key: 'kris', value: 'stoiczkow, kristof', text: 'stoiczkow, kristof' },
-  //     { key: 'Marcin', value: 'Woś, Marcin', text: 'Woś, Marcin' },
-  //     { key: 'MareK', value: 'K, Marek', text: 'K, Marek' },
-  //   ];
-  // }
 
   async _getTeams(resType = 'names', id) {
     let ret;
@@ -116,11 +50,9 @@ class Teams extends React.Component {
       (res) => { 
         switch(resType) {
           case 'names':
-            // this.teams = res.data.map( (el) => { return el.name; } );
             ret = res.data.map( (el) => { return el.name; } );
             break;
           case 'forSelect':
-            // this.teams = res.data.map( (el) => { 
             ret = res.data.map( (el) => { 
               return {
                 key: el._id,
@@ -130,17 +62,14 @@ class Teams extends React.Component {
             } );
             break;
           case 'all':
-            // this.teamsAll = res.data;
             ret = res.data;
             break;
           default:
-            // this.teams = res.data.map( (el) => { return el.name; } );
             ret = res.data.map( (el) => { return el.name; } );
         };
       },
       (err) => { console.log('_getTeams->', err.errmsg); }
     )
-    // return this.teams;
     return ret;
   }
 
@@ -158,12 +87,9 @@ class Teams extends React.Component {
               teamId:  this.teams[0].key
             }}
           );
-          // console.log('1->', this.teams);
           break;
         case 'all':
           this.teamsAll = ret;
-          // console.log('2->', this.teamsAll);
-          // console.log('3->', this.teamsAll[0].players.first.surname || '(brak)');
           this.teamsAll.sort( (a, b) => { return (a.name.toLowerCase() < b.name.toLowerCase()) ? -1 : 1; } ); 
           this.setState( 
             () => { return { 

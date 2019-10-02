@@ -1,11 +1,9 @@
 import React from 'react';
 import axios from 'axios';
-// import { Redirect } from 'react-router-dom';
 import Teams from './Teams';
 import { Form, Segment, Label, Input, Message } from 'semantic-ui-react';
 import Store from '../../Store';
 
-// class TeamCreate extends React.Component {
 class TeamCreate extends Teams {
 
   constructor(props) {
@@ -23,33 +21,22 @@ class TeamCreate extends Teams {
       postSuccess: false,
     };
 
-
     this.teams = [];
     this._gt('forSelect');
 
     this.users = [];
-    // this._gu();
-    // this.getUsers(this.context.me.division);
-
-    // this.users = this._getUsers();
-
   }
 
   static contextType = Store;
 
   componentDidMount() {
-    // console.log('TeamCreate->', this.context);
-    // this.getUsers(this.context.me.division);
     this.getUsers();
-    // console.log('TeamCreate->', localStorage.token);
   }
 
   onInputChange = e => {
     const value = e.target.value;
     this.setState(() => {
       return {
-        // player1: '',
-        // player2: '',
         errHeader: '',
         errMessage: '',
         newTeam: value,
@@ -92,7 +79,6 @@ class TeamCreate extends Teams {
   };
 
   onClickCancel = (e, d) => {
-    // console.log(e, d);
     this.setState(() => {
       return { postSuccess: true };
     });
@@ -103,10 +89,9 @@ class TeamCreate extends Teams {
     let playersOK = true;
     const team = this.state.newTeam;
     if (team) {
-      console.log('_validateForm', this.teams.value);
       if (
         this.teams.filter(el => {
-          return el === team;
+          return el.text === team;
         }).length
       ) {
         this.setState(() => {
@@ -115,7 +100,6 @@ class TeamCreate extends Teams {
             errMessage: 'Drużyna o tej nazwie już istnieje',
           };
         });
-        // return false;
         teamOK = false;
       } else {
         this.setState(() => {
@@ -132,7 +116,6 @@ class TeamCreate extends Teams {
           errMessage: 'Drużyna musi mieć nazwę',
         };
       });
-      // return false;
       teamOK = false;
     }
 
@@ -144,10 +127,9 @@ class TeamCreate extends Teams {
       this.setState(() => {
         return {
           errHeader: 'BŁĄD!',
-          errMessage: 'Wskaż graczy',
+          errMessage: 'Musisz wskazać obydwu graczy',
         };
       });
-      // return false;
       playersOK = false;
     }
     if (this.state.player1 && this.state.player2 && this.state.player1 === this.state.player2) {
@@ -157,7 +139,6 @@ class TeamCreate extends Teams {
           warnMessage: 'Właśnie utworzyłeś drużynę jednoosobową',
         };
       });
-      // return false;
       playersOK = true;
     }
     return playersOK;
@@ -181,7 +162,6 @@ class TeamCreate extends Teams {
         status: 'active',
       },
       headers: {
-        // 'x-auth-token': localStorage.getItem('token')
         'x-auth-token': localStorage.token,
       },
     }).then(

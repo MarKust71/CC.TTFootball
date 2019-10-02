@@ -1,11 +1,8 @@
 import React from 'react';
-// import axios from 'axios';
-// import { Redirect } from 'react-router-dom';
 import Teams from './Teams';
 import { Form, Segment, Label, Input, Table, Divider, Header, Icon } from 'semantic-ui-react';
 import Store from '../../Store';
 
-// class TeamCreate extends React.Component {
 class TeamView extends Teams {
 
   constructor (props) {
@@ -44,17 +41,12 @@ class TeamView extends Teams {
     this._gt('forSelect');
     this._gt('all');
 
-    // this.matchesWon = 0;
-    // this.matchesLost = 0;
-    // this.goalsFor = 0;
-    // this.goalsAgainst = 0;
   }
 
   static contextType = Store;
 
   componentDidMount() {
-    // console.log('TeamView->', this.context);
-    // console.log('TeamView->', localStorage.token);
+
   }
 
   onSelectChange = (e, { value, name }) => {
@@ -89,11 +81,6 @@ class TeamView extends Teams {
         }
       }
     }})
-  // console.log('test1->', this.state, this.teams, this.teamsAll, index);
-    // this.matchesWon = stats.matches.won || 0;
-    // this.matchesLost = stats.matches.lost || 0;
-    // this.goalsFor = stats.goals.for || 0;
-    // this.goalsAgainst = stats.goals.against || 0;
   }
 
   onClickEdit = (e, d) => {
@@ -120,14 +107,14 @@ class TeamView extends Teams {
               <Form.Field>
                 <Label>Zgłoszone drużyny</Label>
                 {/* <Form.Group> */}
-                  <Form.Dropdown 
-                    key="teamsSelect"
-                    name="teamsSelect"
-                    // placeholder="puknij gracza nr 1..."    // potrzebne, kiedy nie ma domyślnej wartości
-                    selection value={this.state.team} 
-                    options={ this.teams } 
-                    onChange={ (e, v) => this.onSelectChange(e, v) } 
-                  />
+                <Form.Dropdown 
+                  key="teamsSelect"
+                  name="teamsSelect"
+                  // placeholder="puknij gracza nr 1..."    // potrzebne, kiedy nie ma domyślnej wartości
+                  selection value={this.state.team} 
+                  options={ this.teams } 
+                  onChange={ (e, v) => this.onSelectChange(e, v) } 
+                />
                 {/* </Form.Group> */}
               </Form.Field>
             </Form.Group>
@@ -189,10 +176,6 @@ class TeamView extends Teams {
             </Table.Header>
             <Table.Body>
               <Table.Row>
-                {/* <Table.Cell>{this.matchesWon}</Table.Cell>
-                <Table.Cell>{this.matchesLost}</Table.Cell>
-                <Table.Cell>{this.goalsFor}</Table.Cell>
-                <Table.Cell>{this.goalsAgainst}</Table.Cell> */}
                 <Table.Cell>{this.state.statistics.matches.won}</Table.Cell>
                 <Table.Cell>{this.state.statistics.matches.lost}</Table.Cell>
                 <Table.Cell>{this.state.statistics.goals.for}</Table.Cell>
