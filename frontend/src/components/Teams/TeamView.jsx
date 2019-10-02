@@ -3,8 +3,9 @@ import React from 'react';
 // import { Redirect } from 'react-router-dom';
 import Teams from './Teams';
 // import { Form, Segment, Label, Input, Message, } from 'semantic-ui-react';
-import { Form, Segment, Label, Input, Table, Tab } from 'semantic-ui-react';
+import { Form, Segment, Label, Input, Table, Divider, Header, Icon } from 'semantic-ui-react';
 import Store from '../../Store';
+import { equal } from 'assert';
 
 // class TeamCreate extends React.Component {
 class TeamView extends Teams {
@@ -13,6 +14,7 @@ class TeamView extends Teams {
     super(props);
 
     this.state = { 
+      editable: false,
       term: '',
       team: '',
       teamId: 0,
@@ -30,8 +32,8 @@ class TeamView extends Teams {
     this.teams = [];
     this.teamsAll = [];
 
-    this.gt('forSelect');
-    this.gt('all');
+    this._gt('forSelect');
+    this._gt('all');
 
     this.matchesWon = 0;
     this.matchesLost = 0;
@@ -42,49 +44,7 @@ class TeamView extends Teams {
   static contextType = Store;
 
   componentDidMount() {
-    // console.log(this.context);
-  }
-
-  gt = async (type) => {
-    let ret;
-    try { 
-      ret = await this._getTeams(type); 
-      switch(type) {
-        case 'forSelect':
-          this.teams = ret;
-          this.teams.sort( (a, b) => { return (a.text.toLowerCase() < b.text.toLowerCase()) ? -1 : 1; } ); 
-          this.setState( 
-            () => { return { 
-              team: this.teams[0].text,
-              teamId:  this.teams[0].key
-            }}
-          );
-          // console.log('1->', this.teams);
-          break;
-        case 'all':
-          this.teamsAll = ret;
-          // console.log('2->', this.teamsAll);
-          // console.log('3->', this.teamsAll[0].players.first.surname || '(brak)');
-          this.setState( 
-            () => { return { 
-              players: {
-                first: {
-                  _id: this.teamsAll[0].players.first._id,
-                  name: `${this.teamsAll[0].players.first.surname || '(brak)'}, ${this.teamsAll[0].players.first.name || '(brak)'}}`
-                },
-                second: {
-                  _id: this.teamsAll[0].players.second._id,
-                  name: `${this.teamsAll[0].players.second.surname || '(brak)'}, ${this.teamsAll[0].players.second.name || '(brak)'}`
-                }
-              }
-            }}
-          );
-          break;
-        default:
-          break;
-      }
-    }
-    catch (e) { console.log('Coś nie tak', e.errmsg); };
+    console.log(this.context);
   }
 
   onSelectChange = (e, { value, name }) => {
@@ -114,18 +74,29 @@ class TeamView extends Teams {
     this.goalsAgainst = stats.goals.against || 0;
   }
 
+  onClickEdit = (e, d) => {
+    this.setState( () => { return { editable: !this.state.editable }; } )
+  }
+
+  onClickCancel = (e, d) => {
+    if (this.state.editable) {
+      this.setState( () => { return { editable: false }; } )
+    }
+  }
+
   onFormSubmit = (e, d) => {
     e.preventDefault();
   }
 
   render() {
     return (
-      <Segment.Group horizontal width={12}>
+      <>
+        <Segment.Group horizontal width={12}>
         <Segment>
           <Form onSubmit={this.onFormSubmit}></Form>
             <Form.Group>
               <Form.Field>
-                <Label>Zgłoszone drużyny</Label>
+                <Label>Reported Teams</Label>
                 {/* <Form.Group> */}
                   <Form.Dropdown 
                     key="teamsSelect"
@@ -143,28 +114,44 @@ class TeamView extends Teams {
           <Input 
             label="_id:"
             value={ this.state.teamId } 
-            disabled={ true }
+            readOnly={ true }
           />
           <br />
           <br />
-          <Label disabled={ true }>Players:</Label>
+          <Form.Group>
+            <Divider horizontal>
+              <Header as='h4'>
+                <Icon name='group' />
+                Players
+              </Header>
+            </Divider>
+            <Input 
+              label="Player 1:"
+              value={ this.state.players.first.name }
+              readOnly={ true }
+            />
+            <Input 
+              label="Player 2:"
+              value={ this.state.players.second.name }
+              readOnly={ true }
+            />
+          </Form.Group>
           <br />
-          <Input 
-            label="Player 1:"
-            value={ this.state.players.first.name }
-            disabled={ true }
-          />
-          <Input 
-            label="Player 2:"
-            value={ this.state.players.second.name }
-            disabled={ true }
-          />
+          <br />
+          <Divider horizontal>
+            <Header as='h4'>
+              <Icon name='columns' />
+              Leagues
+            </Header>
+          </Divider>
           <br />
           <br />
-          <Label disabled={ true }>Leagues:</Label>
-          <br />
-          <br />
-          <Label disabled={ true }>Statistics:</Label>
+          <Divider horizontal>
+            <Header as='h4'>
+              <Icon name='bar chart' />
+              Statistics
+            </Header>
+          </Divider>
           <Table celled textAlign={"center"}>
             <Table.Header>
               <Table.Row>
@@ -195,10 +182,17 @@ class TeamView extends Teams {
               </Table.Row>
             </Table.Footer> */}
           </Table>
-
         </Segment>
       </Segment.Group>
-    )
+        <Form>
+        <Form.Group>
+          { !this.state.editable && <Form.Button name="btnEdit" onClick={this.onClickEdit}>Edit</Form.Button> }
+          { this.state.editable && <Form.Button name="btnSave" onClick={this.onFormSubmit}>Save</Form.Button> }
+          <Form.Button name="btnCancel" onClick={this.onClickCancel}>Cancel</Form.Button>
+        </Form.Group>
+      </Form>
+    </>
+  )
   };
 }
 

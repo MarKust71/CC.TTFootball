@@ -93,6 +93,49 @@ class Teams extends React.Component {
       { key: 'League_Division_0', value: 'League_Division_0', text: 'League_Division_0' },
     ];
   }
+
+  _gt = async (type) => {
+    let ret;
+    try { 
+      ret = await this._getTeams(type); 
+      switch(type) {
+        case 'forSelect':
+          this.teams = ret;
+          this.teams.sort( (a, b) => { return (a.text.toLowerCase() < b.text.toLowerCase()) ? -1 : 1; } ); 
+          this.setState( 
+            () => { return { 
+              team: this.teams[0].text,
+              teamId:  this.teams[0].key
+            }}
+          );
+          // console.log('1->', this.teams);
+          break;
+        case 'all':
+          this.teamsAll = ret;
+          // console.log('2->', this.teamsAll);
+          // console.log('3->', this.teamsAll[0].players.first.surname || '(brak)');
+          this.setState( 
+            () => { return { 
+              players: {
+                first: {
+                  _id: this.teamsAll[0].players.first._id,
+                  name: `${this.teamsAll[0].players.first.surname || '(brak)'}, ${this.teamsAll[0].players.first.name || '(brak)'}`
+                },
+                second: {
+                  _id: this.teamsAll[0].players.second._id,
+                  name: `${this.teamsAll[0].players.second.surname || '(brak)'}, ${this.teamsAll[0].players.second.name || '(brak)'}`
+                }
+              }
+            }}
+          );
+          break;
+        default:
+          break;
+      }
+    }
+    catch (e) { console.log('Coś nie tak', e.errmsg); };
+  }
+
 }
 
 export default Teams;

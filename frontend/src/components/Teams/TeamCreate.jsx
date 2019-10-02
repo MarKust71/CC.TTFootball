@@ -16,11 +16,17 @@ class TeamCreate extends Teams {
       player2: '',
       errHeader: '',
       errMessage: '',
+      warnHeader: '',
+      warnMessage: '',
       postSuccess: false,
     };
 
-    this.teams = this._getTeams();
+    this.teams = [];
+
+    // this.teams = this._getTeams();
     this.users = this._getUsers();
+
+    this._gt('forSelect');
   }
 
   onInputChange = e => {
@@ -82,6 +88,7 @@ class TeamCreate extends Teams {
     let playersOK = true;
     const team = this.state.newTeam;
     if (team) {
+      console.log(this.teams.value);
       if (
         this.teams.filter(el => {
           return el === team;
@@ -89,8 +96,8 @@ class TeamCreate extends Teams {
       ) {
         this.setState(() => {
           return {
-            errHeader: 'BŁĄD!',
-            errMessage: 'Drużyna o takiej nazwie już istnieje.',
+            errHeader: 'ERROR!',
+            errMessage: 'Team that name already exists.',
           };
         });
         // return false;
@@ -106,8 +113,8 @@ class TeamCreate extends Teams {
     } else {
       this.setState(() => {
         return {
-          errHeader: 'BŁĄD!',
-          errMessage: 'Drużyna bez nazwy nie wchodzi w grę',
+          errHeader: 'ERROR!',
+          errMessage: 'There is no way to play without the team\'s name.',
         };
       });
       // return false;
@@ -121,8 +128,8 @@ class TeamCreate extends Teams {
     if (!this.state.player1 || !this.state.player2) {
       this.setState(() => {
         return {
-          errHeader: 'BŁĄD!',
-          errMessage: 'Nie wybrano zawodników',
+          errHeader: 'ERROR!',
+          errMessage: 'You must pick players.',
         };
       });
       // return false;
@@ -131,12 +138,12 @@ class TeamCreate extends Teams {
     if (this.state.player1 && this.state.player2 && this.state.player1 === this.state.player2) {
       this.setState(() => {
         return {
-          errHeader: 'BŁĄD!',
-          errMessage: 'Drużyna to dwie różne osoby',
+          warnHeader: 'WARNING!',
+          warnMessage: 'The team consists of one player only.',
         };
       });
       // return false;
-      playersOK = false;
+      playersOK = true;
     }
     return playersOK;
   };
@@ -177,66 +184,64 @@ class TeamCreate extends Teams {
   render() {
     if (this.state.postSuccess) return <Redirect to="/" />;
     return (
-      <Segment.Group horizontal>
-        {/* <Segment width={6}>           */}
-        <Segment>
-          {/* <Form onSubmit={this, this.onFormSubmit}> */}
-          <Form onSubmit={this.onFormSubmit}>
-            <Form.Group>
-              <Form.Field>
-                <Label>Nazwij jakoś drużynę</Label>
-                <Input
-                  type="text"
-                  placeholder="wprowadź nazwę..."
-                  value={this.state.newTeam}
-                  onChange={e => {
-                    this.onInputChange(e);
-                  }}
-                />
-              </Form.Field>
-            </Form.Group>
-            <Form.Group>
-              <Form.Field>
-                <Label>Wybierz graczy</Label>
-                <Form.Group inline>
-                  <Form.Dropdown
-                    key="player1"
-                    name="player1"
-                    placeholder="puknij gracza nr 1..."
-                    selection
-                    value={this.state.player1}
-                    options={this.users}
-                    onChange={(e, v) => this.onSelectChange(e, v)}
+      <>
+        <Segment.Group horizontal>
+          <Segment>
+            {/* <Form onSubmit={this, this.onFormSubmit}> */}
+            <Form onSubmit={this.onFormSubmit}>
+              <Form.Group>
+                <Form.Field>
+                  <Label>Name your team somehow</Label>
+                  <Input
+                    type="text"
+                    placeholder="Enter name..."
+                    value={this.state.newTeam}
+                    onChange={e => {
+                      this.onInputChange(e);
+                    }}
                   />
-                  <Form.Dropdown
-                    key="player2"
-                    name="player2"
-                    placeholder="puknij gracza nr 2..."
-                    selection
-                    value={this.state.player2}
-                    options={this.users}
-                    onChange={(e, v) => this.onSelectChange(e, v)}
-                  />
-                </Form.Group>
-              </Form.Field>
-            </Form.Group>
-            <Form.Group>
-              <Form.Button name="btnSave">Zapisz</Form.Button>
-              <Form.Button name="btnCancel" onClick={this.onClickCancel}>
-                Anuluj
-              </Form.Button>
-            </Form.Group>
-          </Form>
-          {this.state.errHeader + this.state.errMessage !== '' && (
-            <Form error>
-              <Message error header={this.state.errHeader} content={this.state.errMessage} />
+                </Form.Field>
+              </Form.Group>
+              <Form.Group>
+                <Form.Field>
+                  <Label>Chose players</Label>
+                  <Form.Group inline>
+                    <Form.Dropdown
+                      key="player1"
+                      name="player1"
+                      placeholder="pick player 1..."
+                      selection
+                      value={this.state.player1}
+                      options={this.users}
+                      onChange={(e, v) => this.onSelectChange(e, v)}
+                    />
+                    <Form.Dropdown
+                      key="player2"
+                      name="player2"
+                      placeholder="pick player 2..."
+                      selection
+                      value={this.state.player2}
+                      options={this.users}
+                      onChange={(e, v) => this.onSelectChange(e, v)}
+                    />
+                  </Form.Group>
+                </Form.Field>
+              </Form.Group>
             </Form>
-          )}
-        </Segment>
-        {/* <Segment width={6}>
-  
-        </Segment> */}
-      </Segment.Group>
+            {this.state.errHeader + this.state.errMessage !== '' && (
+              <Form error>
+                <Message error header={this.state.errHeader} content={this.state.errMessage} />
+              </Form>
+            )}
+          </Segment>
+        </Segment.Group>
+        <Form>
+          <Form.Group>
+            <Form.Button name="btnSave" onClick={this.onFormSubmit}>Save</Form.Button>
+            <Form.Button name="btnCancel" onClick={this.onClickCancel}>Cancel</Form.Button>
+          </Form.Group>
+        </Form>
+      </>
     );
   }
 }
