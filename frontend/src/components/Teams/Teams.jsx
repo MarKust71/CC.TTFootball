@@ -6,36 +6,31 @@ class Teams extends React.Component {
   
   static contextType = Store;
 
-  _getUsers() {
-    // async getUsers() {
-    // const users = await axios(
-    //   {
-    //     url: '/api/users/',
-    //     method: 'get',
-    //     data: {},
-    //     headers:
-    //     {
-    //       'x-auth-token': localStorage.getItem('token')
-    //     }
-    //   }
-    // ).then(
-    //   (res) => {
-    //     this.users = res.data.map( (el) => { return {
-    //       key: el._id,
-    //       value: `${el.surname}, ${el.name}`,
-    //       text: `${el._id}: ${el.surname}, ${el.name}`
-    //     }; } );
-    //     console.log(this.users);
-    //   },
-    //   (err) => { console.log(err.errmsg); }
-    // )
-    return [
-      // powinno się ciągnąć z bazy, ale nie znalazłem endpointa na razie...
-      { key: 'John', value: 'Front, John', text: 'Front, John' },
-      { key: 'kris', value: 'stoiczkow, kristof', text: 'stoiczkow, kristof' },
-      { key: 'Marcin', value: 'Woś, Marcin', text: 'Woś, Marcin' },
-      { key: 'MareK', value: 'K, Marek', text: 'K, Marek' },
-    ];
+  componentDidMount() {
+    console.log('Teams->', this.context);
+  }
+
+  async getUsers(division = '') {
+    await axios(
+      {
+        url: `/api/users?division=${this.context.me.division}`,
+        method: 'get',
+        data: {},
+        headers:
+        {
+          'x-auth-token': localStorage.token
+        }
+      }
+    ).then(
+      (res) => { 
+        this.users = res.data.map( (el) => { return {
+          key: el._id,
+          value: `${el.surname}, ${el.name}`,
+          text: `${el._id}: ${el.surname || '(brak)'}, ${el.name || '(brak)'}`
+        }; } );
+      },
+      (err) => { console.log('getUsers->', err.errmsg); }
+    )
   }
 
   async _getTeams(resType = 'names', id) {
@@ -48,7 +43,6 @@ class Teams extends React.Component {
         data: {},
         headers:
         {
-          // 'x-auth-token': localStorage.getItem('token')
           'x-auth-token': localStorage.token
         }
       }
@@ -56,11 +50,9 @@ class Teams extends React.Component {
       (res) => { 
         switch(resType) {
           case 'names':
-            // this.teams = res.data.map( (el) => { return el.name; } );
             ret = res.data.map( (el) => { return el.name; } );
             break;
           case 'forSelect':
-            // this.teams = res.data.map( (el) => { 
             ret = res.data.map( (el) => { 
               return {
                 key: el._id,
@@ -70,18 +62,65 @@ class Teams extends React.Component {
             } );
             break;
           case 'all':
-            // this.teamsAll = res.data;
             ret = res.data;
             break;
           default:
-            // this.teams = res.data.map( (el) => { return el.name; } );
             ret = res.data.map( (el) => { return el.name; } );
         };
       },
-      (err) => { console.log(err.errmsg); }
+      (err) => { console.log('_getTeams->', err.errmsg); }
     )
-    // return this.teams;
     return ret;
+  }
+
+  _gt = async (type) => {
+    let ret;
+    try { 
+      ret = await this._getTeams(type); 
+      switch(type) {
+        case 'forSelect':
+          this.teams = ret;
+          this.teams.sort( (a, b) => { return (a.text.toLowerCase() < b.text.toLowerCase()) ? -1 : 1; } ); 
+          this.setState( 
+            () => { return { 
+              team: this.teams[0].text,
+              teamId:  this.teams[0].key
+            }}
+          );
+          break;
+        case 'all':
+          this.teamsAll = ret;
+          this.teamsAll.sort( (a, b) => { return (a.name.toLowerCase() < b.name.toLowerCase()) ? -1 : 1; } ); 
+          this.setState( 
+            () => { return { 
+              players: {
+                first: {
+                  _id: this.teamsAll[0].players.first._id,
+                  name: `${this.teamsAll[0].players.first.surname || '(brak)'}, ${this.teamsAll[0].players.first.name || '(brak)'}`
+                },
+                second: {
+                  _id: this.teamsAll[0].players.second._id,
+                  name: `${this.teamsAll[0].players.second.surname || '(brak)'}, ${this.teamsAll[0].players.second.name || '(brak)'}`
+                }
+              },
+              statistics: {
+                matches: {
+                  won: this.teamsAll[0].statistics.matches.won,
+                  lost: this.teamsAll[0].statistics.matches.lost
+                },
+                goals: {
+                  for: this.teamsAll[0].statistics.goals.for,
+                  against: this.teamsAll[0].statistics.goals.against
+                }
+              }
+            }}
+          );
+          break;
+        default:
+          break;
+      }
+    }
+    catch (e) { console.log('_gt: Coś nie tak', e.errmsg); };
   }
 
   _getDivisions() {
@@ -93,6 +132,7 @@ class Teams extends React.Component {
       { key: 'League_Division_0', value: 'League_Division_0', text: 'League_Division_0' },
     ];
   }
+
 }
 
 export default Teams;

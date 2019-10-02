@@ -1,29 +1,9 @@
 import React from 'react';
-import axios from 'axios';
 import { Grid, Menu, Header, Icon, Segment } from 'semantic-ui-react';
 import Teams from './Teams';
 import TeamCreate from './TeamCreate';
 import TeamView from './TeamView';
 
-// === pobiera obiekt zalogowanego użytkownika      ===
-// === i zapisuje go w localStorage w zmiennej 'me' ===
-async function getMe() {
-  const me = await axios({
-    url: '/api/login/me',
-    method: 'get',
-    data: {},
-    headers: {
-      'x-auth-token': localStorage.token,
-    },
-  }).then(res => {
-    return res.data;
-  });
-  localStorage.setItem('me', JSON.stringify(me));
-}
-getMe();
-// ====================================================
-
-// class componentTeams extends React.Component {
 class ComponentTeams extends Teams {
   constructor(props) {
     super(props);
@@ -31,53 +11,13 @@ class ComponentTeams extends Teams {
     this.state = {
       term: '',
       activeItem: 'przejrzyj',
-      // divisionSelected: false
+      isMe: false
     };
-
-    // this.teamsOfDivision = this._getDivisions();
-    // console.log(localStorage);
-
   }
 
-  // async getTeamsOfDivision(division) {
-  //   const teams = await axios(
-  //     {
-  //       url: '/api/teams/',
-  //       method: 'get',
-  //       data: {},
-  //       headers:
-  //       {
-  //         'x-auth-token': localStorage.getItem('token')
-  //       }
-  //     }
-  //   ).then(
-  //     (res) => {
-  //       var list = res.data;
-  //       console.log('1->', list);
-  //       list = list.filter( (element) => { return (element.division === division && element.status === 'active'); } );
-  //       console.log('2->', list, division);
-  //       list = list.map( (element) => { return element.name; } );
-  //       console.log('3->', list);
-  //       // this.teamsOfDivision = res.data
-  //       //   .filter( (element) => { return element.name === this.state.divisionName; } )
-  //       //   .map( (element) => { return element.name; } )
-  //       //   ;
-  //       // console.log(this.teamsOfDivision);
-  //     },
-  //     (err) => { console.log(err.errmsg); }
-  //   )
-  // }
-
-  // onInputChange = (e) => {
-  //   const value = e.target.value;
-  //   this.setState( () => { return {
-  //     // player1: '',
-  //     // player2: '',
-  //     errHeader: '',
-  //     errMessage: '' ,
-  //     newTeam: value
-  //   }} );
-  // }
+  componentDidMount() {
+    this.setState( () => { return { isMe: !!this.context.me }; } )
+  }
 
   onInputChange = e => {
     this.props.onChange(this.state.term);
@@ -106,8 +46,12 @@ class ComponentTeams extends Teams {
       <div className="container" style={{ textAlign: 'left' }}>
         <Header as="h2" textAlign="center" style={{ paddingLeft: '40px' }}>
           <Icon name="group" />
-          <Header.Content>Zarządzaj drużynami</Header.Content>
+          <Header.Content>Zarządzanie drużynami</Header.Content>
         </Header>
+
+        {!this.state.isMe && (
+          <Segment>Przeloguj się, bo nie widać "<i>context.me</i>"</Segment>
+        )}
 
         <Segment>
           <Grid>
