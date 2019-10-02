@@ -48,13 +48,15 @@ class TeamView extends Teams {
 
   onSelectChange = (e, { value, name }) => {
     const index = this.teams.map( (el) => { return el.value; } ).indexOf(value);
-    const players = this.teamsAll[index].players;
-    const stats = this.teamsAll[index].statistics;
+    const id = this.teams[ index ].key
+    const teamsAllIndex = this.teamsAll.map( (el) => { return el._id; } ).indexOf(id); 
+    const players = this.teamsAll[teamsAllIndex].players;
+    const stats = this.teamsAll[teamsAllIndex].statistics;
     this.setState( () => { return { 
       team: value,
       errHeader: '',
       errMessage: '',
-      teamId: this.teams[ index ].key,
+      teamId: id,
       players: {
         first: {
           _id: players.first._id,
@@ -66,6 +68,7 @@ class TeamView extends Teams {
         }
       }
     }})
+  // console.log('test1->', this.state, this.teams, this.teamsAll, index);
     this.matchesWon = stats.matches.won || 0;
     this.matchesLost = stats.matches.lost || 0;
     this.goalsFor = stats.goals.for || 0;
