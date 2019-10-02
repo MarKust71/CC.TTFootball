@@ -2,10 +2,8 @@ import React from 'react';
 // import axios from 'axios';
 // import { Redirect } from 'react-router-dom';
 import Teams from './Teams';
-// import { Form, Segment, Label, Input, Message, } from 'semantic-ui-react';
 import { Form, Segment, Label, Input, Table, Divider, Header, Icon } from 'semantic-ui-react';
 import Store from '../../Store';
-import { equal } from 'assert';
 
 // class TeamCreate extends React.Component {
 class TeamView extends Teams {
@@ -24,7 +22,7 @@ class TeamView extends Teams {
           name: '' },
         second: { 
           _id: '',
-          name: 'asasas' 
+          name: '' 
         }
       }
     };
@@ -44,11 +42,11 @@ class TeamView extends Teams {
   static contextType = Store;
 
   componentDidMount() {
-    console.log(this.context);
+    // console.log('TeamView->', this.context);
+    // console.log('TeamView->', localStorage.token);
   }
 
   onSelectChange = (e, { value, name }) => {
-  // console.log( this.teams[ this.teams.map( (el) => { return el.value; } ).indexOf(value) ].key );
     const index = this.teams.map( (el) => { return el.value; } ).indexOf(value);
     const players = this.teamsAll[index].players;
     const stats = this.teamsAll[index].statistics;
@@ -184,7 +182,7 @@ class TeamView extends Teams {
           </Table>
         </Segment>
       </Segment.Group>
-        <Form>
+      <Form>
         <Form.Group>
           { !this.state.editable && <Form.Button name="btnEdit" onClick={this.onClickEdit}>Edit</Form.Button> }
           { this.state.editable && <Form.Button name="btnSave" onClick={this.onFormSubmit}>Save</Form.Button> }

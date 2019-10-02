@@ -1,11 +1,13 @@
 import React from 'react';
 import axios from 'axios';
-import { Redirect } from 'react-router-dom';
+// import { Redirect } from 'react-router-dom';
 import Teams from './Teams';
 import { Form, Segment, Label, Input, Message } from 'semantic-ui-react';
+import Store from '../../Store';
 
 // class TeamCreate extends React.Component {
 class TeamCreate extends Teams {
+
   constructor(props) {
     super(props);
 
@@ -21,12 +23,25 @@ class TeamCreate extends Teams {
       postSuccess: false,
     };
 
+
     this.teams = [];
-
-    // this.teams = this._getTeams();
-    this.users = this._getUsers();
-
     this._gt('forSelect');
+
+    this.users = [];
+    // this._gu();
+    // this.getUsers(this.context.me.division);
+
+    // this.users = this._getUsers();
+
+  }
+
+  static contextType = Store;
+
+  componentDidMount() {
+    // console.log('TeamCreate->', this.context);
+    // this.getUsers(this.context.me.division);
+    this.getUsers();
+    // console.log('TeamCreate->', localStorage.token);
   }
 
   onInputChange = e => {
@@ -139,7 +154,7 @@ class TeamCreate extends Teams {
       this.setState(() => {
         return {
           warnHeader: 'WARNING!',
-          warnMessage: 'The team consists of one player only.',
+          warnMessage: 'You\'ve just created the team consisting of one player only.',
         };
       });
       // return false;
@@ -182,7 +197,7 @@ class TeamCreate extends Teams {
   }
 
   render() {
-    if (this.state.postSuccess) return <Redirect to="/" />;
+    // if (this.state.postSuccess) return <Redirect to="/" />;
     return (
       <>
         <Segment.Group horizontal>
@@ -233,14 +248,25 @@ class TeamCreate extends Teams {
                 <Message error header={this.state.errHeader} content={this.state.errMessage} />
               </Form>
             )}
+            {this.state.warnHeader + this.state.warnMessage !== '' && (
+              <Form warning>
+                <Message
+                  warning
+                  header={this.state.warnHeader}
+                  content={this.state.warnMessage}
+                />
+              </Form>
+            )}
           </Segment>
         </Segment.Group>
-        <Form>
-          <Form.Group>
-            <Form.Button name="btnSave" onClick={this.onFormSubmit}>Save</Form.Button>
-            <Form.Button name="btnCancel" onClick={this.onClickCancel}>Cancel</Form.Button>
-          </Form.Group>
-        </Form>
+        {this.state.warnHeader + this.state.warnMessage == '' && (
+          <Form>
+            <Form.Group>
+              <Form.Button name="btnSave" onClick={this.onFormSubmit}>Save</Form.Button>
+              <Form.Button name="btnCancel" onClick={this.onClickCancel}>Cancel</Form.Button>
+            </Form.Group>
+          </Form>
+        )}
       </>
     );
   }

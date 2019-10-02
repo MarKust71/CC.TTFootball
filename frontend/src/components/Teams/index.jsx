@@ -7,20 +7,20 @@ import TeamView from './TeamView';
 
 // === pobiera obiekt zalogowanego użytkownika      ===
 // === i zapisuje go w localStorage w zmiennej 'me' ===
-async function getMe() {
-  const me = await axios({
-    url: '/api/login/me',
-    method: 'get',
-    data: {},
-    headers: {
-      'x-auth-token': localStorage.token,
-    },
-  }).then(res => {
-    return res.data;
-  });
-  localStorage.setItem('me', JSON.stringify(me));
-}
-getMe();
+// async function getMe() {
+//   const me = await axios({
+//     url: '/api/login/me',
+//     method: 'get',
+//     data: {},
+//     headers: {
+//       'x-auth-token': localStorage.token,
+//     },
+//   }).then(res => {
+//     return res.data;
+//   });
+//   localStorage.setItem('me', JSON.stringify(me));
+// }
+// getMe();
 // ====================================================
 
 // class componentTeams extends React.Component {
@@ -31,12 +31,21 @@ class ComponentTeams extends Teams {
     this.state = {
       term: '',
       activeItem: 'view',
+      isMe: false
       // divisionSelected: false
     };
 
     // this.teamsOfDivision = this._getDivisions();
     // console.log(localStorage);
 
+  }
+
+  componentDidMount() {
+    // console.log('Teams/index->', this.context);
+    // console.log('Teams/index->', localStorage.token);
+    // console.log('Teams/index->', !!this.context.me);
+    // console.log('Teams/index->', this.context.me);
+    this.setState( () => { return { isMe: !!this.context.me }; } )
   }
 
   // async getTeamsOfDivision(division) {
@@ -108,6 +117,10 @@ class ComponentTeams extends Teams {
           <Icon name="group" />
           <Header.Content>Teams Management</Header.Content>
         </Header>
+
+        {!this.state.isMe && (
+          <Segment>Przeloguj się, bo nie widać "<i>context.me</i>"</Segment>
+        )}
 
         <Segment>
           <Grid>
