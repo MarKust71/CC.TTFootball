@@ -11,12 +11,17 @@ class ComponentTeams extends Teams {
     this.state = {
       term: '',
       activeItem: 'przejrzyj',
-      isMe: false
+      isMe: false,
     };
+
+    // this.teamsOfDivision = this._getDivisions();
+    // console.log(localStorage);
   }
 
   componentDidMount() {
-    this.setState( () => { return { isMe: !!this.context.me }; } )
+    this.setState(() => {
+      return { isMe: !!this.context.me };
+    });
   }
 
   onInputChange = e => {
@@ -50,7 +55,9 @@ class ComponentTeams extends Teams {
         </Header>
 
         {!this.state.isMe && (
-          <Segment>Przeloguj się, bo nie widać "<i>context.me</i>"</Segment>
+          <Segment>
+            Przeloguj się, bo nie widać "<i>context.me</i>"
+          </Segment>
         )}
 
         <Segment>
@@ -63,8 +70,8 @@ class ComponentTeams extends Teams {
             </Grid.Column>
 
             <Grid.Column stretched width={14}>
-              { (this.state.activeItem === 'dodaj') && <TeamCreate /> }
-              { (this.state.activeItem === 'przejrzyj') && <TeamView /> }
+              {this.state.activeItem === 'dodaj' && <TeamCreate />}
+              {this.state.activeItem === 'przejrzyj' && <TeamView />}
             </Grid.Column>
           </Grid>
         </Segment>

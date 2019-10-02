@@ -1,22 +1,57 @@
 import React from 'react';
-import { Table, Icon, Label, Modal, Button } from 'semantic-ui-react';
+import { Table, Icon, Label, Modal } from 'semantic-ui-react';
 import { formatDate } from '../../utils/date';
+import AskModal from '../Modals/AskModal';
+import setHeaders from '../../utils/setHeaders';
+import TeamViewGridWithSearch from '../Teams/TeamViewGridWithSearch';
+import axios from 'axios';
 
-class TeamModalView extends React.Component {
-  close = () => {
-    this.props.onClose();
+const unpackPlayers = teams => {
+  const name = localStorage.getItem('id');
+  const unpackPlayer = team => {
+    return team.players.first === name ? team.players.second : team.players.first;
+  };
+  for (let team of teams) {
+    team.player = unpackPlayer(team);
+  }
+  return teams;
+};
+
+class TeamViewModal extends React.Component {
+  state = {
+    askModalProps: {
+      open: false,
+    },
+  };
+
+  openModalFactory = team => () => {
+    this.setState({
+      askModalProps: {
+        header: `Czy chcesz się zapisać zespołem ${team.name} do ligi ${this.props.league.name}?`,
+        positive: 'Tak',
+        negative: 'Nie',
+        open: true,
+        onClose: this.closeModal,
+        onPositive: () => {
+          this.props.onClose();
+          console.log('Positive');
+        },
+      },
+    });
+  };
+
+  closeModal = () => {
+    this.setState({ askModalProps: { open: false } });
   };
 
   render() {
     return (
-      <Modal open={this.props.open} onClose={this.close} closeOnDimmerClick={false} closeIcon>
+      <Modal open={this.props.open} onClose={this.props.onClose} closeOnDimmerClick={false} closeIcon>
         <Modal.Header>Wybierz drużynę</Modal.Header>
-        <Modal.Content>
-          <p>Are you sure you want to delete your account</p>
+        <Modal.Content scrolling>
+          <TeamViewGridWithSearch columns={3} teams={this.props.teams} onClickFactory={this.openModalFactory} />
         </Modal.Content>
-        <Modal.Actions>
-          <Button onClick={this.close} positive labelPosition="right" icon="checkmark" content="Yes" />
-        </Modal.Actions>
+        <AskModal {...this.state.askModalProps} />;
       </Modal>
     );
   }
@@ -25,10 +60,14 @@ class TeamModalView extends React.Component {
 class LeaguesTableRowOpen extends React.Component {
   state = {
     isModalOpen: false,
+    teams: [],
   };
 
   openModal = () => {
-    this.setState({ isModalOpen: true });
+    axios
+      .get(`/api/users/${localStorage.getItem('id')}/teams`, setHeaders())
+      .then(resp => resp.data)
+      .then(teams => this.setState({ teams: unpackPlayers(teams), isModalOpen: true }));
   };
 
   closeModal = () => {
@@ -51,7 +90,7 @@ class LeaguesTableRowOpen extends React.Component {
             Dołącz
           </Label>
         </Table.Cell>
-        <TeamModalView open={this.state.isModalOpen} onClose={this.closeModal} />
+        <TeamViewModal open={this.state.isModalOpen} onClose={this.closeModal} league={data} teams={this.state.teams} />
       </Table.Row>
     );
   }

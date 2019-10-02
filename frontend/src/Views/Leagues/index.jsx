@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import SubPage from '../../components/SubPage';
 import setHeaders from '../../utils/setHeaders';
 import { Segment } from 'semantic-ui-react';
@@ -20,7 +21,7 @@ const LeaguesTableOpen = () => {
       { width: 1, name: 'Zapisanych drużyn' },
       { width: 2, name: 'Zapisy' },
     ],
-    query: () => fetch('/api/leagues/?status=created', setHeaders()),
+    query: () => axios.get('/api/leagues/?status=created', setHeaders()),
     row: LeaguesTableRowOpen,
   };
   return <LeaguesTable {...config} />;
@@ -37,7 +38,7 @@ const LeaguesTablePending = () => {
       { width: 1, name: 'Zapisanych drużyn' },
       { width: 2, name: 'Info' },
     ],
-    query: () => fetch('/api/leagues/?status=pending', setHeaders()),
+    query: () => axios.get('/api/leagues/?status=pending', setHeaders()),
     row: LeaguesTableRowPending,
   };
   return <LeaguesTable {...config} />;
@@ -54,7 +55,7 @@ const LeaguesTableClosed = () => {
       { width: 2, name: 'Data zakończenia' },
       { width: 2, name: 'Wyniki' },
     ],
-    query: () => fetch('/api/leagues/?status=closed', setHeaders()),
+    query: () => axios.get('/api/leagues/?status=closed', setHeaders()),
     row: LeaguesTableRowClosed,
   };
   return <LeaguesTable {...config} />;
@@ -72,7 +73,7 @@ const LeaguesTableOwner = () => {
       { width: 2, name: 'Drużyny' },
       { width: 2, name: 'Akcje' },
     ],
-    query: () => fetch('/api/leagues/?status=owner', setHeaders()),
+    query: () => axios.get('/api/leagues/?status=owner', setHeaders()),
     row: LeaguesTableRowOwner,
   };
   return <LeaguesTable {...config} />;
@@ -84,7 +85,7 @@ const Leagues = props => {
     { name: 'Otwarte', path: `${path}/Open`, component: LeaguesTableOpen },
     { name: 'Trwające', path: `${path}/Pending`, component: LeaguesTablePending },
     { name: 'Zakończone', path: `${path}/Closed`, component: LeaguesTableClosed },
-    { name: 'Twoje', path: `${path}/Owner`, component: LeaguesTableOwner },
+    { name: 'Moje', path: `${path}/Owner`, component: LeaguesTableOwner },
   ];
 
   return (

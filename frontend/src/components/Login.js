@@ -2,6 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { Button, Form, Segment } from 'semantic-ui-react';
 import NegativeMessage from './NegativeMessage';
+import jwt from 'jwt-decode';
 
 import Store from '../Store';
 
@@ -30,6 +31,7 @@ class Login extends React.Component {
     if (response.status === 200) {
       const token = response.headers.get('x-auth-token');
       localStorage.setItem('token', token);
+      localStorage.setItem('id', jwt(token)._id);
       await response.json();
       this.context.changeStore('isLogged', true);
       this.setState({ isLogged: true });

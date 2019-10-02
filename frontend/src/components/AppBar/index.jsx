@@ -7,6 +7,7 @@ const AppBar = () => {
   const { isLogged, changeStore } = useContext(Store);
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('id');
     changeStore('isLogged', false);
     changeStore('me', null);
   };

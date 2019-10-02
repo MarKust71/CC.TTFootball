@@ -6,12 +6,11 @@ class LeaguesTable extends React.Component {
     leagues: [],
   };
 
-  fetchLeagues = () => {
-    return this.props.query().then(resp => resp.json());
-  };
-
   componentDidMount = () => {
-    this.fetchLeagues().then(leagues => this.setState({ leagues }));
+    this.props
+      .query()
+      .then(resp => resp.data)
+      .then(leagues => this.setState({ leagues }));
   };
 
   render() {
