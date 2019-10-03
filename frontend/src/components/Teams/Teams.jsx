@@ -4,10 +4,18 @@ import Store from '../../Store';
 
 class Teams extends React.Component {
   
+  constructor(props) {
+    super(props);
+    this.state = {
+      isMe: false
+    }
+  }
+
   static contextType = Store;
 
   componentDidMount() {
-    console.log('Teams->', this.context);
+    this.setState( () => { return { isMe: !!this.context.me }; } );
+    // console.log('Teams->', this.context);
   }
 
   async getUsers(division = '') {
@@ -35,10 +43,9 @@ class Teams extends React.Component {
 
   async _getTeams(resType = 'names', id) {
     let ret;
-    // eslint-disable-next-line
     await axios(
       {
-        url: '/api/teams/',
+        url: `/api/teams/`,
         method: 'get',
         data: {},
         headers:
@@ -53,19 +60,54 @@ class Teams extends React.Component {
             ret = res.data.map( (el) => { return el.name; } );
             break;
           case 'forSelect':
-            ret = res.data.map( (el) => { 
-              return {
-                key: el._id,
-                value: el.name,
-                text: el.name
-              }; 
-            } );
+            if (this.context.me.role === 'admin') {
+              ret = res.data.map( (el) => { 
+                return {
+                  key: el._id,
+                  value: el.name,
+                  text: el.name
+                }; 
+              } );
+            } else {
+              ret = res.data
+                .filter( (el) => { 
+                  return (el.players.first._id === this.context.me._id) || (el.players.second._id === this.context.me._id) ; 
+                } )
+                .map( (el) => { 
+                return {
+                  key: el._id,
+                  value: el.name,
+                  text: el.name
+                }; 
+              } );
+              // if (ret.length === 0) {
+              //   ret = [{
+              //     key: '0',
+              //     value: '',
+              //     text: ''
+              //   }]
+              // }
+            }
             break;
           case 'all':
-            ret = res.data;
+            if (this.context.me.role === 'admin') {
+              ret = res.data;
+            } else {
+              ret = res.data.filter( (el) => { 
+                return (el.players.first._id === this.context.me._id) || (el.players.second._id === this.context.me._id) ; 
+              } );
+            }
             break;
           default:
-            ret = res.data.map( (el) => { return el.name; } );
+            if (this.context.me.role === 'admin') {
+              ret = res.data.map( (el) => { return el.name; } );
+            } else {
+              ret = res.data
+                .filter( (el) => { 
+                  return (el.players.first._id === this.context.me._id) || (el.players.second._id === this.context.me._id) ; 
+                } )
+                .map( (el) => { return el.name; } );
+            }
         };
       },
       (err) => { console.log('_getTeams->', err.errmsg); }
@@ -82,9 +124,16 @@ class Teams extends React.Component {
           this.teams = ret;
           this.teams.sort( (a, b) => { return (a.text.toLowerCase() < b.text.toLowerCase()) ? -1 : 1; } ); 
           this.setState( 
-            () => { return { 
-              team: this.teams[0].text,
-              teamId:  this.teams[0].key
+            () => { if (this.teams.length === 0) {
+              return { 
+                team: '',
+                teamId: ''
+              }
+            } else {
+              return { 
+                team: this.teams[0].text,
+                teamId:  this.teams[0].key
+              }
             }}
           );
           break;
@@ -92,29 +141,56 @@ class Teams extends React.Component {
           this.teamsAll = ret;
           this.teamsAll.sort( (a, b) => { return (a.name.toLowerCase() < b.name.toLowerCase()) ? -1 : 1; } ); 
           this.setState( 
-            () => { return { 
-              players: {
-                first: {
-                  _id: this.teamsAll[0].players.first._id,
-                  name: `${this.teamsAll[0].players.first.surname || '(brak)'}, ${this.teamsAll[0].players.first.name || '(brak)'}`
+            () => { if (this.teamsAll.length === 0) {
+              return { 
+                players: {
+                  first: {
+                    _id: '',
+                    name: ''
+                  },
+                  second: {
+                    _id: '',
+                    name: ''
+                  }
                 },
-                second: {
-                  _id: this.teamsAll[0].players.second._id,
-                  name: `${this.teamsAll[0].players.second.surname || '(brak)'}, ${this.teamsAll[0].players.second.name || '(brak)'}`
-                }
-              },
-              statistics: {
-                matches: {
-                  won: this.teamsAll[0].statistics.matches.won,
-                  lost: this.teamsAll[0].statistics.matches.lost
+                statistics: {
+                  matches: {
+                    won: 0,
+                    lost: 0
+                  },
+                  goals: {
+                    for: 0,
+                    against: 0
+                  }
                 },
-                goals: {
-                  for: this.teamsAll[0].statistics.goals.for,
-                  against: this.teamsAll[0].statistics.goals.against
+                leagues: []
+              }
+            } else {
+                return { 
+                  players: {
+                    first: {
+                      _id: this.teamsAll[0].players.first._id,
+                      name: `${this.teamsAll[0].players.first.surname || '(brak)'}, ${this.teamsAll[0].players.first.name || '(brak)'}`
+                    },
+                    second: {
+                      _id: this.teamsAll[0].players.second._id,
+                      name: `${this.teamsAll[0].players.second.surname || '(brak)'}, ${this.teamsAll[0].players.second.name || '(brak)'}`
+                    }
+                  },
+                  statistics: {
+                    matches: {
+                      won: this.teamsAll[0].statistics.matches.won,
+                      lost: this.teamsAll[0].statistics.matches.lost
+                    },
+                    goals: {
+                      for: this.teamsAll[0].statistics.goals.for,
+                      against: this.teamsAll[0].statistics.goals.against
+                    }
+                  },
+                  leagues: this.teamsAll[0].leagues
                 }
-              },
-              leagues: this.teamsAll[0].leagues
-            }}
+              }
+            }
           );
           break;
         default:

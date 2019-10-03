@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import Teams from './Teams';
-import { Form, Segment, Label, Input, Message, Button } from 'semantic-ui-react';
+import { Form, Segment, Label, Input, Message } from 'semantic-ui-react';
 import Store from '../../Store';
 
 class TeamCreate extends Teams {
@@ -10,6 +10,7 @@ class TeamCreate extends Teams {
     super(props);
 
     this.state = {
+      isMe: false,
       term: '',
       newTeam: '',
       player1: '',
@@ -20,7 +21,7 @@ class TeamCreate extends Teams {
       warnMessage: '',
       infoHeader: '',
       infoMessage: '',
-      postSuccess: false,
+      postSuccess: false
     };
 
     this.teams = [];
@@ -32,6 +33,8 @@ class TeamCreate extends Teams {
   static contextType = Store;
 
   componentDidMount() {
+    this.setState( () => { return { isMe: !!this.context.me }; } );
+    // console.log('TeamsCreate->', this.context);
     this.getUsers();
   }
 
@@ -236,15 +239,28 @@ class TeamCreate extends Teams {
                 <Form.Field>
                   <Label>Wybierz graczy</Label>
                   <Form.Group inline>
-                    <Form.Dropdown
-                      key="player1"
-                      name="player1"
-                      placeholder="wskaż gracza 1..."
-                      selection
-                      value={this.state.player1}
-                      options={this.users}
-                      onChange={(e, v) => this.onSelectChange(e, v)}
-                    />
+                    {(this.context.me.role === 'admin') && (
+                      <Form.Dropdown
+                        key="player1"
+                        name="player1"
+                        placeholder="wskaż gracza 1..."
+                        selection
+                        value={this.state.player1}
+                        options={this.users}
+                        onChange={(e, v) => this.onSelectChange(e, v)}
+                      />
+                    )}
+                    {(this.context.me.role === 'player') && (
+                      <Form.Dropdown
+                        key="player1"
+                        name="player1"
+                        placeholder="wskaż gracza 1..."
+                        selection
+                        value={this.state.player1}
+                        options={this.users.filter( (el) => { return el.text === `${this.context.me._id}: ${this.context.me.surname}, ${this.context.me.name}`; })}
+                        onChange={(e, v) => this.onSelectChange(e, v)}
+                      />
+                    )}
                     <Form.Dropdown
                       key="player2"
                       name="player2"

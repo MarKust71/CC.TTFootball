@@ -9,6 +9,7 @@ class TeamView extends Teams {
     super(props);
 
     this.state = { 
+      isMe: false,
       editable: false,
       term: '',
       team: '',
@@ -39,15 +40,16 @@ class TeamView extends Teams {
     this.teams = [];
     this.teamsAll = [];
 
-    this._gt('forSelect');
-    this._gt('all');
+    this._gt('forSelect');  // wypełnia tablicę this.teams
+    this._gt('all');  // wypełnia tablicę this.teamsAll
 
   }
 
   static contextType = Store;
 
   componentDidMount() {
-
+    this.setState( () => { return { isMe: !!this.context.me }; } );
+    // console.log('TeamsView->', this.context);
   }
 
   onSelectChange = (e, { value, name }) => {
