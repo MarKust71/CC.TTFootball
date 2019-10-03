@@ -1,5 +1,5 @@
 import React from 'react';
-import ScoresView from '../../components/Scores/ScoresView'
+import ScoresView from '../../components/Scores/ScoresView';
 
 const ShowScores = () => {
   return <ScoresView />;

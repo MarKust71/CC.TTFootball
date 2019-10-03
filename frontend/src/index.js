@@ -15,7 +15,7 @@ import Leagues from './Views/Leagues';
 import Schedule from './Views/Schedule';
 import Loader from './components/Loader';
 import NewLeague from './Views/NewLeague';
-import ShowScores from './Views/Scores'
+import ShowScores from './Views/Scores';
 import { Container } from 'semantic-ui-react';
 
 const App = () => {
