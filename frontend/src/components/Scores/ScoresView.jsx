@@ -1,6 +1,5 @@
 import React from 'react';
 import Scores from './Scores';
-import Store from '../../Store';
 import _ from 'lodash';
 import { Form, Segment, Label, Header, Icon, Table } from 'semantic-ui-react';
 
@@ -11,13 +10,10 @@ class ScoresView extends Scores {
     this.state = {
       column: null,
       direction: null,
-      editable: false,
-      term: '',
       league: '',
-      leagueId: 0,
       data: [
         {
-          team: '',
+          team: 'Brak drużyn w lidze',
           points: 0,
           matchesPlayed: 0,
           matchesWon: 0,
@@ -30,12 +26,9 @@ class ScoresView extends Scores {
 
     this.league = [];
     this.leagueAll = [];
-
     this.gl('forSelect');
     this.gl('all');
   }
-
-  static contextType = Store;
 
   handleSort = clickedColumn => () => {
     const { column, data, direction } = this.state;
@@ -55,57 +48,69 @@ class ScoresView extends Scores {
     });
   };
 
-  onSelectChange = (e, { value, name }) => {
+  onSelectChange = (e, { value }) => {
     const index = this.league
-      .map(el => {
-        return el.value;
-      })
+      .map(el => el.value)
       .indexOf(value);
     const id = this.league[index].key;
     const leagueAllIndex = this.leagueAll
-      .map(el => {
-        return el._id;
-      })
+      .map(el => el._id)
       .indexOf(id);
+
     const teams = this.leagueAll[leagueAllIndex].teams;
-    console.log(teams);
+    this.prepareState(teams);
+
     if (teams.length > 0) {
-      for (let i = 0; i < this.leagueAll.teams.length; i++) {
-        const stats = teams[i].statistics;
         this.setState(() => {
           return {
             league: value,
-            errHeader: '',
-            errMessage: '',
-            leagueId: id,
-            data: [
-              ...this.state.data,
-              {
-                team: teams[i].team.name || '',
-                points: stats.matches.won * 3 || 0,
-                matchesPlayed: stats.matches.won + stats.matches.lost || 0,
-                matchesWon: stats.matches.won || 0,
-                matchesLost: stats.matches.lost || 0,
-                goalsFor: stats.goals.for || 0,
-                goalsAgainst: stats.goals.against || 0,
-              },
-            ],
+            data: this.state.data,
           };
         });
-      }
     } else {
       this.setState(() => {
         return {
           league: value,
-          errHeader: '',
-          errMessage: '',
-          leagueId: id,
+          data: [
+            {
+              team: 'Brak drużyn w lidze',
+              points: 0,
+              matchesPlayed: 0,
+              matchesWon: 0,
+              matchesLost:  0,
+              goalsFor: 0,
+              goalsAgainst: 0,
+            },
+          ],
         };
       });
     }
   };
 
-  onFormSubmit = (e, d) => {
+  prepareState = teams => {
+    for (let i = 0; i < teams.length; i++) {
+      const stats = teams[i].statistics;
+      if (i === 0) {
+        this.state.data = [this.newStateData(teams, stats)]
+      } else {
+        this.state.data = [...this.state.data, this.newStateData(teams, stats)]
+      }
+    }
+  };
+
+  newStateData = (teams, stats) => {
+    return {
+      // team: teams[i].team.name,
+      points: stats.matches.won * 3,
+      matchesPlayed: stats.matches.won + stats.matches.lost,
+      matchesWon: stats.matches.won,
+      matchesLost: stats.matches.lost,
+      goalsFor: stats.goals.for,
+      goalsAgainst: stats.goals.against,
+    };
+  }
+
+  onFormSubmit = e => {
     e.preventDefault();
   };
 

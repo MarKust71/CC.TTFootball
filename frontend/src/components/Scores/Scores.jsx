@@ -18,9 +18,7 @@ class Scores extends React.Component {
       res => {
         switch (resType) {
           case 'names':
-            ret = res.data.map(el => {
-              return el.name;
-            });
+            ret = res.data.map(el => el.name);
             break;
           case 'forSelect':
             ret = res.data.map(el => {
@@ -35,9 +33,7 @@ class Scores extends React.Component {
             ret = res.data;
             break;
           default:
-            ret = res.data.map(el => {
-              return el.name;
-            });
+            ret = res.data.map(el => el.name);
         }
       },
       err => {
@@ -48,15 +44,11 @@ class Scores extends React.Component {
   }
 
   gl = async type => {
-    let ret;
     try {
-      ret = await this.getLeagues(type);
+      let ret = await this.getLeagues(type);
       switch (type) {
         case 'forSelect':
-          this.league = ret;
-          this.league.sort((a, b) => {
-            return a.text.toLowerCase() < b.text.toLowerCase() ? -1 : 1;
-          });
+          this.league = ret.sort((a, b) => a.text.toLowerCase() < b.text.toLowerCase() ? -1 : 1);
           this.setState(() => {
             return {
               league: this.league[0].text,
@@ -65,11 +57,8 @@ class Scores extends React.Component {
           });
           break;
         case 'all':
-          this.leagueAll = ret;
-          this.leagueAll.sort((a, b) => {
-            return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
-          });
-          if (this.leagueAll.teams.length > 0) {
+          this.leagueAll = ret.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1);
+          if (this.leagueAll[0].teams.length > 0) {
             for (let i = 0; i < this.leagueAll.teams.length; i++) {
               this.setState(() => {
                 return {
@@ -96,7 +85,7 @@ class Scores extends React.Component {
           break;
       }
     } catch (e) {
-      console.log('gl: Błąd', e.errmsg);
+      console.log('gl: Błąd', e);
     }
   };
 }
