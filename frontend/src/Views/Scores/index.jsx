@@ -1,8 +1,8 @@
 import React from 'react';
-import Scores from '../../components/Scores/'
+import ScoresView from '../../components/Scores/ScoresView'
 
 const ShowScores = () => {
-  return <Scores />;
+  return <ScoresView />;
 };
 
 export default ShowScores;
