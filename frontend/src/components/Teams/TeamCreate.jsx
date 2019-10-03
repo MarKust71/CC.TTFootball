@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import Teams from './Teams';
-import { Form, Segment, Label, Input, Message } from 'semantic-ui-react';
+import { Form, Segment, Label, Input, Message, Button } from 'semantic-ui-react';
 import Store from '../../Store';
 
 class TeamCreate extends Teams {
@@ -18,6 +18,8 @@ class TeamCreate extends Teams {
       errMessage: '',
       warnHeader: '',
       warnMessage: '',
+      infoHeader: '',
+      infoMessage: '',
       postSuccess: false,
     };
 
@@ -79,10 +81,39 @@ class TeamCreate extends Teams {
   };
 
   onClickCancel = (e, d) => {
-    this.setState(() => {
-      return { postSuccess: true };
-    });
+    // this.setState(() => {
+    //   return { postSuccess: true };
+    // });
+    this.setState( () => { return {
+      term: '',
+      newTeam: '',
+      player1: '',
+      player2: '',
+      errHeader: '',
+      errMessage: '',
+      warnHeader: '',
+      warnMessage: '',
+      infoHeader: '',
+      infoMessage: '',
+      postSuccess: false
+    } } )
   };
+
+  onClickDalej = (e, d) => {
+    this.setState( () => { return {
+      term: '',
+      newTeam: '',
+      player1: '',
+      player2: '',
+      errHeader: '',
+      errMessage: '',
+      warnHeader: '',
+      warnMessage: '',
+      infoHeader: '',
+      infoMessage: '',
+      postSuccess: false
+    } } )
+  }
 
   _validateForm = () => {
     let teamOK = true;
@@ -167,7 +198,11 @@ class TeamCreate extends Teams {
     }).then(
       res => {
         this.setState(() => {
-          return { postSuccess: true };
+          return {
+            postSuccess: true,
+            infoHeader: 'BRAWO!',
+            infoMessage: 'Drużyna została zapisana'
+          };
         });
       },
       err => {
@@ -237,9 +272,19 @@ class TeamCreate extends Teams {
                 />
               </Form>
             )}
+            {this.state.infoHeader + this.state.infoMessage !== '' && (
+              <Form success>
+                <Message
+                  success
+                  header={this.state.infoHeader}
+                  content={this.state.infoMessage}
+                />
+                <Form.Button name="btnDalej" onClick={this.onClickDalej}>Dalej</Form.Button>
+              </Form>
+            )}
           </Segment>
         </Segment.Group>
-        {this.state.warnHeader + this.state.warnMessage === '' && (
+        {this.state.warnHeader + this.state.warnMessage + this.state.infoHeader + this.state.infoMessage === '' && (
           <Form>
             <Form.Group>
               <Form.Button name="btnSave" onClick={this.onFormSubmit}>Zapisz</Form.Button>
