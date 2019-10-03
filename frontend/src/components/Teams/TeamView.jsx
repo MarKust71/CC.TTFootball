@@ -1,6 +1,6 @@
 import React from 'react';
 import Teams from './Teams';
-import { Form, Segment, Label, Input, Table, Divider, Header, Icon } from 'semantic-ui-react';
+import { Form, Segment, Label, Input, Table, Divider, Header, Icon, Message } from 'semantic-ui-react';
 import Store from '../../Store';
 
 class TeamView extends Teams {
@@ -32,7 +32,8 @@ class TeamView extends Teams {
           for: 0,
           against: 0 
         }
-      }
+      },
+      leagues: []
     };
 
     this.teams = [];
@@ -55,6 +56,7 @@ class TeamView extends Teams {
     const teamsAllIndex = this.teamsAll.map( (el) => { return el._id; } ).indexOf(id); 
     const players = this.teamsAll[teamsAllIndex].players;
     const stats = this.teamsAll[teamsAllIndex].statistics;
+    const leagues = this.teamsAll[teamsAllIndex].leagues;
     this.setState( () => { return { 
       team: value,
       errHeader: '',
@@ -79,7 +81,8 @@ class TeamView extends Teams {
           for: stats.goals.for || 0,
           against: stats.goals.against || 0 
         }
-      }
+      },
+      leagues: leagues
     }})
   }
 
@@ -120,13 +123,13 @@ class TeamView extends Teams {
             </Form.Group>
         </Segment>
         <Segment>
-          <Input 
+          {/* <Input 
             label="_id:"
             value={ this.state.teamId } 
             readOnly={ true }
           />
           <br />
-          <br />
+          <br /> */}
           <Form.Group>
             <Divider horizontal>
               <Header as='h4'>
@@ -146,14 +149,17 @@ class TeamView extends Teams {
             />
           </Form.Group>
           <br />
-          <br />
           <Divider horizontal>
             <Header as='h4'>
               <Icon name='columns' />
               Ligi
             </Header>
           </Divider>
-          <br />
+          {this.state.leagues.length === 0 && (
+            <Message info>
+              <p>Wygląda na to, że drużyny nie przypisano do żadnej ligi</p>
+            </Message>
+          )}
           <br />
           <Divider horizontal>
             <Header as='h4'>
@@ -196,8 +202,12 @@ class TeamView extends Teams {
       <Form>
         <Form.Group>
           { !this.state.editable && <Form.Button name="btnEdit" onClick={this.onClickEdit}>Edytuj</Form.Button> }
-          { this.state.editable && <Form.Button name="btnSave" onClick={this.onFormSubmit}>Zapisz</Form.Button> }
-          <Form.Button name="btnCancel" onClick={this.onClickCancel}>Anuluj</Form.Button>
+          { this.state.editable && (
+            <>
+              <Form.Button name="btnSave" onClick={this.onFormSubmit}>Zapisz</Form.Button>
+              <Form.Button name="btnCancel" onClick={this.onClickCancel}>Anuluj</Form.Button>
+            </>
+          ) }
         </Form.Group>
       </Form>
     </>

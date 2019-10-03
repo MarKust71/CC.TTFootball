@@ -112,7 +112,8 @@ class Teams extends React.Component {
                   for: this.teamsAll[0].statistics.goals.for,
                   against: this.teamsAll[0].statistics.goals.against
                 }
-              }
+              },
+              leagues: this.teamsAll[0].leagues
             }}
           );
           break;
