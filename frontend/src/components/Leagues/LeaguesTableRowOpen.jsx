@@ -33,8 +33,18 @@ class TeamViewModal extends React.Component {
         open: true,
         onClose: this.closeModal,
         onPositive: () => {
-          this.props.onClose();
-          console.log('Positive');
+          axios({
+            url: `/api/leagues/${this.props.league.name}/team`,
+            method: 'POST',
+            ...setHeaders(),
+            data: { id: team._id },
+          })
+            .then(() => {
+              this.props.refresh();
+            })
+            .finally(() => {
+              this.props.onClose();
+            });
         },
       },
     });
@@ -75,7 +85,7 @@ class LeaguesTableRowOpen extends React.Component {
   };
 
   render() {
-    const { data } = this.props;
+    const { data, refresh } = this.props;
     const dateCreated = formatDate(data.date.created);
     return (
       <Table.Row>
@@ -85,12 +95,25 @@ class LeaguesTableRowOpen extends React.Component {
         <Table.Cell>{dateCreated}</Table.Cell>
         <Table.Cell>{data.teams.length}</Table.Cell>
         <Table.Cell textAlign="left">
-          <Label as="a" color="blue" ribbon="right" onClick={this.openModal}>
-            <Icon name="hand pointer" size="large" />
-            Dołącz
-          </Label>
+          {data.isUserInLeague ? (
+            <Label color="green" ribbon="right">
+              <Icon name="thumbs up" size="large" />
+              {data.userTeamInLeague}
+            </Label>
+          ) : (
+            <Label as="a" color="blue" ribbon="right" onClick={this.openModal}>
+              <Icon name="hand pointer" size="large" />
+              Dołącz
+            </Label>
+          )}
         </Table.Cell>
-        <TeamViewModal open={this.state.isModalOpen} onClose={this.closeModal} league={data} teams={this.state.teams} />
+        <TeamViewModal
+          open={this.state.isModalOpen}
+          onClose={this.closeModal}
+          league={data}
+          teams={this.state.teams}
+          refresh={refresh}
+        />
       </Table.Row>
     );
   }
