@@ -68,7 +68,6 @@ router.post('/', auth, async (req, res) => {
   if (league) return res.status(400).send('Taka liga juz istnieje!');
 
   const user = await getUser(res);
-  console.log(user);
   if (!user) return res.status(401).send('Błąd tokena');
 
   league = new League({ ...value, owner: user, division: user.division });
