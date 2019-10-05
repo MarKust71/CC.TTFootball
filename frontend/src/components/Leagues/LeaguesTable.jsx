@@ -6,12 +6,12 @@ class LeaguesTable extends React.Component {
     leagues: [],
   };
 
-  refresh = () => {
-    this.props.query().then(leagues => this.setState({ leagues }));
+  fetchLeagues = () => {
+    return this.props.query().then(resp => resp.json());
   };
 
   componentDidMount = () => {
-    this.refresh();
+    this.fetchLeagues().then(leagues => this.setState({ leagues }));
   };
 
   render() {
@@ -29,7 +29,7 @@ class LeaguesTable extends React.Component {
 
         <Table.Body>
           {this.state.leagues.map(x => (
-            <this.props.row key={x._id} data={x} refresh={this.refresh} />
+            <this.props.row key={x._id} data={x} />
           ))}
         </Table.Body>
       </Table>

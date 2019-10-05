@@ -15,7 +15,6 @@ import Leagues from './Views/Leagues';
 import Schedule from './Views/Schedule';
 import Loader from './components/Loader';
 import NewLeague from './Views/NewLeague';
-import ShowScores from './Views/Scores';
 import { Container } from 'semantic-ui-react';
 
 const App = () => {
@@ -57,7 +56,6 @@ const App = () => {
             <PrivateRoute path="/Teams" component={Teams} />
             <PrivateRoute exact path="/" component={Home} />
             <PrivateRoute exact path="/NewLeague" component={NewLeague} />
-            <PrivateRoute exact path="/Scores" component={ShowScores} />
             <Route render={() => <Redirect to="/" />} />
           </Switch>
         )}

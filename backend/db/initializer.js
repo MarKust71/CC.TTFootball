@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt');
-const _ = require('lodash');
 
 const transactional = initializer => async (model, models) => {
   let result;
@@ -142,13 +141,8 @@ const teamInitializer = async models => {
   const prefix = 'Team_';
   const division = await createDivision(prefix, models);
   const users = await createUsers(prefix, 6, division, models);
-  let teams = await createTeams(prefix, users, models);
+  const teams = await createTeams(prefix, users, models);
   await alignTeamsToUsers(teams);
-
-  for (let i = 0; i < 10; ++i) {
-    teams = await createTeams(prefix + `_${i}_`, _.shuffle(users), models);
-    await alignTeamsToUsers(teams);
-  }
 };
 
 const divisionInitializer = async models => {
