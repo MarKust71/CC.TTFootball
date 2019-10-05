@@ -1,15 +1,13 @@
 import React from 'react';
 import Teams from './Teams';
-import ComponentTeamViewLeagues from './TeamViewLeagues'
-import { Form, Segment, Label, Input, Table, Divider, Header, Icon, Message } from 'semantic-ui-react';
+import { Form, Segment, Label, Input, Table, Divider, Header, Icon } from 'semantic-ui-react';
 import Store from '../../Store';
 
 class TeamView extends Teams {
   constructor(props) {
     super(props);
 
-    this.state = { 
-      isMe: false,
+    this.state = {
       editable: false,
       term: '',
       team: '',
@@ -31,26 +29,21 @@ class TeamView extends Teams {
         },
         goals: {
           for: 0,
-          against: 0 
-        }
+          against: 0,
+        },
       },
-      leagues: []
     };
 
     this.teams = [];
     this.teamsAll = [];
 
-    this._gt('forSelect');  // wypełnia tablicę this.teams
-    this._gt('all');  // wypełnia tablicę this.teamsAll
-
+    this._gt('forSelect');
+    this._gt('all');
   }
 
   static contextType = Store;
 
-  componentDidMount() {
-    this.setState( () => { return { isMe: !!this.context.me }; } );
-    // console.log('TeamsView->', this.context);
-  }
+  componentDidMount() {}
 
   onSelectChange = (e, { value, name }) => {
     const index = this.teams
@@ -66,16 +59,21 @@ class TeamView extends Teams {
       .indexOf(id);
     const players = this.teamsAll[teamsAllIndex].players;
     const stats = this.teamsAll[teamsAllIndex].statistics;
-    const leagues = this.teamsAll[teamsAllIndex].leagues;
-    this.setState( () => { return { 
-      team: value,
-      errHeader: '',
-      errMessage: '',
-      teamId: id,
-      players: {
-        first: {
-          _id: players.first._id,
-          name: `${players.first.surname || '(brak)'}, ${players.first.name || '(brak)'}`
+    this.setState(() => {
+      return {
+        team: value,
+        errHeader: '',
+        errMessage: '',
+        teamId: id,
+        players: {
+          first: {
+            _id: players.first._id,
+            name: `${players.first.surname || '(brak)'}, ${players.first.name || '(brak)'}`,
+          },
+          second: {
+            _id: players.second._id,
+            name: `${players.second.surname || '(brak)'}, ${players.second.name || '(brak)'}`,
+          },
         },
         statistics: {
           matches: {
@@ -87,14 +85,9 @@ class TeamView extends Teams {
             against: stats.goals.against || 0,
           },
         },
-        goals: { 
-          for: stats.goals.for || 0,
-          against: stats.goals.against || 0 
-        }
-      },
-      leagues: leagues
-    }})
-  }
+      };
+    });
+  };
 
   onClickEdit = (e, d) => {
     this.setState(() => {
@@ -136,57 +129,59 @@ class TeamView extends Teams {
                 {/* </Form.Group> */}
               </Form.Field>
             </Form.Group>
-        </Segment>
-        <Segment>
-          {/* <Input 
-            label="_id:"
-            value={ this.state.teamId } 
-            readOnly={ true }
-          />
-          <br />
-          <br /> */}
-          <Form.Group>
+          </Segment>
+          <Segment>
+            <Input label="_id:" value={this.state.teamId} readOnly={true} />
+            <br />
+            <br />
+            <Form.Group>
+              <Divider horizontal>
+                <Header as="h4">
+                  <Icon name="group" />
+                  Gracze
+                </Header>
+              </Divider>
+              <Input label="Gracz 1:" value={this.state.players.first.name} readOnly={true} />
+              <Input label="Gracz 2:" value={this.state.players.second.name} readOnly={true} />
+            </Form.Group>
+            <br />
+            <br />
             <Divider horizontal>
               <Header as="h4">
                 <Icon name="columns" />
                 Ligi
               </Header>
             </Divider>
-            <Input 
-              label="Gracz 1:"
-              value={ this.state.players.first.name }
-              readOnly={ true }
-            />
-            <Input 
-              label="Gracz 2:"
-              value={ this.state.players.second.name }
-              readOnly={ true }
-            />
-          </Form.Group>
-          <br />
-          <Divider horizontal>
-            <Header as='h4'>
-              <Icon name='columns' />
-              Ligi
-            </Header>
-          </Divider>
-          {this.state.leagues.length === 0 && (
-            <Message info>
-              <p>Wygląda na to, że drużyny nie przypisano do żadnej ligi</p>
-            </Message>
-          )}
-          {this.state.leagues.length !== 0 && (
-            <ComponentTeamViewLeagues leagues={this.state.leagues}/>
-          )}
-          <br />
-          <Divider horizontal>
-            <Header as='h4'>
-              <Icon name='bar chart' />
-              Statystyka
-            </Header>
-          </Divider>
-          <Table celled textAlign={"center"}>
-            <Table.Header>
+            <br />
+            <br />
+            <Divider horizontal>
+              <Header as="h4">
+                <Icon name="bar chart" />
+                Statystyka
+              </Header>
+            </Divider>
+            <Table celled textAlign={'center'}>
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell colSpan={2}>Mecze</Table.HeaderCell>
+                  <Table.HeaderCell colSpan={2}>Bramki</Table.HeaderCell>
+                </Table.Row>
+                <Table.Row>
+                  <Table.HeaderCell>Wygrane</Table.HeaderCell>
+                  <Table.HeaderCell>Przegrane</Table.HeaderCell>
+                  <Table.HeaderCell>Zdobyte</Table.HeaderCell>
+                  <Table.HeaderCell>Stracone</Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                <Table.Row>
+                  <Table.Cell>{this.state.statistics.matches.won}</Table.Cell>
+                  <Table.Cell>{this.state.statistics.matches.lost}</Table.Cell>
+                  <Table.Cell>{this.state.statistics.goals.for}</Table.Cell>
+                  <Table.Cell>{this.state.statistics.goals.against}</Table.Cell>
+                </Table.Row>
+              </Table.Body>
+              {/* <Table.Footer>
               <Table.Row>
                 <Table.HeaderCell>sum</Table.HeaderCell>
                 <Table.HeaderCell>sum</Table.HeaderCell>
@@ -194,23 +189,29 @@ class TeamView extends Teams {
                 <Table.HeaderCell>sum</Table.HeaderCell>
               </Table.Row>
             </Table.Footer> */}
-          </Table>
-        </Segment>
-      </Segment.Group>
-      <Form>
-        <Form.Group>
-          { !this.state.editable && <Form.Button name="btnEdit" onClick={this.onClickEdit}>Edytuj</Form.Button> }
-          { this.state.editable && (
-            <>
-              <Form.Button name="btnSave" onClick={this.onFormSubmit}>Zapisz</Form.Button>
-              <Form.Button name="btnCancel" onClick={this.onClickCancel}>Anuluj</Form.Button>
-            </>
-          ) }
-        </Form.Group>
-      </Form>
-    </>
-  )
-  };
+            </Table>
+          </Segment>
+        </Segment.Group>
+        <Form>
+          <Form.Group>
+            {!this.state.editable && (
+              <Form.Button name="btnEdit" onClick={this.onClickEdit}>
+                Edytuj
+              </Form.Button>
+            )}
+            {this.state.editable && (
+              <Form.Button name="btnSave" onClick={this.onFormSubmit}>
+                Zapisz
+              </Form.Button>
+            )}
+            <Form.Button name="btnCancel" onClick={this.onClickCancel}>
+              Anuluj
+            </Form.Button>
+          </Form.Group>
+        </Form>
+      </>
+    );
+  }
 }
 
 export default TeamView;

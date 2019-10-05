@@ -10,7 +10,6 @@ class TeamCreate extends Teams {
     super(props);
 
     this.state = {
-      isMe: false,
       term: '',
       newTeam: '',
       player1: '',
@@ -19,9 +18,7 @@ class TeamCreate extends Teams {
       errMessage: '',
       warnHeader: '',
       warnMessage: '',
-      infoHeader: '',
-      infoMessage: '',
-      postSuccess: false
+      postSuccess: false,
     };
 
     this.teams = [];
@@ -33,8 +30,6 @@ class TeamCreate extends Teams {
   static contextType = Store;
 
   componentDidMount() {
-    this.setState( () => { return { isMe: !!this.context.me }; } );
-    // console.log('TeamsCreate->', this.context);
     this.getUsers();
   }
 
@@ -84,39 +79,10 @@ class TeamCreate extends Teams {
   };
 
   onClickCancel = (e, d) => {
-    // this.setState(() => {
-    //   return { postSuccess: true };
-    // });
-    this.setState( () => { return {
-      term: '',
-      newTeam: '',
-      player1: '',
-      player2: '',
-      errHeader: '',
-      errMessage: '',
-      warnHeader: '',
-      warnMessage: '',
-      infoHeader: '',
-      infoMessage: '',
-      postSuccess: false
-    } } )
+    this.setState(() => {
+      return { postSuccess: true };
+    });
   };
-
-  onClickDalej = (e, d) => {
-    this.setState( () => { return {
-      term: '',
-      newTeam: '',
-      player1: '',
-      player2: '',
-      errHeader: '',
-      errMessage: '',
-      warnHeader: '',
-      warnMessage: '',
-      infoHeader: '',
-      infoMessage: '',
-      postSuccess: false
-    } } )
-  }
 
   _validateForm = () => {
     let teamOK = true;
@@ -201,11 +167,7 @@ class TeamCreate extends Teams {
     }).then(
       res => {
         this.setState(() => {
-          return {
-            postSuccess: true,
-            infoHeader: 'BRAWO!',
-            infoMessage: 'Drużyna została zapisana'
-          };
+          return { postSuccess: true };
         });
       },
       err => {
@@ -239,28 +201,15 @@ class TeamCreate extends Teams {
                 <Form.Field>
                   <Label>Wybierz graczy</Label>
                   <Form.Group inline>
-                    {(this.context.me.role === 'admin') && (
-                      <Form.Dropdown
-                        key="player1"
-                        name="player1"
-                        placeholder="wskaż gracza 1..."
-                        selection
-                        value={this.state.player1}
-                        options={this.users}
-                        onChange={(e, v) => this.onSelectChange(e, v)}
-                      />
-                    )}
-                    {(this.context.me.role === 'player') && (
-                      <Form.Dropdown
-                        key="player1"
-                        name="player1"
-                        placeholder="wskaż gracza 1..."
-                        selection
-                        value={this.state.player1}
-                        options={this.users.filter( (el) => { return el.text === `${this.context.me._id}: ${this.context.me.surname}, ${this.context.me.name}`; })}
-                        onChange={(e, v) => this.onSelectChange(e, v)}
-                      />
-                    )}
+                    <Form.Dropdown
+                      key="player1"
+                      name="player1"
+                      placeholder="wskaż gracza 1..."
+                      selection
+                      value={this.state.player1}
+                      options={this.users}
+                      onChange={(e, v) => this.onSelectChange(e, v)}
+                    />
                     <Form.Dropdown
                       key="player2"
                       name="player2"
@@ -288,19 +237,9 @@ class TeamCreate extends Teams {
                 />
               </Form>
             )}
-            {this.state.infoHeader + this.state.infoMessage !== '' && (
-              <Form success>
-                <Message
-                  success
-                  header={this.state.infoHeader}
-                  content={this.state.infoMessage}
-                />
-                <Form.Button name="btnDalej" onClick={this.onClickDalej}>Dalej</Form.Button>
-              </Form>
-            )}
           </Segment>
         </Segment.Group>
-        {this.state.warnHeader + this.state.warnMessage + this.state.infoHeader + this.state.infoMessage === '' && (
+        {this.state.warnHeader + this.state.warnMessage === '' && (
           <Form>
             <Form.Group>
               <Form.Button name="btnSave" onClick={this.onFormSubmit}>Zapisz</Form.Button>
