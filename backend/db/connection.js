@@ -10,6 +10,7 @@ const config = {
   password: getByMode(process.env.DB_PASS, process.env.DB_PASS_DEV),
   protocol: getByMode(process.env.DB_PROT, process.env.DB_PROT_DEV),
 };
+console.log(config);
 
 const mongoUrl = `${config.protocol}://${config.username}:${config.password}@${config.host}:${config.port}/${config.name}`;
 
