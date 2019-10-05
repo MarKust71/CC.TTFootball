@@ -66,4 +66,4 @@ const main = async () => {
   );
 };
 
-main();
+main().catch( (e) => { console.log(e); } );
