@@ -6,16 +6,50 @@ const { auth, getUser } = require('../middleware/auth');
 
 router.get('/', auth, async (req, res) => {
   const { League } = res.locals.models;
-  const status = req.query.status;
-  let leagues = [];
-  if (!status) {
-    leagues = await League.find().sort('name');
-  } else if (status === 'owner') {
-    const user = await getUser(res);
-    leagues = await League.find({ owner: user }).sort('name');
-  } else {
-    leagues = await League.find({ status }).sort('name');
-  }
+  const user = await getUser(res);
+  if (!user) return res.status(401).send('Błąd tokena');
+
+  const parseJSON = x => {
+    try {
+      return JSON.parse(x);
+    } catch (e) {
+      return null;
+    }
+  };
+
+  const parseReqQuery = query => {
+    const status = query.status;
+    const _with = parseJSON(query.with);
+    return { status, _with };
+  };
+
+  const createStatusHandler = status => {
+    if (!status) {
+      return () => League.find().sort('name');
+    } else if (status === 'owner') {
+      return () => League.find({ owner: user }).sort('name');
+    } else {
+      return () => League.find({ status }).sort('name');
+    }
+  };
+
+  const createWithHandler = _with => {
+    const has = n => !!_.find(_with, x => x == n);
+    const idty = x => x;
+    if (!(_with && _with instanceof Array)) {
+      return idty;
+    }
+    let handlers = [];
+    if (has('team')) {
+      handlers.push(q => q.populate('teams.team'));
+    }
+    return _.flow(handlers);
+  };
+
+  const { status, _with } = parseReqQuery(req.query);
+  const statusHandler = createStatusHandler(status);
+  const withHandler = createWithHandler(_with);
+  const leagues = await _.flow([statusHandler, withHandler])();
   res.json(leagues);
 });
 
@@ -68,13 +102,59 @@ router.post('/', auth, async (req, res) => {
   if (league) return res.status(400).send('Taka liga juz istnieje!');
 
   const user = await getUser(res);
-  console.log(user);
   if (!user) return res.status(401).send('Błąd tokena');
 
   league = new League({ ...value, owner: user, division: user.division });
 
   await league.save();
   res.json(league);
+});
+
+router.post('/:id/team', auth, async (req, res) => {
+  const playersTeamsInLeague = (players, league) =>
+    players.reduce((p, x) => {
+      const playerTeamsIds = x.teams.map(y => y.toString());
+      const leagueTeamsIds = league.teams.map(y => y.team.toString());
+      const union = _.intersection(playerTeamsIds, leagueTeamsIds);
+      return p && union.length === 0;
+    }, true);
+
+  const validate = req => {
+    const schema = {
+      id: Joi.string()
+        .min(24)
+        .hex()
+        .required(),
+    };
+    return Joi.validate(req, schema);
+  };
+
+  const { League, Team } = res.locals.models;
+
+  const { error, value } = validate(req.body);
+  if (error) return res.status(400).send(error.details);
+  const team = await Team.findById(value.id)
+    .populate('players.first', '-__v -password')
+    .populate('players.second', '-__v -password');
+  if (!team) return res.status(404).send('Nie znaleziono takiej drużyny');
+  if (team.status !== 'active') return res.status(400).send('Ta drużyna została usunięta');
+
+  const league = await League.findByIdOrName(req.params.id);
+  if (!league) return res.status(404).send('Nie znaleziono takiej ligi');
+  if (league.status !== 'created') return res.status(400).send('Ta liga już wystartowała');
+
+  const players = [team.players.first, team.players.second];
+  if (!playersTeamsInLeague(players, league))
+    return res.status(400).send('Jesteś już zapisany w tej lidze inną drużyną');
+
+  const session = await Team.startSession();
+  await session.withTransaction(async () => {
+    league.teams.push({ team });
+    team.leagues.push(league);
+    await Promise.all([team.save(), league.save()]);
+  });
+
+  res.json(await Team.findById(value.id));
 });
 
 router.put('/:id/start', auth, async (req, res) => {

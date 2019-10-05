@@ -7,6 +7,7 @@ const AppBar = () => {
   const { isLogged, changeStore } = useContext(Store);
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('id');
     changeStore('isLogged', false);
     changeStore('me', null);
   };
@@ -25,6 +26,7 @@ const AppBar = () => {
             <Menu.Item as={NavLink} name="Ligi" to="/Leagues" activeClassName="active" />
             <Menu.Item as={NavLink} name="Drużyny" to="/Teams" activeClassName="active" />
             <Menu.Item as={NavLink} name="Nowa Liga" to="/NewLeague" activeClassName="active" />
+            <Menu.Item as={NavLink} name="Wyniki" to="/Scores" activeClassName="active" />
           </Menu.Menu>
         )}
         <Menu.Item as={Link} name="Wyjdź" to="/" onClick={handleLogout} position="right" />
