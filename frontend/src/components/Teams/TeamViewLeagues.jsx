@@ -4,7 +4,6 @@ import Teams from './Teams';
 
 // import setHeaders from '../../utils/setHeaders';
 // import Leagues from '../../Views/Leagues';
-
 import {
   LeaguesTable,
   LeaguesTableRowClosed,
