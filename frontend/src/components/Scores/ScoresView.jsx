@@ -49,24 +49,20 @@ class ScoresView extends Scores {
   };
 
   onSelectChange = (e, { value }) => {
-    const index = this.league
-      .map(el => el.value)
-      .indexOf(value);
+    const index = this.league.map(el => el.value).indexOf(value);
     const id = this.league[index].key;
-    const leagueAllIndex = this.leagueAll
-      .map(el => el._id)
-      .indexOf(id);
+    const leagueAllIndex = this.leagueAll.map(el => el._id).indexOf(id);
 
     const teams = this.leagueAll[leagueAllIndex].teams;
     this.prepareState(teams);
 
     if (teams.length > 0) {
-        this.setState(() => {
-          return {
-            league: value,
-            data: this.state.data,
-          };
-        });
+      this.setState(() => {
+        return {
+          league: value,
+          data: this.state.data,
+        };
+      });
     } else {
       this.setState(() => {
         return {
@@ -77,7 +73,7 @@ class ScoresView extends Scores {
               points: 0,
               matchesPlayed: 0,
               matchesWon: 0,
-              matchesLost:  0,
+              matchesLost: 0,
               goalsFor: 0,
               goalsAgainst: 0,
             },
@@ -90,17 +86,18 @@ class ScoresView extends Scores {
   prepareState = teams => {
     for (let i = 0; i < teams.length; i++) {
       const stats = teams[i].statistics;
+      const team = teams[i].team;
       if (i === 0) {
-        this.state.data = [this.newStateData(teams, stats)]
+        this.state.data = [this.newStateData(team, stats)];
       } else {
-        this.state.data = [...this.state.data, this.newStateData(teams, stats)]
+        this.state.data = [...this.state.data, this.newStateData(team, stats)];
       }
     }
   };
 
-  newStateData = (teams, stats) => {
+  newStateData = (team, stats) => {
     return {
-      // team: teams[i].team.name,
+      team: team.name,
       points: stats.matches.won * 3,
       matchesPlayed: stats.matches.won + stats.matches.lost,
       matchesWon: stats.matches.won,
@@ -108,7 +105,7 @@ class ScoresView extends Scores {
       goalsFor: stats.goals.for,
       goalsAgainst: stats.goals.against,
     };
-  }
+  };
 
   onFormSubmit = e => {
     e.preventDefault();

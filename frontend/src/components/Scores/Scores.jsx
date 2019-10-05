@@ -48,7 +48,7 @@ class Scores extends React.Component {
       let ret = await this.getLeagues(type);
       switch (type) {
         case 'forSelect':
-          this.league = ret.sort((a, b) => a.text.toLowerCase() < b.text.toLowerCase() ? -1 : 1);
+          this.league = ret.sort((a, b) => (a.text.toLowerCase() < b.text.toLowerCase() ? -1 : 1));
           this.setState(() => {
             return {
               league: this.league[0].text,
@@ -57,23 +57,22 @@ class Scores extends React.Component {
           });
           break;
         case 'all':
-          this.leagueAll = ret.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1);
+          this.leagueAll = ret.sort((a, b) => (a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1));
           if (this.leagueAll[0].teams.length > 0) {
-            for (let i = 0; i < this.leagueAll.teams.length; i++) {
+            for (let i = 0; i < this.leagueAll[0].teams.length; i++) {
+              let actualTeam = this.leagueAll[0].teams[i];
               this.setState(() => {
                 return {
                   data: [
                     ...this.state.data,
                     {
-                      team: this.leagueAll[0].teams[i].team.name,
-                      points: this.leagueAll[0].teams[i].statistics.matches.won * 3,
-                      matchesPlayed:
-                        this.leagueAll[0].teams[i].statistics.matches.won +
-                        this.leagueAll[0].teams[i].statistics.matches.lost,
-                      matchesWon: this.leagueAll[0].teams[i].statistics.matches.won,
-                      matchesLost: this.leagueAll[0].teams[i].statistics.matches.lost,
-                      goalsFor: this.leagueAll[0].teams[i].statistics.goals.for,
-                      goalsAgainst: this.leagueAll[0].teams[i].statistics.goals.against,
+                      team: actualTeam.team.name,
+                      points: actualTeam.statistics.matches.won * 3,
+                      matchesPlayed: actualTeam.statistics.matches.won + actualTeam.statistics.matches.lost,
+                      matchesWon: actualTeam.statistics.matches.won,
+                      matchesLost: actualTeam.statistics.matches.lost,
+                      goalsFor: actualTeam.statistics.goals.for,
+                      goalsAgainst: actualTeam.statistics.goals.against,
                     },
                   ],
                 };
