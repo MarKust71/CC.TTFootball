@@ -1,8 +1,9 @@
 import React from 'react';
-import { Grid, Menu, Header, Icon, Segment } from 'semantic-ui-react';
+import { Grid, Menu, Header, Icon, Segment, Message } from 'semantic-ui-react';
 import Teams from './Teams';
 import TeamCreate from './TeamCreate';
 import TeamView from './TeamView';
+import Store from '../../Store';
 
 class ComponentTeams extends Teams {
   constructor(props) {
@@ -18,10 +19,11 @@ class ComponentTeams extends Teams {
     // console.log(localStorage);
   }
 
+  static contextType = Store;
+
   componentDidMount() {
-    this.setState(() => {
-      return { isMe: !!this.context.me };
-    });
+    // console.log('index->', this.context);
+    this.setState( () => { return { isMe: !!this.context.me }; } );
   }
 
   onInputChange = e => {
@@ -55,9 +57,17 @@ class ComponentTeams extends Teams {
         </Header>
 
         {!this.state.isMe && (
-          <Segment>
-            Przeloguj się, bo nie widać "<i>context.me</i>"
-          </Segment>
+          <Segment>Zrób coś, bo nie widać "<i>context.me</i>"</Segment>
+        )}
+
+        {this.state.isMe && (
+          <Message>
+            <p>
+              Jeseś zalogowany jako: <strong>{this.context.me._id}</strong>, 
+              rola: <strong>{this.context.me.role}</strong>, 
+              dywizja: <strong>{this.context.me.division}</strong>
+            </p> 
+          </Message>
         )}
 
         <Segment>
