@@ -66,4 +66,4 @@ const main = async () => {
   );
 };
 
-main().catch( (e) => { console.log(e); } );
+main().then( () => { console.log('poszło'); } ).catch( (e) => { console.log('błąd main():', e); } );
