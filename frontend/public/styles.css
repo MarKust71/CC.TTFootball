@@ -38,12 +38,3 @@ tr:nth-child(even) td {
   margin-left: auto;
   margin-right: auto;
 }
-
-.team-view-grid-item {
-  cursor: pointer;
-  color: black;
-}
-
-.team-view-grid-item:hover {
-  color: #537fbe;
-}
