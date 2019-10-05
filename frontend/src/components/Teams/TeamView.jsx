@@ -1,5 +1,6 @@
 import React from 'react';
 import Teams from './Teams';
+import ComponentTeamViewLeagues from './TeamViewLeagues'
 import { Form, Segment, Label, Input, Table, Divider, Header, Icon, Message } from 'semantic-ui-react';
 import Store from '../../Store';
 
@@ -161,6 +162,9 @@ class TeamView extends Teams {
             <Message info>
               <p>Wygląda na to, że drużyny nie przypisano do żadnej ligi</p>
             </Message>
+          )}
+          {this.state.leagues.length !== 0 && (
+            <ComponentTeamViewLeagues leagues={this.state.leagues}/>
           )}
           <br />
           <Divider horizontal>
