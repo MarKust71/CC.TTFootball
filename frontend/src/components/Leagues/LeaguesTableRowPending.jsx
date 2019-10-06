@@ -18,7 +18,7 @@ class LeaguesTableRowPending extends React.Component {
         <Table.Cell textAlign="left">
           <Label as="a" color="blue" ribbon="right">
             <Icon name="hand pointer" size="large" />
-            Akcja
+            Terminarz
           </Label>
         </Table.Cell>
       </Table.Row>

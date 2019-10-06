@@ -159,6 +159,8 @@ router.post('/:id/team', auth, async (req, res) => {
 
 router.put('/:id/start', auth, async (req, res) => {
   const nextMonth = (date, offset = 1) => new Date(new Date(date).setMonth(new Date(date).getMonth() + offset));
+  const nextMonthJoi = ctx => nextMonth(ctx.start);
+  nextMonthJoi.description = 'next month';
   const randomDate = (start, end, offset) =>
     new Date(start.getTime() + Math.random() * (nextMonth(end, offset).getTime() - nextMonth(start, offset).getTime()));
   const now = new Date(Date.now());
@@ -170,7 +172,7 @@ router.put('/:id/start', auth, async (req, res) => {
         .default(now),
       end: Joi.date()
         .min(Joi.ref('start'))
-        .default(nextMonth(Joi.ref('start'))),
+        .default(nextMonthJoi),
       rounds: Joi.number()
         .min(1)
         .max(12)
