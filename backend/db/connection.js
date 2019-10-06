@@ -2,11 +2,7 @@ const mongoose = require('mongoose');
 
 // const getByMode = (prod, dev) => (process.env.TEST_ENV || process.env.NODE_ENV ? dev : prod);
 console.log(process.env.NODE_ENV);
-const getByMode = (prod, dev) => (!process.env.TEST_ENV && process.env.NODE_ENV ? prod : dev);
-// console.log('TEST_ENV->', process.env.TEST_ENV);
-// console.log('NODE_ENV->', process.env.NODE_ENV);
-// console.log('!!TEST_ENV->', !!process.env.TEST_ENV);
-// console.log('!!NODE_ENV->', !!process.env.NODE_ENV);
+const getByMode = (prod, dev) => (process.env.TEST_ENV || process.env.NODE_ENV !== 'production' ? dev : prod);
 
 const config = {
   host: getByMode(process.env.DB_HOST, process.env.DB_HOST_DEV),
@@ -16,6 +12,7 @@ const config = {
   password: getByMode(process.env.DB_PASS, process.env.DB_PASS_DEV),
   protocol: getByMode(process.env.DB_PROT, process.env.DB_PROT_DEV),
 };
+// console.log(config);
 
 const mongoUrl = `${config.protocol}://${config.username}:${config.password}@${config.host}:${config.port}/${config.name}`;
 

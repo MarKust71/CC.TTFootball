@@ -5,10 +5,6 @@ const path = require('path');
 if (process.env.NODE_ENV === 'production') {
   // Handle React routing, return all requests to React app
   router.get('*', function(req, res) {
-    // console.log(process.env);
-    // console.log(path.join(__dirname));
-    // console.log(path.join(__dirname, '..', 'frontend/build', 'index.html'));
-    // res.sendFile(path.join(__dirname, '..', 'frontend/build', 'index.html'));
     res.sendFile(path.join('/app/frontend/build', 'index.html'));
   });
 } else {

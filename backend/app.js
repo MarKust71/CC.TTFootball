@@ -3,7 +3,6 @@ const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const path = require('path');
 const db = require('./db');
-// const routerHome = require('./routes/home');
 const routerLeague = require('./routes/league');
 const routerTeams = require('./routes/teams');
 const routerMatch = require('./routes/match');
@@ -26,9 +25,10 @@ const main = async () => {
   // Database configuration
   const connection = await db.connect();
   const models = db.load(connection);
-  if (process.env.TEST_ENV || process.env.NODE_ENV) {
-    // await connection.dropDatabase();
-    // await db.initialize(models);
+  // if (process.env.TEST_ENV || process.env.NODE_ENV) {
+  if (process.env.TEST_ENV) {
+    await connection.dropDatabase();
+    await db.initialize(models);
   }
 
   db.register(app, connection, models);
@@ -39,11 +39,9 @@ const main = async () => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.use(express.static(path.join(__dirname, '../frontend/build')));
-  console.log(path.join(__dirname, '../frontend/build'));
   app.use(logger);
 
   // Routes
-  // app.use('/', routerHome);
   app.use('/api/register', routerRegister);
   app.use('/api/login', routerLogin);
   app.use('/api/users', routerUsers);
@@ -57,26 +55,15 @@ const main = async () => {
   app.use(errorHandler);
 
   if (process.env.NODE_ENV === 'production') {
-    // console.log('__dirname->', __dirname);
-    // Serve any static files
-    // app.use(express.static(path.join(__dirname, '../frontend/build')));
-    // console.log('static', path.join('/app/frontend/build'));
-    // app.use(express.static(path.join('/app/frontend/build')));
-    // // Handle React routing, return all requests to React app
-    // app.get('*', function(req, res) {
-    //   console.log(path.join(__dirname, '../frontend/build', 'index.html'));
-    //   res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
     console.log(path.join(__dirname, '../frontend/build'));
     app.get('*', (req, res) => {
       res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
     });
-    // });
   }
 
   // Listening
   const host = process.env.HOST || '127.0.0.1';
   const port = process.env.PORT || 8080;
-  // app.listen(port, host, () =>
   app.listen(port, () =>
     console.log(
       `[App] Server is listening on http://${host}:${port}\n` +
