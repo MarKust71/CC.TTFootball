@@ -11,7 +11,7 @@
     "lint": "eslint --ignore-path .gitignore --fix .",
     "format": "prettier --ignore-path .gitignore --write \"./**/*.{js,jsx,json,scss,html}\"",
     "dev": "concurrently -n react,express -k \"cd frontend && npm run start\" \"npm run mon\"",
-    "heroku-postbuild": "cd frontend && npm install && npm install --only=dev --no-shrinkwrap && npm run build"
+    "heroku-postbuild": "cd frontend && npm install && npm install --only=prod --no-shrinkwrap && npm run build"
   },
   "repository": {
     "type": "git",
