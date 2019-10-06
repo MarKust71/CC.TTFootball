@@ -6,15 +6,24 @@ import setHeaders from '../../utils/setHeaders';
 import TeamViewGridWithSearch from '../Teams/TeamViewGridWithSearch';
 import axios from 'axios';
 
-const unpackPlayers = teams => {
-  const name = localStorage.getItem('id');
+const prepareTeams = (name, teams, league) => {
   const unpackPlayer = team => {
     return team.players.first === name ? team.players.second : team.players.first;
   };
+  console.log(league);
+  const isPlayerInLeague = player => {
+    for (let { team } of league.teams) {
+      if (player === team.players.first || player === team.players.second) {
+        return true;
+      }
+    }
+    return false;
+  };
   for (let team of teams) {
     team.player = unpackPlayer(team);
+    team.isPlayerInLeague = isPlayerInLeague(team.player);
   }
-  return teams;
+  return [...teams.filter(x => !x.isPlayerInLeague), ...teams.filter(x => x.isPlayerInLeague)];
 };
 
 class TeamViewModal extends React.Component {
@@ -74,10 +83,11 @@ class LeaguesTableRowOpen extends React.Component {
   };
 
   openModal = () => {
+    const name = localStorage.getItem('id');
     axios
-      .get(`/api/users/${localStorage.getItem('id')}/teams`, setHeaders())
+      .get(`/api/users/${name}/teams`, setHeaders())
       .then(resp => resp.data)
-      .then(teams => this.setState({ teams: unpackPlayers(teams), isModalOpen: true }));
+      .then(teams => this.setState({ teams: prepareTeams(name, teams, this.props.data), isModalOpen: true }));
   };
 
   closeModal = () => {

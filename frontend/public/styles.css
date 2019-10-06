@@ -47,3 +47,7 @@ tr:nth-child(even) td {
 .team-view-grid-item:hover {
   color: #537fbe;
 }
+
+.team-view-grid-item--inactive {
+  color: red;
+}
