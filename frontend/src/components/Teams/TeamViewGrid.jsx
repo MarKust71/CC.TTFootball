@@ -15,7 +15,20 @@ const TeamViewGridItem = props => {
     return `${goals.for}/${goals.against}/${goals.for - goals.against}`;
   };
 
-  return (
+  return team.isPlayerInLeague ? (
+    <Item className="team-view-grid-item--inactive">
+      <Segment>
+        <Icon name="users" size="large" />
+        <Item.Content>
+          <Item.Header>{team.name}</Item.Header>
+          <Item.Description>
+            Gracz: {team.player} <br />
+            Wynik: {unpackMatches(team)}/{unpackGoals(team)}
+          </Item.Description>
+        </Item.Content>
+      </Segment>
+    </Item>
+  ) : (
     <Item as="a" onClick={onClick} className="team-view-grid-item">
       <Segment>
         <Icon name="users" size="large" />
