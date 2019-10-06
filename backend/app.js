@@ -58,7 +58,8 @@ const main = async () => {
   if (process.env.NODE_ENV === 'production') {
     console.log('__dirname->', __dirname);
     // Serve any static files
-    app.use(express.static(path.join(__dirname, '../frontend/build')));
+    // app.use(express.static(path.join(__dirname, '../frontend/build')));
+    app.use(express.static(path.join('/app/frontend/build')));
     // // Handle React routing, return all requests to React app
     // app.get('*', function(req, res) {
     //   console.log(path.join(__dirname, '../frontend/build', 'index.html'));
