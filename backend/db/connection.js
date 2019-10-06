@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
 // const getByMode = (prod, dev) => (process.env.TEST_ENV || process.env.NODE_ENV ? dev : prod);
-const getByMode = (prod, dev) => (process.env.TEST_ENV || process.env.NODE_ENV ? prod : dev);
-console.log('TEST_ENV->', process.env.TEST_ENV);
-console.log('NODE_ENV->', process.env.NODE_ENV);
-console.log('!!TEST_ENV->', !!process.env.TEST_ENV);
-console.log('!!NODE_ENV->', !!process.env.NODE_ENV);
+const getByMode = (prod, dev) => (!process.env.TEST_ENV && process.env.NODE_ENV ? prod : dev);
+// console.log('TEST_ENV->', process.env.TEST_ENV);
+// console.log('NODE_ENV->', process.env.NODE_ENV);
+// console.log('!!TEST_ENV->', !!process.env.TEST_ENV);
+// console.log('!!NODE_ENV->', !!process.env.NODE_ENV);
 
 const config = {
   host: getByMode(process.env.DB_HOST, process.env.DB_HOST_DEV),
