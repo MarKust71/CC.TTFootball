@@ -58,7 +58,8 @@ const main = async () => {
   // Listening
   const host = process.env.HOST || '127.0.0.1';
   const port = process.env.PORT || 8080;
-  app.listen(port, host, () =>
+  // app.listen(port, host, () =>
+  app.listen(port, () =>
     console.log(
       `[App] Server is listening on http://${host}:${port}\n` +
         '========================================================',
