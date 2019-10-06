@@ -38,7 +38,7 @@ const main = async () => {
   app.use(cookieParser());
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
-  app.use(express.static(path.join(__dirname, 'public')));
+  // app.use(express.static(path.join(__dirname, 'public')));
   app.use(logger);
 
   // Routes
@@ -66,7 +66,7 @@ const main = async () => {
     //   console.log(path.join(__dirname, '../frontend/build', 'index.html'));
     //   res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
     console.log(path.join(__dirname, '../frontend/build'));
-    app.use('*', express.static(path.join(__dirname, '../frontend/build')));
+    app.use('/', express.static(path.join(__dirname, '../frontend/build')));
     // });
   }
 

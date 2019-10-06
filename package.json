@@ -10,8 +10,7 @@
     "debug": "node inspect -r dotenv/config ./backend/app.js",
     "lint": "eslint --ignore-path .gitignore --fix .",
     "format": "prettier --ignore-path .gitignore --write \"./**/*.{js,jsx,json,scss,html}\"",
-    "dev": "concurrently -n react,express -k \"cd frontend && npm run start\" \"npm run mon\"",
-    "heroku-postbuild": "cd frontend && npm install && npm install --only=prod --no-shrinkwrap && npm run build"
+    "dev": "concurrently -n react,express -k \"cd frontend && npm run start\" \"npm run mon\""
   },
   "repository": {
     "type": "git",
