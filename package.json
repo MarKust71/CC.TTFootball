@@ -2,7 +2,7 @@
   "name": "cc.ttfootball",
   "version": "1.0.0",
   "private": true,
-  "description": "Po naszemu - Piłkarzyki",
+  "description": "Po naszemu - PANkarzyki",
   "main": "index.js",
   "scripts": {
     "start": "node -r dotenv/config ./backend/app.js",
