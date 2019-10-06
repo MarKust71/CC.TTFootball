@@ -4,10 +4,10 @@ import Teams from './Teams';
 
 // import setHeaders from '../../utils/setHeaders';
 // import Leagues from '../../Views/Leagues';
-import {
-  LeaguesTable,
-  LeaguesTableRowClosed,
-} from '../../components/Leagues';
+// import { LeaguesTable, LeaguesTableRowClosed } from '../../components/Leagues';
+import { LeaguesTable } from '../../components/Leagues';
+import TeamViewLeaguesRow from './TeamViewLeaguesRow';
+
 
 import Store from '../../Store';
 
@@ -40,7 +40,8 @@ const LeaguesTableClosed = (leagues) => {
     ],
     // query: () => fetch('/api/leagues/?status=closed', setHeaders()),
     query: () => { return leagues; },
-    row: LeaguesTableRowClosed,
+    // row: LeaguesTableRowClosed,
+    row: TeamViewLeaguesRow,
   };
   // return <LeaguesTable {...config} />;
   return <LeaguesTableInTeamView {...config} />;
