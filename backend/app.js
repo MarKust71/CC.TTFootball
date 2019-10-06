@@ -38,7 +38,8 @@ const main = async () => {
   app.use(cookieParser());
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
-  // app.use(express.static(path.join(__dirname, 'public')));
+  app.use(express.static(path.join(__dirname, '../frontend/build')));
+  console.log(path.join(__dirname, '../frontend/build'));
   app.use(logger);
 
   // Routes
@@ -56,7 +57,7 @@ const main = async () => {
   app.use(errorHandler);
 
   if (process.env.NODE_ENV === 'production') {
-    console.log('__dirname->', __dirname);
+    // console.log('__dirname->', __dirname);
     // Serve any static files
     // app.use(express.static(path.join(__dirname, '../frontend/build')));
     // console.log('static', path.join('/app/frontend/build'));
@@ -66,7 +67,9 @@ const main = async () => {
     //   console.log(path.join(__dirname, '../frontend/build', 'index.html'));
     //   res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
     console.log(path.join(__dirname, '../frontend/build'));
-    app.use('/', express.static(path.join(__dirname, '../frontend/build')));
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+    });
     // });
   }
 
