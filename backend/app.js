@@ -59,13 +59,13 @@ const main = async () => {
     console.log('__dirname->', __dirname);
     // Serve any static files
     app.use(express.static(path.join(__dirname, '../frontend/build')));
-    // Handle React routing, return all requests to React app
-    app.get('*', function(req, res) {
-    console.log(path.join(__dirname, '../frontend/build', 'index.html'));
-      res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
-    });
+    // // Handle React routing, return all requests to React app
+    // app.get('*', function(req, res) {
+    //   console.log(path.join(__dirname, '../frontend/build', 'index.html'));
+    //   res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+    // });
   }
-
+  
   // Listening
   const host = process.env.HOST || '127.0.0.1';
   const port = process.env.PORT || 8080;
