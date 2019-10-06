@@ -4,7 +4,7 @@ import { Dropdown} from 'semantic-ui-react';
 class DropdownStatus extends React.Component {
     state = {
         options: [
-            { key: '1', text: 'Trwające', value:'created' },
+            { key: '1', text: 'Trwające', value:'pending' },
             { key: '2', text: 'Zakończone', value:'closed'}
           ]
       }

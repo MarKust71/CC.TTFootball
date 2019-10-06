@@ -19,6 +19,7 @@ const AppBar = () => {
         <Menu.Item as={Link} name="PANkarzyki" to="/" />
 
         {isLogged && (
+          <>
           <Menu.Menu>
             <Menu.Item as={NavLink} name="Główna" to="/" activeClassName="active" exact />
             <Menu.Item as={NavLink} name="Terminarz" to="/Schedule" activeClassName="active" />
@@ -26,8 +27,10 @@ const AppBar = () => {
             <Menu.Item as={NavLink} name="Drużyny" to="/Teams" activeClassName="active" />
             <Menu.Item as={NavLink} name="Nowa Liga" to="/NewLeague" activeClassName="active" />
           </Menu.Menu>
+          <Menu.Item as={Link} name="Wyjdź" to="/" onClick={handleLogout} position="right" />
+          </>
         )}
-        <Menu.Item as={Link} name="Wyjdź" to="/" onClick={handleLogout} position="right" />
+        
       </Menu>
     </div>
   );
