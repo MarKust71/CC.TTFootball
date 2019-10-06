@@ -1,15 +1,26 @@
-import React, { Component } from 'react'
-import { Menu, Icon } from 'semantic-ui-react'
-
-// const me = JSON.parse(localStorage.me);
+import React, { Component } from 'react';
+import { Menu, Icon } from 'semantic-ui-react';
+import Store from '../../Store';
+import News from './News'
 
 class TopMenu extends Component {
   state = { activeItem: 'news' }
+
+  static contextType = Store;
+
+  componentDidMount() {
+    this.setState(() => { return { isMe: this.context.me }; });
+    console.log(this)
+    console.log(this.context.me);
+  }
 
   handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
   render() {
     const { activeItem } = this.state
+
+    // console.log(me);
+    // console.log(this);
 
     return (
       <div>

@@ -3,7 +3,7 @@ import axios from 'axios';
 import Store from '../../Store';
 
 class Teams extends React.Component {
-  
+
   constructor(props) {
     super(props);
     this.state = {
@@ -14,8 +14,8 @@ class Teams extends React.Component {
   static contextType = Store;
 
   componentDidMount() {
-    this.setState( () => { return { isMe: !!this.context.me }; } );
-    // console.log('Teams->', this.context);
+    this.setState(() => { return { isMe: !!this.context.me }; });
+    console.log('Teams->', this.context);
   }
 
   async getUsers(division = '') {
@@ -31,11 +31,13 @@ class Teams extends React.Component {
       }
     ).then(
       (res) => {
-        this.users = res.data.map( (el) => { return {
-          key: el._id,
-          value: `${el.surname}, ${el.name}`,
-          text: `${el._id}: ${el.surname || '(brak)'}, ${el.name || '(brak)'}`
-        }; } ).sort( (a, b) => { return (a.text.toLowerCase() < b.text.toLowerCase()) ? -1 : 1; } );
+        this.users = res.data.map((el) => {
+          return {
+            key: el._id,
+            value: `${el.surname}, ${el.name}`,
+            text: `${el._id}: ${el.surname || '(brak)'}, ${el.name || '(brak)'}`
+          };
+        }).sort((a, b) => { return (a.text.toLowerCase() < b.text.toLowerCase()) ? -1 : 1; });
       },
       (err) => { console.log('getUsers->', err.errmsg); }
     )
@@ -54,32 +56,32 @@ class Teams extends React.Component {
         }
       }
     ).then(
-      (res) => { 
-        switch(resType) {
+      (res) => {
+        switch (resType) {
           case 'names':
-            ret = res.data.map( (el) => { return el.name; } );
+            ret = res.data.map((el) => { return el.name; });
             break;
           case 'forSelect':
             if (this.context.me.role === 'admin') {
-              ret = res.data.map( (el) => { 
+              ret = res.data.map((el) => {
                 return {
                   key: el._id,
                   value: el.name,
                   text: el.name
-                }; 
-              } );
+                };
+              });
             } else {
               ret = res.data
-                .filter( (el) => { 
-                  return (el.players.first._id === this.context.me._id) || (el.players.second._id === this.context.me._id) ; 
-                } )
-                .map( (el) => { 
-                return {
-                  key: el._id,
-                  value: el.name,
-                  text: el.name
-                }; 
-              } );
+                .filter((el) => {
+                  return (el.players.first._id === this.context.me._id) || (el.players.second._id === this.context.me._id);
+                })
+                .map((el) => {
+                  return {
+                    key: el._id,
+                    value: el.name,
+                    text: el.name
+                  };
+                });
               // if (ret.length === 0) {
               //   ret = [{
               //     key: '0',
@@ -93,20 +95,20 @@ class Teams extends React.Component {
             if (this.context.me.role === 'admin') {
               ret = res.data;
             } else {
-              ret = res.data.filter( (el) => { 
-                return (el.players.first._id === this.context.me._id) || (el.players.second._id === this.context.me._id) ; 
-              } );
+              ret = res.data.filter((el) => {
+                return (el.players.first._id === this.context.me._id) || (el.players.second._id === this.context.me._id);
+              });
             }
             break;
           default:
             if (this.context.me.role === 'admin') {
-              ret = res.data.map( (el) => { return el.name; } );
+              ret = res.data.map((el) => { return el.name; });
             } else {
               ret = res.data
-                .filter( (el) => { 
-                  return (el.players.first._id === this.context.me._id) || (el.players.second._id === this.context.me._id) ; 
-                } )
-                .map( (el) => { return el.name; } );
+                .filter((el) => {
+                  return (el.players.first._id === this.context.me._id) || (el.players.second._id === this.context.me._id);
+                })
+                .map((el) => { return el.name; });
             }
         };
       },
@@ -117,56 +119,59 @@ class Teams extends React.Component {
 
   _gt = async (type) => {
     let ret;
-    try { 
-      ret = await this._getTeams(type); 
-      switch(type) {
+    try {
+      ret = await this._getTeams(type);
+      switch (type) {
         case 'forSelect':
           this.teams = ret;
-          this.teams.sort( (a, b) => { return (a.text.toLowerCase() < b.text.toLowerCase()) ? -1 : 1; } ); 
-          this.setState( 
-            () => { if (this.teams.length === 0) {
-              return { 
-                team: '',
-                teamId: ''
+          this.teams.sort((a, b) => { return (a.text.toLowerCase() < b.text.toLowerCase()) ? -1 : 1; });
+          this.setState(
+            () => {
+              if (this.teams.length === 0) {
+                return {
+                  team: '',
+                  teamId: ''
+                }
+              } else {
+                return {
+                  team: this.teams[0].text,
+                  teamId: this.teams[0].key
+                }
               }
-            } else {
-              return { 
-                team: this.teams[0].text,
-                teamId:  this.teams[0].key
-              }
-            }}
+            }
           );
           break;
         case 'all':
           this.teamsAll = ret;
-          this.teamsAll.sort( (a, b) => { return (a.name.toLowerCase() < b.name.toLowerCase()) ? -1 : 1; } ); 
-          this.setState( 
-            () => { if (this.teamsAll.length === 0) {
-              return { 
-                players: {
-                  first: {
-                    _id: '',
-                    name: ''
+          this.teamsAll.sort((a, b) => { return (a.name.toLowerCase() < b.name.toLowerCase()) ? -1 : 1; });
+          this.setState(
+            () => {
+              if (this.teamsAll.length === 0) {
+                return {
+                  players: {
+                    first: {
+                      _id: '',
+                      name: ''
+                    },
+                    second: {
+                      _id: '',
+                      name: ''
+                    }
                   },
-                  second: {
-                    _id: '',
-                    name: ''
-                  }
-                },
-                statistics: {
-                  matches: {
-                    won: 0,
-                    lost: 0
+                  statistics: {
+                    matches: {
+                      won: 0,
+                      lost: 0
+                    },
+                    goals: {
+                      for: 0,
+                      against: 0
+                    }
                   },
-                  goals: {
-                    for: 0,
-                    against: 0
-                  }
-                },
-                leagues: []
-              }
-            } else {
-                return { 
+                  leagues: []
+                }
+              } else {
+                return {
                   players: {
                     first: {
                       _id: this.teamsAll[0].players.first._id,
