@@ -42,6 +42,7 @@ const main = async () => {
   app.use(logger);
 
   // Routes
+  //
   app.use('/', routerHome);
   app.use('/api/register', routerRegister);
   app.use('/api/login', routerLogin);

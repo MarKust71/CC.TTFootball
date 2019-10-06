@@ -58,23 +58,25 @@ class NewLeague extends React.Component {
     return (
       <div className="container">
         <Form onSubmit={this.onFormSubmit}>
-          <Form.Group widths="equal">
+          <Form.Group widths={16}>
             <Form.Input
               name="name"
-              maxLength="30"
               control={Input}
               label="Nazwa"
               placeholder="Jak nazwiesz ligę?"
               onChange={this.handleInputChange}
+              width={12}
             />
-            <DatePicker
-              control={Form.Input}
-              selected={this.state.startDate}
-              onChange={this.handleDateChange}
-              minDate={Date.now()}
-              label="Data startu"
-              placeholderText="Kiedy zaczynacie?"
-            />
+            <Form.Input name="date" label="Data startu">
+              {
+                <DatePicker
+                  selected={this.state.startDate}
+                  onChange={this.handleDateChange}
+                  minDate={Date.now()}
+                  placeholderText="Kiedy zaczynacie?"
+                />
+              }
+            </Form.Input>
           </Form.Group>
           <Form.Input
             name="description"
