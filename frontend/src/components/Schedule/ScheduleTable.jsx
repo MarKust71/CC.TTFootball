@@ -1,18 +1,32 @@
 import React from 'react';
+import axios from 'axios';
 import { Table } from 'semantic-ui-react';
+import TableRow from './TableRow'
 
 class ScheduleTable extends React.Component {
   state = {
     matches: [],
-  };
+    league: ''
+  }
 
-//   fetchLeagues = () => {
-//     return this.props.query().then(resp => resp.json());
-//   };
-
-//   componentDidMount = () => {
-//     this.fetchLeagues().then(leagues => this.setState({ leagues }));
-//   };
+   componentDidUpdate() {
+    if (this.props.league !== '' & this.props.league !== this.state.league) {
+        // this.setState({ league: this.props.league})
+        axios({
+          url: `/api/matches/${this.props.league}/league`,
+          method: 'get',
+          headers: {'x-auth-token': localStorage.getItem('token'),},
+        }).then( async result => {
+          await this.setState({ matches: result.data, league: this.props.league });
+          console.log(result.data)
+        }).catch()
+       
+    }
+    
+   
+    
+  }
+    
 
   render() {
     return (
@@ -20,7 +34,7 @@ class ScheduleTable extends React.Component {
         <Table.Header>
           <Table.Row>
               <Table.HeaderCell key='player1' width={4}>
-                player1
+                Gracz1
               </Table.HeaderCell>
               <Table.HeaderCell key='result1' width={1}>
                 Bramki1
@@ -39,17 +53,13 @@ class ScheduleTable extends React.Component {
               </Table.HeaderCell>
           </Table.Row>
         </Table.Header>
-
         <Table.Body>
-            <Table.Row>
-            <Table.Cell>Champions</Table.Cell>
-            <Table.Cell>1</Table.Cell>
-            <Table.Cell>2</Table.Cell>
-            <Table.Cell>Loosers</Table.Cell>
-            <Table.Cell>20.09.2019</Table.Cell>
-            <Table.Cell>Edytuj</Table.Cell>
-            </Table.Row>
+        {this.state.matches.map(x => (
+            <TableRow key={x._id} data={x} />
+          ))}
         </Table.Body>
+      
+        
       </Table>
     );
   }

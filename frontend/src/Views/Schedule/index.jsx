@@ -1,9 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import {Grid, Segment, Divider} from 'semantic-ui-react';
-import {
-  ScheduleTable, DropdownLeague, DropdownRole, DropdownStatus
-} from '../../components/Schedule';
+import {  ScheduleTable, DropdownLeague, DropdownRole, DropdownStatus} from '../../components/Schedule';
 import Store from '../../Store';
 
 
@@ -19,7 +17,6 @@ const amIPlayingThisLeague = (league, myTeams) => {
     for (let i=0; i < league.teams.length; i++) {
       if (myTeams[y]._id === league.teams[i]._id) {
         result = true;
-        break;
       }
       if (result) break;
     };
@@ -35,7 +32,7 @@ class ScheduleView extends React.Component {
     role: '',
     leagues: [],
     leaguesChoice: [],
-    matches: [],
+    chosenLeague: '',
     teams: []
   }
   
@@ -47,8 +44,8 @@ class ScheduleView extends React.Component {
     await this.setState( {role: value});
     this.onChangeLeagueFilter();
   }
-  onLeagueChange = (e, {value}) =>  {
-    this.setState({ matches: this.state.leagues.find( obj => obj._id === value).matches});  
+  onLeagueChange =  async (e, {value}) =>  {
+    await this.setState({ chosenLeague: value})    
   }
 
   onChangeLeagueFilter = () => {
@@ -106,7 +103,7 @@ class ScheduleView extends React.Component {
             
           </Grid.Column>
           <Grid.Column stretched width={13}>
-            <ScheduleTable/>
+            <ScheduleTable league={this.state.chosenLeague}/>
           </Grid.Column>
         </Grid>
       </Segment>

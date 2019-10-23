@@ -19,6 +19,16 @@ router.get('/:id', async (req, res) => {
   res.json(match);
 });
 
+router.get('/:id/league', async (req, res) => {
+  const { Match } = res.locals.models;
+
+  let matches = await Match
+    .find({ league: req.params.id })
+  if (!matches) return res.status(400).send('Dla takiej ligi mecze nie istnieją!');
+
+  res.json(matches);
+});
+
 router.put('/:id/score', async (req, res) => {
   const now = new Date(Date.now());
   const { Match, User } = res.locals.models;
