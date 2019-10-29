@@ -19,7 +19,7 @@ class Register extends React.Component {
   getDivisions = async () => {
     try {
       const { data } = await axios.get('/api/division');
-      console.log(data);
+      // console.log(data);
       const divisions = data.filter(({ status }) => status !== 'deleted').map(({ _id }) => ({ value: _id, text: _id }));
       this.setState({ divisions });
     } catch (ex) {

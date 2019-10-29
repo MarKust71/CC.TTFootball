@@ -10,7 +10,7 @@ const prepareTeams = (name, teams, league) => {
   const unpackPlayer = team => {
     return team.players.first === name ? team.players.second : team.players.first;
   };
-  console.log(league);
+  // console.log(league);
   const isPlayerInLeague = player => {
     for (let { team } of league.teams) {
       if (player === team.players.first || player === team.players.second) {

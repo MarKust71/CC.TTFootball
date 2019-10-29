@@ -105,92 +105,10 @@ class TeamView extends Teams {
   }
 
   onClickVerify = async (e, d) => {
-    const teamId = this.state.teamId;
-    // let teams = [];
-    // let user;
-    let userId;
-    
-    userId = this.state.players.first._id;
-    await this._updateUserTeam(userId, teamId);
-
-    // user = await axios({
-    //   url: `/api/user/${userId}`,
-    //   method: 'get',
-    //   data: {},
-    //   headers: {
-    //     'x-auth-token': localStorage.token,
-    //   }
-    // });
-
-    // teams = [...user.data.teams];
-    // // console.log('tu->', teams.indexOf(teamId));
-    // if (user.data.teams.indexOf(teamId) < 0) { teams.push(teamId); 
-    //   // console.log('trututu->', teams, teams.indexOf(teamId));
-    //   user.data.teams = [...teams];
-    //   // console.log(user.data);
-    //   user = await axios({
-    //     url: `/api/user/${userId}`,
-    //     method: 'put',
-    //     data: { teams: teams},
-    //     headers: {
-    //       'x-auth-token': localStorage.token,
-    //     }
-    //   });
-    // };
-
-    userId = this.state.players.second._id;
-    await this._updateUserTeam(userId, teamId);
-
-    // user = await axios({
-    //   url: `/api/user/${userId}`,
-    //   method: 'get',
-    //   data: {},
-    //   headers: {
-    //     'x-auth-token': localStorage.token,
-    //   }
-    // });
-
-    // teams = [...user.data.teams];
-    // // console.log('tu->', teams.indexOf(teamId));
-    // if (user.data.teams.indexOf(teamId) < 0) { teams.push(teamId); 
-    //   // console.log('trututu->', teams, teams.indexOf(teamId));
-    //   user.data.teams = [...teams];
-    //   // console.log(user.data);
-    //   user = await axios({
-    //     url: `/api/user/${userId}`,
-    //     method: 'put',
-    //     data: { teams: teams},
-    //     headers: {
-    //       'x-auth-token': localStorage.token,
-    //     }
-    //   });
-    // };
-  }
-
-  _updateUserTeam = async (userId, teamId) => {
-    let user = await axios({
-      url: `/api/user/${userId}`,
-      method: 'get',
-      data: {},
-      headers: {
-        'x-auth-token': localStorage.token,
-      }
-    });
-    const teams = [...user.data.teams];
-    // console.log('tu->', teams.indexOf(teamId));
-    if (user.data.teams.indexOf(teamId) < 0) { teams.push(teamId); 
-      // console.log('trututu->', teams, teams.indexOf(teamId));
-      user.data.teams = [...teams];
-      // console.log(user.data);
-      user = await axios({
-        url: `/api/user/${userId}`,
-        method: 'put',
-        data: { teams: teams},
-        headers: {
-          'x-auth-token': localStorage.token,
-        }
-      });
-    };
+    // sprawdza i ew. uzupełnia listy 'teams', w których występuje 'user'
+    // dodatkowy button w komponencie - zakomentowany
+    await this._updateUserTeams(this.state.players.first._id, this.state.teamId);
+    await this._updateUserTeams(this.state.players.second._id, this.state.teamId);
   }
 
   render() {
@@ -276,7 +194,7 @@ class TeamView extends Teams {
           </Segment>
         </Segment.Group>
         <Form>
-          { this.state.editable && <Form.Button name='btnVerify' onClick={this.onClickVerify} floated='right'>Weryfikuj</Form.Button> }
+          {/* { this.state.editable && <Form.Button name='btnVerify' onClick={this.onClickVerify} floated='right'>Weryfikuj</Form.Button> } */}
           <Form.Group>
             { !this.state.editable && <Form.Button name="btnEdit" onClick={this.onClickEdit} floated='left'>Edytuj</Form.Button> }
             { this.state.editable && <Form.Button name="btnSave" onClick={this.onFormSubmit} floated='left'>Zapisz</Form.Button> }

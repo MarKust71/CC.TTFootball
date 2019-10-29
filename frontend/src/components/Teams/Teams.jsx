@@ -210,6 +210,29 @@ class Teams extends React.Component {
     ];
   }
 
+  _updateUserTeams = async (userId, teamId) => {
+    let user = await axios({
+      url: `/api/user/${userId}`,
+      method: 'get',
+      data: {},
+      headers: {
+        'x-auth-token': localStorage.token,
+      }
+    });
+    const teams = [...user.data.teams];
+    if (user.data.teams.indexOf(teamId) < 0) { teams.push(teamId); 
+      user.data.teams = [...teams];
+      user = await axios({
+        url: `/api/user/${userId}`,
+        method: 'put',
+        data: { teams: teams},
+        headers: {
+          'x-auth-token': localStorage.token,
+        }
+      });
+    };
+  }
+
 }
 
 export default Teams;

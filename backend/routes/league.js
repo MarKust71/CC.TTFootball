@@ -74,7 +74,7 @@ router.get('/:id/matches', async (req, res) => {
 router.post('/', auth, async (req, res) => {
   const { League } = res.locals.models;
 
-  console.log(req.body);
+  // console.log(req.body);
 
   function validate(req) {
     const schema = {

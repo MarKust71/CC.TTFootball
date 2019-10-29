@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { auth, getUser } = require('../middleware/auth');
 
 router.get('/', (req, res) => {
   const Model = res.locals.models.Team;
@@ -29,7 +30,7 @@ router.put('/:id', (req, res) => {
     if (!result) {
       res.status(404).send(`Nie znaleziono drużyny o _ID ${req.params.id}.`);
     } else {
-      console.log(result);
+      // console.log(result);
       Model.findByIdAndUpdate(req.params.id, req.body, { new: true }).then(
         r => {
           res.send(`Zaktualizowano dane drużyny ${r.name}:\n${r}`);
@@ -43,8 +44,14 @@ router.put('/:id', (req, res) => {
   });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   const Model = res.locals.models.Team;
+  const user = await getUser(res);
+
+console.log(user);
+
+  // if (!user) return res.status(401).send('Błąd tokena');
+
   getTeams(Model, req.params.id).then(result => {
     if (!result) {
       res.status(404).send(`Nie znaleziono drużyny o _ID ${req.params.id}.`);
@@ -61,20 +68,24 @@ router.delete('/:id', (req, res) => {
   });
 });
 
-router.post('/', (req, res) => {
+router.post('/', auth, async (req, res) => {
   const Model = res.locals.models.Team;
   const teamName = req.body.name;
   const playersFirst = req.body.players.first;
   const playersSecond = req.body.players.second;
   const status = req.body.status;
+
+  const user = await getUser(res);
+  if (!user) return res.status(401).send('Błąd tokena');
+
   createTeam(Model, teamName, playersFirst, playersSecond, status).then(
     result => {
-      console.log('res-> ', result);
+      // console.log('res-> ', result);
       res.send(result);
     },
     err => {
-      console.log('Something went wrong (POST)...', err);
-      res.status(400).send('Bed request');
+      console.log('Coś poszło nie tak (POST)...', err);
+      res.status(400).send('Bad request');
     },
   );
 });
@@ -87,11 +98,11 @@ async function createTeam(Team, name, player1, player2, status) {
   });
   return await team.save().then(
     res => {
-      console.log(res);
+      // console.log(res);
       return res;
     },
     err => {
-      console.log('Something went wrong (createTeam):', err.errmsg);
+      console.log('Coś poszło nie tak (createTeam):', err.errmsg);
       return err.errmsg;
     },
   );
