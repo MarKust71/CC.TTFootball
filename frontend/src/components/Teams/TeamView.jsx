@@ -1,7 +1,8 @@
 import React from 'react';
+import axios from 'axios';
 import Teams from './Teams';
 import ComponentTeamViewLeagues from './TeamViewLeagues'
-import { Form, Segment, Label, Input, Table, Divider, Header, Icon, Message } from 'semantic-ui-react';
+import { Form, Segment, Label, Input, Table, Divider, Header, Icon, Message, Dropdown } from 'semantic-ui-react';
 import Store from '../../Store';
 
 class TeamView extends Teams {
@@ -103,121 +104,187 @@ class TeamView extends Teams {
     e.preventDefault();
   }
 
+  onClickVerify = async (e, d) => {
+    const teamId = this.state.teamId;
+    // let teams = [];
+    // let user;
+    let userId;
+    
+    userId = this.state.players.first._id;
+    await this._updateUserTeam(userId, teamId);
+
+    // user = await axios({
+    //   url: `/api/user/${userId}`,
+    //   method: 'get',
+    //   data: {},
+    //   headers: {
+    //     'x-auth-token': localStorage.token,
+    //   }
+    // });
+
+    // teams = [...user.data.teams];
+    // // console.log('tu->', teams.indexOf(teamId));
+    // if (user.data.teams.indexOf(teamId) < 0) { teams.push(teamId); 
+    //   // console.log('trututu->', teams, teams.indexOf(teamId));
+    //   user.data.teams = [...teams];
+    //   // console.log(user.data);
+    //   user = await axios({
+    //     url: `/api/user/${userId}`,
+    //     method: 'put',
+    //     data: { teams: teams},
+    //     headers: {
+    //       'x-auth-token': localStorage.token,
+    //     }
+    //   });
+    // };
+
+    userId = this.state.players.second._id;
+    await this._updateUserTeam(userId, teamId);
+
+    // user = await axios({
+    //   url: `/api/user/${userId}`,
+    //   method: 'get',
+    //   data: {},
+    //   headers: {
+    //     'x-auth-token': localStorage.token,
+    //   }
+    // });
+
+    // teams = [...user.data.teams];
+    // // console.log('tu->', teams.indexOf(teamId));
+    // if (user.data.teams.indexOf(teamId) < 0) { teams.push(teamId); 
+    //   // console.log('trututu->', teams, teams.indexOf(teamId));
+    //   user.data.teams = [...teams];
+    //   // console.log(user.data);
+    //   user = await axios({
+    //     url: `/api/user/${userId}`,
+    //     method: 'put',
+    //     data: { teams: teams},
+    //     headers: {
+    //       'x-auth-token': localStorage.token,
+    //     }
+    //   });
+    // };
+  }
+
+  _updateUserTeam = async (userId, teamId) => {
+    let user = await axios({
+      url: `/api/user/${userId}`,
+      method: 'get',
+      data: {},
+      headers: {
+        'x-auth-token': localStorage.token,
+      }
+    });
+    const teams = [...user.data.teams];
+    // console.log('tu->', teams.indexOf(teamId));
+    if (user.data.teams.indexOf(teamId) < 0) { teams.push(teamId); 
+      // console.log('trututu->', teams, teams.indexOf(teamId));
+      user.data.teams = [...teams];
+      // console.log(user.data);
+      user = await axios({
+        url: `/api/user/${userId}`,
+        method: 'put',
+        data: { teams: teams},
+        headers: {
+          'x-auth-token': localStorage.token,
+        }
+      });
+    };
+  }
+
   render() {
     return (
       <>
-        <Segment.Group horizontal width={12}>
-        <Segment>
-          <Form onSubmit={this.onFormSubmit}></Form>
+        { this.state.isMe && ( <>
+        <Segment.Group width={12}>
+          <Segment>
+            { this.context.me.role === 'player' && <Label>Twoje drużyny:</Label> }
+            { this.context.me.role === 'admin' && <Label>Zgłoszone drużyny:</Label> }
+            <Dropdown 
+            key="teamsSelect"
+            name="teamsSelect"
+            placeholder="Wybierz z listy..."
+            selection value={this.state.team} 
+            options={ this.teams } 
+            onChange={ (e, v) => this.onSelectChange(e, v) } 
+            />
+          </Segment>
+          <Segment>
             <Form.Group>
-              <Form.Field>
-                <Label>Zgłoszone drużyny</Label>
-                {/* <Form.Group> */}
-                <Form.Dropdown 
-                  key="teamsSelect"
-                  name="teamsSelect"
-                  // placeholder="puknij gracza nr 1..."    // potrzebne, kiedy nie ma domyślnej wartości
-                  selection value={this.state.team} 
-                  options={ this.teams } 
-                  onChange={ (e, v) => this.onSelectChange(e, v) } 
-                />
-                {/* </Form.Group> */}
-              </Form.Field>
+              <Divider horizontal>
+                <Header as='h4'>
+                  <Icon name='group' />
+                  Gracze
+                </Header>
+              </Divider>
+              <Input 
+                label="Gracz 1:"
+                value={ this.state.players.first.name }
+                readOnly={ true }
+              />
+              <Input 
+                label="Gracz 2:"
+                value={ this.state.players.second.name }
+                readOnly={ true }
+              />
             </Form.Group>
-        </Segment>
-        <Segment>
-          {/* <Input 
-            label="_id:"
-            value={ this.state.teamId } 
-            readOnly={ true }
-          />
-          <br />
-          <br /> */}
-          <Form.Group>
+            <br />
             <Divider horizontal>
               <Header as='h4'>
-                <Icon name='group' />
-                Gracze
+                <Icon name='columns' />
+                Ligi
               </Header>
             </Divider>
-            <Input 
-              label="Gracz 1:"
-              value={ this.state.players.first.name }
-              readOnly={ true }
-            />
-            <Input 
-              label="Gracz 2:"
-              value={ this.state.players.second.name }
-              readOnly={ true }
-            />
+            {this.state.leagues.length === 0 && (
+              <Message info>
+                <p>Wygląda na to, że drużyny nie przypisano do żadnej ligi</p>
+              </Message>
+            )}
+            {this.state.leagues.length !== 0 && (
+              <ComponentTeamViewLeagues leagues={this.state.leagues}/>
+            )}
+            <br />
+            <Divider horizontal>
+              <Header as='h4'>
+                <Icon name='bar chart' />
+                Statystyka
+              </Header>
+            </Divider>
+            <Table celled textAlign={"center"}>
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell colSpan={2}>Mecze</Table.HeaderCell>
+                  <Table.HeaderCell colSpan={2}>Bramki</Table.HeaderCell>
+                </Table.Row>
+                <Table.Row>
+                  <Table.HeaderCell>Wygrane</Table.HeaderCell>
+                  <Table.HeaderCell>Przegrane</Table.HeaderCell>
+                  <Table.HeaderCell>Zdobyte</Table.HeaderCell>
+                  <Table.HeaderCell>Stracone</Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                <Table.Row>
+                  <Table.Cell>{this.state.statistics.matches.won}</Table.Cell>
+                  <Table.Cell>{this.state.statistics.matches.lost}</Table.Cell>
+                  <Table.Cell>{this.state.statistics.goals.for}</Table.Cell>
+                  <Table.Cell>{this.state.statistics.goals.against}</Table.Cell>
+                </Table.Row>
+              </Table.Body>
+            </Table>
+          </Segment>
+        </Segment.Group>
+        <Form>
+          { this.state.editable && <Form.Button name='btnVerify' onClick={this.onClickVerify} floated='right'>Weryfikuj</Form.Button> }
+          <Form.Group>
+            { !this.state.editable && <Form.Button name="btnEdit" onClick={this.onClickEdit} floated='left'>Edytuj</Form.Button> }
+            { this.state.editable && <Form.Button name="btnSave" onClick={this.onFormSubmit} floated='left'>Zapisz</Form.Button> }
+            { this.state.editable && <Form.Button name="btnCancel" onClick={this.onClickCancel}>Anuluj</Form.Button>}
           </Form.Group>
-          <br />
-          <Divider horizontal>
-            <Header as='h4'>
-              <Icon name='columns' />
-              Ligi
-            </Header>
-          </Divider>
-          {this.state.leagues.length === 0 && (
-            <Message info>
-              <p>Wygląda na to, że drużyny nie przypisano do żadnej ligi</p>
-            </Message>
-          )}
-          {this.state.leagues.length !== 0 && (
-            <ComponentTeamViewLeagues leagues={this.state.leagues}/>
-          )}
-          <br />
-          <Divider horizontal>
-            <Header as='h4'>
-              <Icon name='bar chart' />
-              Statystyka
-            </Header>
-          </Divider>
-          <Table celled textAlign={"center"}>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell colSpan={2}>Mecze</Table.HeaderCell>
-                <Table.HeaderCell colSpan={2}>Bramki</Table.HeaderCell>
-              </Table.Row>
-              <Table.Row>
-                <Table.HeaderCell>Wygrane</Table.HeaderCell>
-                <Table.HeaderCell>Przegrane</Table.HeaderCell>
-                <Table.HeaderCell>Zdobyte</Table.HeaderCell>
-                <Table.HeaderCell>Stracone</Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              <Table.Row>
-                <Table.Cell>{this.state.statistics.matches.won}</Table.Cell>
-                <Table.Cell>{this.state.statistics.matches.lost}</Table.Cell>
-                <Table.Cell>{this.state.statistics.goals.for}</Table.Cell>
-                <Table.Cell>{this.state.statistics.goals.against}</Table.Cell>
-              </Table.Row>
-            </Table.Body>
-            {/* <Table.Footer>
-              <Table.Row>
-                <Table.HeaderCell>sum</Table.HeaderCell>
-                <Table.HeaderCell>sum</Table.HeaderCell>
-                <Table.HeaderCell>sum</Table.HeaderCell>
-                <Table.HeaderCell>sum</Table.HeaderCell>
-              </Table.Row>
-            </Table.Footer> */}
-          </Table>
-        </Segment>
-      </Segment.Group>
-      <Form>
-        <Form.Group>
-          { !this.state.editable && <Form.Button name="btnEdit" onClick={this.onClickEdit}>Edytuj</Form.Button> }
-          { this.state.editable && (
-            <>
-              <Form.Button name="btnSave" onClick={this.onFormSubmit}>Zapisz</Form.Button>
-              <Form.Button name="btnCancel" onClick={this.onClickCancel}>Anuluj</Form.Button>
-            </>
-          ) }
-        </Form.Group>
-      </Form>
-    </>
-  )
+        </Form>
+      </>)}
+    </> )
   };
 }
 
