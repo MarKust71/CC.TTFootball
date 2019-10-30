@@ -47,10 +47,10 @@ const main = async () => {
   app.use('/api/register', routerRegister);
   app.use('/api/login', routerLogin);
   app.use('/api/users', routerUsers);
+  // app.use('/api/users', routerUsers);
   app.use('/api/teams', routerTeams);
   app.use('/api/leagues', routerLeague);
   app.use('/api/matches', routerMatch);
-  app.use('/api/users', routerUsers);
   app.use('/api/user', routerUser);
   app.use('/api/division', routerDivision);
 

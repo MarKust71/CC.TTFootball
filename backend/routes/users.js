@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/:id/teams', async (req, res) => {
+router.get('/:id/:team', async (req, res) => {
   const user = await getUser(res, req.params.id).populate({ path: 'teams', match: { status: 'active' } });
   res.json(user.teams.map(x => _.pick(x, ['players', 'name', '_id', 'leagues', 'statistics'])));
 });

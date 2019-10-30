@@ -9,4 +9,12 @@ router.get('/:id', async (req, res) => {
   res.send(user);
 });
 
+router.put('/:id', async (req, res) => {
+  const userId = req.params.id;
+  const { User } = res.locals.models;
+  console.log(userId, req.body);
+  const user = await User.findByIdAndUpdate(userId, req.body, {new: true});
+  console.log(user);
+});
+
 module.exports = router;

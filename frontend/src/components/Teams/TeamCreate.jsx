@@ -200,9 +200,14 @@ class TeamCreate extends Teams {
       },
     }).then(
       res => {
+        // Modyfikuje tablice 'teams' dla playerów - członków drużyny
+        this._updateUserTeams(res.data.players.first, res.data._id);
+        this._updateUserTeams(res.data.players.second, res.data._id);
         this.setState(() => {
           return {
             postSuccess: true,
+            newTeam: '',
+            player2: '',
             infoHeader: 'BRAWO!',
             infoMessage: 'Drużyna została zapisana'
           };
