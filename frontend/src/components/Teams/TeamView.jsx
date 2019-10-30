@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import Teams from './Teams';
 import ComponentTeamViewLeagues from './TeamViewLeagues'
 import { Form, Segment, Label, Input, Table, Divider, Header, Icon, Message, Dropdown } from 'semantic-ui-react';
