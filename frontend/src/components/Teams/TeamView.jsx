@@ -1,6 +1,9 @@
 import React from 'react';
+import axios from 'axios';
 import Teams from './Teams';
+import setHeaders from '../../utils/setHeaders';
 import ComponentTeamViewLeagues from './TeamViewLeagues'
+import AskModal from '../Modals/AskModal';
 import { Form, Segment, Label, Input, Table, Divider, Header, Icon, Message, Dropdown } from 'semantic-ui-react';
 import Store from '../../Store';
 
@@ -50,8 +53,38 @@ class TeamView extends Teams {
 
   componentDidMount() {
     this.setState( () => { return { isMe: !!this.context.me }; } );
-    // console.log('TeamsView->', this.context);
+    // console.log('TeamsView->', this.context.me);
   }
+
+  openModalFactory = () => {
+    this.setState( () => { return {
+      askModalProps: {
+        header: `Czy usunąć zespół "${this.state.team}"?`,
+        positive: 'Tak',
+        negative: 'Nie',
+        open: true,
+        onClose: this.closeModal,
+        // onPositive: () => {
+        //   axios({
+        //     url: `/api/leagues/${this.props.league.name}/team`,
+        //     method: 'POST',
+        //     ...setHeaders(),
+        //     data: { id: team._id },
+        //   })
+        //     .then(() => {
+        //       this.props.refresh();
+        //     })
+        //     .finally(() => {
+        //       this.props.onClose();
+        //     });
+        // },
+      },
+    }; } );
+  };
+
+  closeModal = () => {
+    this.setState({ askModalProps: { open: false } });
+  };
 
   onSelectChange = (e, { value, name }) => {
     const index = this.teams.map( (el) => { return el.value; } ).indexOf(value);
@@ -101,13 +134,17 @@ class TeamView extends Teams {
 
   onFormSubmit = (e, d) => {
     e.preventDefault();
-  }
+  };
 
   onClickVerify = async (e, d) => {
     // sprawdza i ew. uzupełnia listy 'teams', w których występuje 'user'
     // dodatkowy button w komponencie - zakomentowany
     await this._updateUserTeams(this.state.players.first._id, this.state.teamId);
     await this._updateUserTeams(this.state.players.second._id, this.state.teamId);
+  };
+
+  onClickDelete = () => {
+    this.openModalFactory();
   }
 
   render() {
@@ -196,11 +233,13 @@ class TeamView extends Teams {
           {/* { this.state.editable && <Form.Button name='btnVerify' onClick={this.onClickVerify} floated='right'>Weryfikuj</Form.Button> } */}
           <Form.Group>
             { !this.state.editable && <Form.Button name="btnEdit" onClick={this.onClickEdit} floated='left'>Edytuj</Form.Button> }
+            { (!this.state.editable && this.context.me.role === 'admin') && <Form.Button name="btnDelete" onClick={this.onClickDelete} floated='left'>Usuń</Form.Button> }
             { this.state.editable && <Form.Button name="btnSave" onClick={this.onFormSubmit} floated='left'>Zapisz</Form.Button> }
             { this.state.editable && <Form.Button name="btnCancel" onClick={this.onClickCancel}>Anuluj</Form.Button>}
           </Form.Group>
         </Form>
       </>)}
+      <AskModal {...this.state.askModalProps} />
     </> )
   };
 }
