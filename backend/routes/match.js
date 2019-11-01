@@ -24,6 +24,8 @@ router.get('/:id/league', async (req, res) => {
 
   let matches = await Match
     .find({ league: req.params.id })
+    .populate('teams.first', 'name players')
+    .populate('teams.second', 'name players')
   if (!matches) return res.status(400).send('Dla takiej ligi mecze nie istnieją!');
 
   res.json(matches);

@@ -10,7 +10,7 @@ class DropdownStatus extends React.Component {
       }
     render() {
         return (
-            <Dropdown selection 
+            <Dropdown selection fluid
                 options={this.state.options} 
                 placeholder='Aktualne/zakończone?'  
                 onChange={this.props.triggerChange} 

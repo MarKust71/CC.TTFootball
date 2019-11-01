@@ -6,7 +6,7 @@ class DropdownLeague extends React.Component {
    
     render() {
         return( 
-            <Dropdown selection 
+            <Dropdown selection fluid
             options={this.props.options} 
             placeholder='Liga'  
             onChange={this.props.triggerChange} 

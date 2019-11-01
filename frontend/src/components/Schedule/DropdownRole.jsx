@@ -11,7 +11,7 @@ class DropdownRole extends React.Component {
       }
     render() {
         return (
-            <Dropdown selection 
+            <Dropdown selection fluid 
                 options={this.state.options} 
                 placeholder='Które ligi?'  
                 onChange={this.props.triggerChange} 

@@ -15,7 +15,7 @@ const amIPlayingThisLeague = (league, myTeams) => {
   let result = false;
   for (let y = 0; y < myTeams.length; y++) {
     for (let i=0; i < league.teams.length; i++) {
-      if (myTeams[y]._id === league.teams[i]._id) {
+      if (myTeams[y]._id === league.teams[i].team) {
         result = true;
       }
       if (result) break;
@@ -45,18 +45,19 @@ class ScheduleView extends React.Component {
     this.onChangeLeagueFilter();
   }
   onLeagueChange =  async (e, {value}) =>  {
-    await this.setState({ chosenLeague: value})    
+    await this.setState({ chosenLeague: value})   
   }
 
   onChangeLeagueFilter = () => {
     let tempLeagues = [];
+    
     if (this.state.role === 'attending')
       tempLeagues = this.state.leagues.filter( obj => amIPlayingThisLeague(obj, this.state.teams) && obj.status === this.state.status)
     else if (this.state.role === 'mygames') {
       tempLeagues = this.state.leagues.filter( obj =>obj.owner === this.context.me._id && obj.status === this.state.status )
     }
     else tempLeagues = this.state.leagues.filter( obj => obj.status === this.state.status) 
-    this.setState({ leaguesChoice: tempLeagues.map(obj => { return {key: obj._id, value: obj._id, text: obj.name}})
+    this.setState({ chosenLeague: '', leaguesChoice: tempLeagues.map((obj, index) => { return {key: index, value: obj._id, text: obj.name}})
     });
   }
 
@@ -103,7 +104,9 @@ class ScheduleView extends React.Component {
             
           </Grid.Column>
           <Grid.Column stretched width={13}>
-            <ScheduleTable league={this.state.chosenLeague}/>
+            {this.state.chosenLeague && (
+              <ScheduleTable league={this.state.chosenLeague} teams={this.state.teams} role ={this.state.role}/>
+            )}
           </Grid.Column>
         </Grid>
       </Segment>
