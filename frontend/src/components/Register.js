@@ -3,6 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { Button, Checkbox, Form, Segment } from 'semantic-ui-react';
 import Store from '../Store';
 import NegativeMessage from './NegativeMessage';
+import axios from 'axios';
 class Register extends React.Component {
   state = {
     nickname: '',
@@ -58,7 +59,7 @@ class Register extends React.Component {
     });
 
     if (response.status === 200) {
-      alert('Konto utworzone, teraz weź się zaloguj');
+      alert('Konto utworzone');
       const response = await fetch('api/login',{
         method: 'POST',
         body: JSON.stringify({
