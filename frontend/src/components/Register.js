@@ -1,20 +1,26 @@
 import React from 'react';
-import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 import { Button, Checkbox, Form, Segment } from 'semantic-ui-react';
-
+import Store from '../Store';
+import NegativeMessage from './NegativeMessage';
 class Register extends React.Component {
   state = {
+    nickname: '',
+    email: '',
+    password: '',
+    passwordr: '',
+    name: '',
+    surname: '',
     division: 'WRO',
     divisions: [
       { text: 'Wrocek', value: 'WRO', selected: true },
       { text: 'Warszawka', value: 'WAR' },
       { text: 'Kraków', value: 'KRA' },
     ],
+    invalidData: false
   };
 
-  componentDidMount() {
-    this.getDivisions();
-  }
+  static contextType = Store;
 
   getDivisions = async () => {
     try {
@@ -27,8 +33,8 @@ class Register extends React.Component {
     }
   };
 
+ 
   onFormChange = ({ target }, { name, value }) => {
-    //zamiane na controlled, walidacje i pierdoly zostawiam Tobie Piotrek
     this.setState({ [name]: value });
   };
 
@@ -53,22 +59,37 @@ class Register extends React.Component {
 
     if (response.status === 200) {
       alert('Konto utworzone, teraz weź się zaloguj');
+      const response = await fetch('api/login',{
+        method: 'POST',
+        body: JSON.stringify({
+          email: email.value,
+          password: pass.value
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const token = response.headers.get('x-auth-token');
+      localStorage.setItem('token',token);
+      await response.json();
+      this.context.changeStore('isLogged', true);
     } else {
-      alert('Error');
+      this.setState({ invalidData: true});
     }
   };
 
   render() {
+    if (this.context.isLogged) return <Redirect to="/" />;
     return (
       <Segment>
-        Rejestracja
+        {this.state.invalidData && <NegativeMessage header="Coś poszło nie tak. Spróbuj ponownie wypełnić formularz" />}
         <Form onSubmit={this.onFormSubmit}>
           <Form.Input name="nickname" label="Nick" placeholder="Nick" onChange={this.onFormChange} />
-          <Form.Input name="email" type="email" label="Email" placeholder="Email" />
-          <Form.Input type="password" label="Hasło" placeholder="Hasło" />
-          <Form.Input type="password" label="Powtórz hasło" placeholder="Powtórz hasło" />
-          <Form.Input label="Imie" placeholder="Imie" />
-          <Form.Input label="Nazwisko" placeholder="Nazwisko" />
+          <Form.Input name="email" type="email" label="Email" placeholder="Email" onChange={this.onFormChange} />
+          <Form.Input type="password" label="Hasło" placeholder="Hasło" onChange={this.onFormChange} />
+          <Form.Input type="password" label="Powtórz hasło" placeholder="Powtórz hasło" onChange={this.onFormChange} />
+          <Form.Input label="Imie" placeholder="Imie" onChange={this.onFormChange} />
+          <Form.Input label="Nazwisko" placeholder="Nazwisko" onChange={this.onFormChange} />
           <Form.Select
             name="division"
             options={this.state.divisions}
