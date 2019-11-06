@@ -15,7 +15,7 @@ class Teams extends React.Component {
 
   componentDidMount() {
     this.setState(() => { return { isMe: !!this.context.me }; });
-    console.log('Teams->', this.context);
+    // console.log('Teams->', this.context);
   }
 
   async getUsers(division = '') {

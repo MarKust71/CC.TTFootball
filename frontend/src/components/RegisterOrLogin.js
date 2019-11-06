@@ -20,6 +20,11 @@ class RegisterOrLogin extends React.Component {
   render() {
     return (
       <div className="container">
+        <br/><br/>
+        <h3>
+          O co chodzi? Gramy ligę!! Dobierz się w drużynę, zapisz do rozgrywek, zapisuj wyniki, sprawdzaj kto kogo złoił. Wyłonimy zwycięzcę! :) Wanna Join?
+        </h3>
+        <br/><br/>
         <Segment>
           <Button onClick={this.showLoginBox}>Logowanie</Button>
           <Button onClick={this.showRegisterBox}>Rejestracja</Button>

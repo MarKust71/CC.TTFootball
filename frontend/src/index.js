@@ -17,6 +17,7 @@ import Loader from './components/Loader';
 import NewLeague from './Views/NewLeague';
 import ShowScores from './Views/Scores';
 import { Container } from 'semantic-ui-react';
+import Profile from './components/Homepage/Profile'
 
 const App = () => {
   const { isLogged, changeStore } = useContext(Store);
@@ -58,6 +59,7 @@ const App = () => {
             <PrivateRoute exact path="/" component={Home} />
             <PrivateRoute exact path="/NewLeague" component={NewLeague} />
             <PrivateRoute exact path="/Scores" component={ShowScores} />
+            <PrivateRoute exact path="/Profile" component={Profile} />
             <Route render={() => <Redirect to="/" />} />
           </Switch>
         )}

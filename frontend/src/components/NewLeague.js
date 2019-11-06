@@ -54,11 +54,11 @@ class NewLeague extends React.Component {
   };
 
   render() {
-    if (this.state.postSuccessful) return <Redirect to="/" />;
+    if (this.state.postSuccessful) return <Redirect to="/Leagues" />;
     return (
-      <div className="container">
+      <div >
         <Form onSubmit={this.onFormSubmit}>
-          <Form.Group widths={16}>
+          <Form.Group >
             <Form.Input
               name="name"
               control={Input}

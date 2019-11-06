@@ -10,6 +10,7 @@ import {
   LeaguesTableRowClosed,
   LeaguesTableRowOwner,
 } from '../../components/Leagues';
+import CreateLeague from '../NewLeague/index';
 
 const queryLeaguesTableOpen = async () => {
   const isUserInLeague = (league, user = localStorage.getItem('id')) => {
@@ -104,6 +105,7 @@ const Leagues = props => {
     { name: 'Trwające', path: `${path}/Pending`, component: LeaguesTablePending },
     { name: 'Zakończone', path: `${path}/Closed`, component: LeaguesTableClosed },
     { name: 'Moje', path: `${path}/Owner`, component: LeaguesTableOwner },
+    { name: 'Nowa Liga', path: `${path}/NewLeague`, component: CreateLeague}
   ];
 
   return (
