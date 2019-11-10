@@ -8,7 +8,7 @@ class Scores extends React.Component {
   async getLeagues(resType = 'names') {
     let ret;
     await axios({
-      url: '/api/leagues/',
+      url: '/api/leagues/?with=["team"]',
       method: 'get',
       data: {},
       headers: {
@@ -62,6 +62,7 @@ class Scores extends React.Component {
             for (let i = 0; i < this.leagueAll[0].teams.length; i++) {
               let actualTeam = this.leagueAll[0].teams[i];
               this.setState(() => {
+                // console.log(this.state.data)
                 return {
                   data: [
                     ...this.state.data,

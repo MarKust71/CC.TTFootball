@@ -11,17 +11,7 @@ class ScoresView extends Scores {
       column: null,
       direction: null,
       league: '',
-      data: [
-        {
-          team: 'Brak drużyn w lidze',
-          points: 0,
-          matchesPlayed: 0,
-          matchesWon: 0,
-          matchesLost: 0,
-          goalsFor: 0,
-          goalsAgainst: 0,
-        },
-      ],
+      data: [],
     };
 
     this.league = [];
@@ -137,8 +127,16 @@ class ScoresView extends Scores {
             </Form.Field>
           </Form.Group>
         </Segment>
-
-        <Table sortable celled fixed>
+        { this.state.data[0] && this.state.data[0].team ==='Brak drużyn w lidze' && (
+          <>
+          <br/>
+          <div>
+            <h3> Wygląda na to, że nikt się tu jeszcze nie zapisał.</h3>
+          </div>
+          </>
+        )}
+        { this.state.data[0] && this.state.data[0].team !=='Brak drużyn w lidze' && (
+          <Table sortable celled fixed>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell sorted={column === 'team' ? direction : null} onClick={this.handleSort('team')}>
@@ -178,7 +176,7 @@ class ScoresView extends Scores {
           </Table.Header>
           <Table.Body>
             {_.map(data, ({ team, points, matchesPlayed, matchesWon, matchesLost, goalsFor, goalsAgainst }) => (
-              <Table.Row key={points}>
+              <Table.Row key={team}>
                 <Table.Cell>{team}</Table.Cell>
                 <Table.Cell>{points}</Table.Cell>
                 <Table.Cell>{matchesPlayed}</Table.Cell>
@@ -190,6 +188,8 @@ class ScoresView extends Scores {
             ))}
           </Table.Body>
         </Table>
+        )}
+        
       </div>
     );
   }
