@@ -25,28 +25,45 @@ const createModelBatch = async (model, data) => {
 const arrayWithCount = count => fn => [...Array(count).keys()].map(fn);
 
 const createDivisions = async (prefix, count, models) => {
+  const predefinedDivisions = [
+    {name: 'WRO', description: 'Wrocław'},
+    {name: 'KRK', description: 'Kraków'},
+    {name: 'WAW', description: 'Warszawa'}
+  ];
   const divisionData = arrayWithCount(count)(x => {
-    return {
-      name: prefix + 'Division_' + x,
-    };
+    // return {
+    //   name: prefix + 'Division_' + x,
+    // };
+    return predefinedDivisions[x];
   });
   return await createModelBatch(models.Division, divisionData);
 };
 
 const createDivision = async (prefix, models) => {
-  const divisions = await createDivisions(prefix, 1, models);
+  const divisions = await createDivisions(prefix, 3, models);
   return divisions[0];
 };
 
 const createUsers = async (prefix, count, division, models) => {
   const password = await hashPassword('password');
-  const userData = arrayWithCount(count)(x => {
-    return {
-      nickname: prefix + 'User_' + x,
-      email: prefix + 'User_' + x + '@email.com',
+  const predefinedUsers = [
+    {
+      nickname: 'admin',
+      email: 'admin@foo.com',
       password,
       division,
-    };
+      role: 'admin',
+      name: 'Administrator'
+    }
+  ]
+  const userData = arrayWithCount(count)(x => {
+    // return {
+    //   nickname: prefix + 'User_' + x,
+    //   email: prefix + 'User_' + x + '@email.com',
+    //   password,
+    //   division,
+    // };
+    return predefinedUsers[x];
   });
   return await createModelBatch(models.User, userData);
 };
@@ -134,7 +151,8 @@ const alignLeaguesToDivision = async (leagues, division) => {
 
 const userInitializer = async models => {
   const prefix = 'User_';
-  const division = await createDivision(prefix, models);
+  // const division = await createDivision(prefix, models);
+  const division = 'WRO';
   await createUsers(prefix, 1, division, models);
 };
 
@@ -181,10 +199,10 @@ const matchInitializer = async models => {
 
 const defaultInitializers = new Map([
   ['User', userInitializer],
-  ['Team', teamInitializer],
+  // ['Team', teamInitializer],
   ['Division', divisionInitializer],
-  ['League', leagueInitializer],
-  ['Match', matchInitializer],
+  // ['League', leagueInitializer],
+  // ['Match', matchInitializer],
 ]);
 
 const initialize = async (models, filterFn = () => true, initializers = defaultInitializers) => {
