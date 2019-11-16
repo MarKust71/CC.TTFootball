@@ -1,11 +1,59 @@
 import React from 'react';
-import { Table, Label, Icon } from 'semantic-ui-react';
+import axios from 'axios';
+import { Table, Label, Icon, Input } from 'semantic-ui-react';
 
 class TableRow extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { 
+            matchID: this.props.data._id,
+            firstTeamID: this.props.data.teams.first._id,
+            firstTeamGoals: this.props.data.goals? this.props.data.goals.first: '',
+            secondTeamID: this.props.data.teams.second._id,
+            secondTeamGoals: this.props.data.goals? this.props.data.goals.second: '',
+        };
+      }
+
+handleGoalsChange = event => {
+    const value = event.target.value;
+    const name = event.target.name;
+    if (value.length <= 2) {
+        this.setState({
+            [name]: value.replace(/\D/,''),
+          });
+    }    
+  };
+
+saveScore = () => {
+    if (!this.state.firstTeamGoals || !this.state.secondTeamGoals) {
+        console.log('wychodze')
+        return
+    }
+    axios({
+        url: `/api/matches/${this.state.matchID}/score`,
+        method: 'put',
+        headers: {'x-auth-token': localStorage.getItem('token'),},
+        data: {
+            firstTeam: {
+                id: this.state.firstTeamID,
+                goals: this.state.firstTeamGoals
+            },
+            secondTeam: {
+                id: this.state.secondTeamID,
+                goals: this.state.secondTeamGoals
+            }
+        }
+      }).then(  result => {
+        console.log(result)
+      }).catch( error => {
+          console.log(error)
+      }) 
+};
 
 isEditable() {
+    // console.log(this.props)
     return (this.props.role === 'mygames' || (this.props.data.myGame && !this.props.data.goals));
-}
+};
 
 render() {
     return (
@@ -14,8 +62,24 @@ render() {
                 <b>{this.props.data.teams.first.name}</b> <br></br> 
                 {this.props.data.teams.first.players.first} / {this.props.data.teams.first.players.second}
             </Table.Cell>
-            <Table.Cell>{this.props.data.goals? this.props.data.goals.first: '-'}</Table.Cell>
-            <Table.Cell>{this.props.data.goals? this.props.data.goals.second: '-'}</Table.Cell>
+            <Table.Cell>
+                <Input 
+                    name='firstTeamGoals'
+                    fluid 
+                    disabled={!this.isEditable()}
+                    value={this.state.firstTeamGoals}
+                    onChange={this.handleGoalsChange}> 
+                </Input>
+            </Table.Cell>
+            <Table.Cell>
+                <Input 
+                    name='secondTeamGoals'
+                    fluid 
+                    disabled={!this.isEditable()}
+                    value={this.state.secondTeamGoals}
+                    onChange={this.handleGoalsChange}> 
+                </Input>
+            </Table.Cell>
             <Table.Cell>
                 <b>{this.props.data.teams.second.name}</b> <br></br> 
                 {this.props.data.teams.second.players.first} / {this.props.data.teams.second.players.second}
@@ -23,9 +87,13 @@ render() {
             <Table.Cell>{this.props.data.date.scheduled.substring(0,10)}</Table.Cell>
             <Table.Cell textAlign="left" collapsing>
             { this.isEditable() &&  (
-                <Label as="a" color="blue" ribbon='right'>
+                <Label 
+                    as="a" 
+                    color="blue" 
+                    ribbon='right'
+                    onClick={this.saveScore}>
                     <Icon name="hand pointer" size="large" />
-                    Edytuj
+                    Zapisz
                 </Label>
             )}
             </Table.Cell>

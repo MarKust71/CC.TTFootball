@@ -93,7 +93,7 @@ router.put('/:id/score', async (req, res) => {
         .required(),
       goals: Joi.number()
         .min(0)
-        .max(10)
+        .max(99)
         .required(),
     };
     const schema = {

@@ -12,6 +12,7 @@ class ScheduleTable extends React.Component {
     league: ''
   }
   getData() {
+    
     if (this.props.league !== '' & this.props.league !== this.state.league) {
       axios({
         url: `/api/matches/${this.props.league}/league`,
@@ -29,6 +30,9 @@ class ScheduleTable extends React.Component {
           })        
         this.setState({ matches: matches, league: this.props.league });
       }).catch()  
+    } 
+    else if (this.props.league === '') {
+      this.setState({ matches: [], league: ''})
     }
   }
 
@@ -43,13 +47,15 @@ class ScheduleTable extends React.Component {
 
   render() {
     return (
+      <>
+      { this.state.league && (
       <Table celled textAlign="center">
         <Table.Header>
           <Table.Row>
               <Table.HeaderCell key='player1' width={3}>
                 Drużyna
               </Table.HeaderCell>
-              <Table.HeaderCell key='result1' width={1} colSpan='2'>
+              <Table.HeaderCell key='result1' width={2} colSpan='2'>
                 Wynik
               </Table.HeaderCell>
               <Table.HeaderCell key='player2' width={3}>
@@ -71,6 +77,8 @@ class ScheduleTable extends React.Component {
       
         
       </Table>
+      )}
+      </>
     );
   }
 }
