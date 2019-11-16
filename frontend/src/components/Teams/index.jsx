@@ -60,7 +60,7 @@ class ComponentTeams extends Teams {
         {this.state.isMe && (
           <Message>
             <p>
-              Jeseś zalogowany jako: <strong>{this.context.me._id}</strong>, 
+              Jesteś zalogowany jako: <strong>{this.context.me._id}</strong>, 
               rola: <strong>{this.context.me.role}</strong>, 
               dywizja: <strong>{this.context.me.division}</strong>
             </p> 
