@@ -5,11 +5,11 @@ const { auth, getUser } = require('../middleware/auth');
 router.get('/', (req, res) => {
   const Model = res.locals.models.Team;
   getTeams(Model).then(result => {
-    if (!result.length) {
-      res.status(404).send(`Nie znaleziona żadnych drużyn.`);
-    } else {
+    // if (!result.length) {
+    //   res.status(404).send(`Nie znaleziona żadnych drużyn.`);
+    // } else {
       res.send(result);
-    }
+    // }
   });
 });
 
@@ -48,7 +48,7 @@ router.delete('/:id', async (req, res) => {
   const Model = res.locals.models.Team;
   const user = await getUser(res);
 
-console.log(user);
+// console.log(user);
 
   // if (!user) return res.status(401).send('Błąd tokena');
 
@@ -102,7 +102,7 @@ async function createTeam(Team, name, player1, player2, status) {
       return res;
     },
     err => {
-      console.log('Coś poszło nie tak (createTeam):', err.errmsg);
+      console.log('Coś poszło nie tak (createTeam):', err);
       return err.errmsg;
     },
   );
@@ -112,8 +112,6 @@ async function getTeams(Team, id) {
   if (id) {
     // return await Team
     return await Team.find({ _id: id })
-      // .populate('regionId', 'name id -_id')
-      // .populate('playersId')
       .populate('players.first')
       .populate('players.second')
       .populate('leagues')
@@ -126,8 +124,6 @@ async function getTeams(Team, id) {
   } else {
     // return await Team
     return await Team.find()
-      // .populate('regionId', 'name id -_id')
-      // .populate('playersId')
       .populate('players.first')
       .populate('players.second')
       .populate('leagues')

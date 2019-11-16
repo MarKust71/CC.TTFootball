@@ -17,10 +17,4 @@ module.exports = {
   
   getUser: (res, id = res.locals.jwt._id) => res.locals.models.User.findById(id).select('-password')
 
-  // getUser: (res, id = res.locals.jwt._id) => {
-  //   const ret = res.locals.models.User.findById(id).select('-password');
-  //   console.log(ret);
-  //   return ret;
-  // },
-
 };

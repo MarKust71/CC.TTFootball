@@ -34,7 +34,6 @@ class TeamCreate extends Teams {
 
   componentDidMount() {
     this.setState( () => { return { isMe: !!this.context.me }; } );
-    // console.log('TeamsCreate->', this.context);
     this.getUsers();
   }
 
@@ -84,9 +83,6 @@ class TeamCreate extends Teams {
   };
 
   onClickCancel = (e, d) => {
-    // this.setState(() => {
-    //   return { postSuccess: true };
-    // });
     this.setState( () => { return {
       term: '',
       newTeam: '',

@@ -112,7 +112,8 @@ class Teams extends React.Component {
             }
         };
       },
-      (err) => { console.log('_getTeams->', err.errmsg); }
+      // (err) => { console.log('_getTeams->', err.errmsg); }
+      (err) => { console.log('_getTeams->', err); }
     )
     return ret;
   }
@@ -202,7 +203,7 @@ class Teams extends React.Component {
           break;
       }
     }
-    catch (e) { console.log('_gt: Coś nie tak', e.errmsg); };
+    catch (e) { console.log('_gt: Coś nie tak', e); };
   }
 
   _getDivisions() {
@@ -211,7 +212,6 @@ class Teams extends React.Component {
       { key: 'WRO', value: 'WRO', text: 'Wrocław' },
       { key: 'KRK', value: 'KRK', text: 'Kraków' },
       { key: 'WAW', value: 'WAW', text: 'Warszawa' },
-      { key: 'League_Division_0', value: 'League_Division_0', text: 'League_Division_0' },
     ];
   }
 
