@@ -4,7 +4,21 @@ import { Button, Checkbox, Form, Segment } from 'semantic-ui-react';
 import Store from '../Store';
 import NegativeMessage from './NegativeMessage';
 import axios from 'axios';
+
 class Register extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.getDivisions().catch( err => {
+      console.log('getDivisions:', err);
+      this.setState( () => { return {divisions: [
+        { text: 'Wrocek', value: 'WRO', selected: true },
+        { text: 'Warszawka', value: 'WAR' },
+        { text: 'Kraków', value: 'KRA' },
+      ]}; } )
+    } )
+  };
+
   state = {
     nickname: '',
     email: '',
@@ -13,11 +27,7 @@ class Register extends React.Component {
     name: '',
     surname: '',
     division: 'WRO',
-    divisions: [
-      { text: 'Wrocek', value: 'WRO', selected: true },
-      { text: 'Warszawka', value: 'WAR' },
-      { text: 'Kraków', value: 'KRA' },
-    ],
+    divisions: [],
     invalidData: false
   };
 
@@ -26,8 +36,7 @@ class Register extends React.Component {
   getDivisions = async () => {
     try {
       const { data } = await axios.get('/api/division');
-      // console.log(data);
-      const divisions = data.filter(({ status }) => status !== 'deleted').map(({ _id }) => ({ value: _id, text: _id }));
+      const divisions = data.filter(({ status }) => status !== 'deleted').map(({ _id, description }) => ({ value: _id, text: description }));
       this.setState({ divisions });
     } catch (ex) {
       console.error(ex);

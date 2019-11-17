@@ -206,7 +206,18 @@ class Teams extends React.Component {
     catch (e) { console.log('_gt: Coś nie tak', e); };
   }
 
+  // Najlepiej nie używać - zajrzyj do frontend\src\components\Register.js; stamtąd można zaimportować.
   _getDivisions() {
+//   async _getDivisions() {
+//     let divisions = await axios({
+//       url: `/api/division`,
+//       method: 'get',
+//       data: {},
+//       headers: {
+//         'x-auth-token': localStorage.token,
+//       }
+//     });
+// console.log('_getDivisions:', divisions);
     return [
       // powinno się ciągnąć z bazy, ale nie znalazłem endpointa na razie...
       { key: 'WRO', value: 'WRO', text: 'Wrocław' },
