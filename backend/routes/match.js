@@ -106,24 +106,26 @@ router.put('/:id/score', async (req, res) => {
   const { error, value } = validate(req.body);
   if (error) return res.status(400).send(error.details);
 
+  const user = await getUser(res).populate({ path: 'teams', match: { status: 'active' }, select: '_id' });
+  if (!user) return res.status(401).send('Błąd tokena');
+
   let match = await Match.findOne({ _id: req.params.id })
     .select('-__v')
     .populate('teams.first', '-__v -status')
     .populate('teams.second', '-__v -status')
     .populate('league', '-__v -status');
   if (!match) return res.status(400).send('Taki mecz nie istnieje!');
-  if (match.status != 'scheduled') return res.status(400).send('Ten mecz już został rozegrany!');
+  if (match.status != 'scheduled' & match.league.owner !== user._id) return res.status(400).send('Ten mecz już został rozegrany!');
 
   const firstTeamId = match.teams.first.id;
   const secondTeamId = match.teams.second.id;
   if (!areIdsValid([value.firstTeam.id, value.secondTeam.id], [firstTeamId, secondTeamId]))
     return res.status(400).send('Podane drużyny nie grają w tym meczu!');
 
-  const user = await getUser(res).populate({ path: 'teams', match: { status: 'active' }, select: '_id' });
-  if (!user) return res.status(401).send('Błąd tokena');
+  
 
   const team = user.teams.find(x => x.id === firstTeamId || x.id === secondTeamId);
-  if (!team) return res.status(401).send('Ten użytkownik nie gra w tym meczu!');
+  if (!team & match.league.owner !== user._id) return res.status(401).send('Ten użytkownik nie gra w tym meczu!');
 
   const { firstTeam, secondTeam, firstTeamReq, secondTeamReq } = reqValueToTeams(match.teams, value);
 

@@ -1,11 +1,13 @@
 import React from 'react';
 import axios from 'axios';
 import { Table, Label, Icon, Input } from 'semantic-ui-react';
+// import NegativeMessage from '../NegativeMessage'
 
 class TableRow extends React.Component {
     constructor(props) {
         super(props);
         this.state = { 
+            isEditable: this.props.role === 'mygames' || (this.props.data.myGame && !this.props.data.goals),
             matchID: this.props.data._id,
             firstTeamID: this.props.data.teams.first._id,
             firstTeamGoals: this.props.data.goals? this.props.data.goals.first: '',
@@ -44,16 +46,19 @@ saveScore = () => {
             }
         }
       }).then(  result => {
-        console.log(result)
+          if (parseInt(this.state.firstTeamGoals) === result.data.goals.first & 
+            parseInt(this.state.secondTeamGoals) === result.data.goals.second) {
+                this.setState({ isEditable: false})
+            }; 
       }).catch( error => {
           console.log(error)
       }) 
 };
 
-isEditable() {
-    // console.log(this.props)
-    return (this.props.role === 'mygames' || (this.props.data.myGame && !this.props.data.goals));
-};
+// isEditable() {
+//     // console.log(this.props)
+//     return (this.props.role === 'mygames' || (this.props.data.myGame && !this.props.data.goals));
+// };
 
 render() {
     return (
@@ -66,7 +71,7 @@ render() {
                 <Input 
                     name='firstTeamGoals'
                     fluid 
-                    disabled={!this.isEditable()}
+                    disabled={!this.state.isEditable}
                     value={this.state.firstTeamGoals}
                     onChange={this.handleGoalsChange}> 
                 </Input>
@@ -75,7 +80,7 @@ render() {
                 <Input 
                     name='secondTeamGoals'
                     fluid 
-                    disabled={!this.isEditable()}
+                    disabled={!this.state.isEditable}
                     value={this.state.secondTeamGoals}
                     onChange={this.handleGoalsChange}> 
                 </Input>
@@ -86,7 +91,7 @@ render() {
             </Table.Cell>
             <Table.Cell>{this.props.data.date.scheduled.substring(0,10)}</Table.Cell>
             <Table.Cell textAlign="left" collapsing>
-            { this.isEditable() &&  (
+            { this.state.isEditable &&  (
                 <Label 
                     as="a" 
                     color="blue" 
