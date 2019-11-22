@@ -43,24 +43,52 @@ router.put('/:id/score', async (req, res) => {
     const secondTeam = teams.second;
     const [firstTeamReq, secondTeamReq] =
       firstTeam.id === value.firstTeam.id ? [value.firstTeam, value.secondTeam] : [value.secondTeam, value.firstTeam];
-    firstTeamReq.isWinner = firstTeamReq.goals > secondTeamReq.goals;
-    secondTeamReq.isWinner = firstTeamReq.goals < secondTeamReq.goals;
+    firstTeamReq.isWinner = firstTeamReq.goals === secondTeamReq.goals ? 'tie': firstTeamReq.goals > secondTeamReq.goals;
+    firstTeamReq.prevWinner = firstTeamReq.prevGoals === secondTeamReq.prevGoals ? 'tie' : firstTeamReq.prevGoals > secondTeamReq.prevGoals;
+    secondTeamReq.isWinner = firstTeamReq.goals === secondTeamReq.goals ? 'tie' : firstTeamReq.goals < secondTeamReq.goals;
+    secondTeamReq.prevWinner = firstTeamReq.prevGoals === secondTeamReq.prevGoals ? 'tie' : firstTeamReq.prevGoals < secondTeamReq.prevGoals;
     firstTeamReq.goalsLost = secondTeamReq.goals;
+    firstTeamReq.prevGoalsLost = secondTeamReq.prevGoals;
+    firstTeamReq.status = value.status;
     secondTeamReq.goalsLost = firstTeamReq.goals;
+    secondTeamReq.prevGoalsLost = firstTeamReq.prevGoals;
+    secondTeamReq.status = value.status;
     return { firstTeam, secondTeam, firstTeamReq, secondTeamReq };
   };
 
   const updateMatch = (match, first, second) => {
     match.goals.first = first.goals;
     match.goals.second = second.goals;
-    match.date.played = now;
+    if (req.status === "scheduled") {
+      match.date.played = now;
+    } 
     match.status = 'played';
-    match.winner = first.isWinner ? 'first' : 'second';
+    if (first.isWinner === 'tie') {
+      match.winner = first.isWinner
+    }
+    else {
+      match.winner = first.isWinner ? 'first' : 'second';
+    }    
     return match.save();
   };
 
   const updateStatistics = (doc, req) => {
-    req.isWinner ? (doc.statistics.matches.won += 1) : (doc.statistics.matches.lost += 1);
+    if (req.status !== "scheduled") {
+      if (req.prevWinner === 'tie') {
+        doc.statistics.matches.ties -= 1
+      }
+      else {
+        req.prevWinner ? (doc.statistics.matches.won -= 1) : (doc.statistics.matches.lost -= 1);
+      }      
+      doc.statistics.goals.for -= req.prevGoals;
+      doc.statistics.goals.against -= req.prevGoalsLost;
+    } 
+    if (req.isWinner === 'tie') {
+      doc.statistics.matches.ties += 1
+    }
+    else {
+      req.isWinner ? (doc.statistics.matches.won += 1) : (doc.statistics.matches.lost += 1);
+    }        
     doc.statistics.goals.for += req.goals;
     doc.statistics.goals.against += req.goalsLost;
   };
@@ -95,10 +123,16 @@ router.put('/:id/score', async (req, res) => {
         .min(0)
         .max(99)
         .required(),
+      prevGoals: Joi.number()
+        .min(0)
+        .max(99)
+        .optional()
+        .allow(''),
     };
     const schema = {
       firstTeam: Joi.compile(teamSchema).required(),
       secondTeam: Joi.compile(teamSchema).required(),
+      status: Joi.string().valid('played', 'scheduled')
     };
     return Joi.validate(req, schema);
   };
@@ -116,6 +150,7 @@ router.put('/:id/score', async (req, res) => {
     .populate('league', '-__v -status');
   if (!match) return res.status(400).send('Taki mecz nie istnieje!');
   if (match.status != 'scheduled' & match.league.owner !== user._id) return res.status(400).send('Ten mecz już został rozegrany!');
+  if (match.status === 'scheduled' & req.body.status !== 'scheduled') return res.status(400).send('Niezgodność statusu meczu. Sprawdź czy nie wprowadzono wyniku w międzyczasie!');
 
   const firstTeamId = match.teams.first.id;
   const secondTeamId = match.teams.second.id;

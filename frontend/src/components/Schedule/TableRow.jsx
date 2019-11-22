@@ -8,11 +8,14 @@ class TableRow extends React.Component {
         super(props);
         this.state = { 
             isEditable: this.props.role === 'mygames' || (this.props.data.myGame && !this.props.data.goals),
+            status: this.props.data.status,
             matchID: this.props.data._id,
             firstTeamID: this.props.data.teams.first._id,
             firstTeamGoals: this.props.data.goals? this.props.data.goals.first: '',
+            firstTeamPrevGoals: this.props.data.goals? this.props.data.goals.first: '',
             secondTeamID: this.props.data.teams.second._id,
             secondTeamGoals: this.props.data.goals? this.props.data.goals.second: '',
+            secondTeamPrevGoals: this.props.data.goals? this.props.data.goals.second: '',
         };
       }
 
@@ -38,12 +41,15 @@ saveScore = () => {
         data: {
             firstTeam: {
                 id: this.state.firstTeamID,
-                goals: this.state.firstTeamGoals
+                goals: this.state.firstTeamGoals,
+                prevGoals: this.state.firstTeamPrevGoals
             },
             secondTeam: {
                 id: this.state.secondTeamID,
-                goals: this.state.secondTeamGoals
-            }
+                goals: this.state.secondTeamGoals,
+                prevGoals: this.state.secondTeamPrevGoals
+            },
+            status: this.state.status
         }
       }).then(  result => {
           if (parseInt(this.state.firstTeamGoals) === result.data.goals.first & 
