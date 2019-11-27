@@ -3,6 +3,7 @@ import { Table, Icon, Label } from 'semantic-ui-react';
 import { formatDate } from '../../utils/date';
 import axios from 'axios';
 import AskModal from '../Modals/AskModal';
+import StartLeagueModal from '../Modals/StartLeagueModal'
 import setHeaders from '../../utils/setHeaders';
 
 class LeaguesTableRowOwner extends React.Component {
@@ -19,35 +20,40 @@ class LeaguesTableRowOwner extends React.Component {
         header: `Czy napewno chcesz wystartować ligę ${leagueName}?`,
         positive: 'Tak',
         negative: 'Nie',
+        league: leagueName,
         open: true,
-        onClose: this.closeModal,
-        onPositive: () => {
-          axios({
-            url: `/api/leagues/${leagueName}/start`,
-            method: 'PUT',
-            ...setHeaders(),
-          }).then(() => {
-            this.props.refresh();
-          });
-        },
+        onClose: this.closeModal
+        // onPositive: (endDate, roundsNo) => {
+        //   axios({
+        //     url: `/api/leagues/${leagueName}/start`,
+        //     method: 'PUT',
+        //     ...setHeaders(),
+        //     data: {
+        //       end: endDate,
+        //       rounds: roundsNo,
+        //     }
+        //   }).then(() => {
+        //     this.props.refresh();
+        //   });
+        // },
       },
     });
   };
 
-  openModalScheduleLeague = () => {
-    this.setState({
-      askModalProps: {
-        header: `Rozlosować kolejne mecze dla ligi ${this.props.data.name}?`,
-        positive: 'Tak',
-        negative: 'Nie',
-        open: true,
-        onClose: this.closeModal,
-        onPositive: () => {
-          console.log('Positive');
-        },
-      },
-    });
-  };
+  // openModalScheduleLeague = () => {
+  //   this.setState({
+  //     askModalProps: {
+  //       header: `Rozlosować kolejne mecze dla ligi ${this.props.data.name}?`,
+  //       positive: 'Tak',
+  //       negative: 'Nie',
+  //       open: true,
+  //       onClose: this.closeModal,
+  //       onPositive: () => {
+  //         console.log('Positive');
+  //       },
+  //     },
+  //   });
+  // };
 
   openModalCloseLeague = () => {
     this.setState({
@@ -79,11 +85,11 @@ class LeaguesTableRowOwner extends React.Component {
     } else if (status === 'pending') {
       return (
         <div>
-          <Label as="a" color="blue" ribbon="right" onClick={this.openModalScheduleLeague}>
+          {/* <Label as="a" color="blue" ribbon="right" onClick={this.openModalScheduleLeague}>
             <Icon name="hand pointer" size="large" />
             Rozlosuj mecze
-          </Label>
-          <Label as="a" color="red" ribbon="right" onClick={this.openModalCloseLeague}>
+          </Label> */}
+          <Label as="a" color="yellow" ribbon="right" onClick={this.openModalCloseLeague}>
             <Icon name="hand pointer" size="large" />
             Zakończ ligę
           </Label>
@@ -110,7 +116,7 @@ class LeaguesTableRowOwner extends React.Component {
         <Table.Cell>{data.status}</Table.Cell>
         <Table.Cell>{data.teams.length}</Table.Cell>
         <Table.Cell textAlign="left">{labels}</Table.Cell>
-        <AskModal {...this.state.askModalProps} />;
+        {data.status === 'created' ? <StartLeagueModal {...this.state.askModalProps}/> : <AskModal {...this.state.askModalProps}/>}
       </Table.Row>
     );
   }

@@ -84,10 +84,12 @@ class LeaguesTableRowOpen extends React.Component {
 
   openModal = () => {
     const name = localStorage.getItem('id');
+    console.log(name)
     axios
       .get(`/api/users/${name}/teams`, setHeaders())
       .then(resp => resp.data)
-      .then(teams => this.setState({ teams: prepareTeams(name, teams, this.props.data), isModalOpen: true }));
+      .then(teams => this.setState({ teams: prepareTeams(name, teams, this.props.data), isModalOpen: true }))
+      .catch(error => console.log(error));
   };
 
   closeModal = () => {
