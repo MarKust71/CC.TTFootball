@@ -10,6 +10,8 @@ class NewLeague extends React.Component {
     name: '',
     description: '',
     startDate: '',
+    rounds: 1,
+    matchFrequency: 2,
     postSuccessful: false,
   };
 
@@ -27,6 +29,19 @@ class NewLeague extends React.Component {
       startDate: date,
     });
   };
+  handleNumberChange = event => {
+    const value = event.target.value;
+    const name = event.target.name;
+    if (name === 'rounds' & value >= 0 & value < 10) {
+      this.setState({
+        [name]: value.replace(/\D/,'').replace(/[0]/, 1 ),
+      });
+    } else if (name === 'matchFrequency' & value >= 0 & value < 8 & value.length < 2) {
+      this.setState({
+        [name]: value.replace(/\D/,''),
+      });
+    }   
+  };
 
   onFormSubmit = async e => {
     e.preventDefault();
@@ -38,8 +53,8 @@ class NewLeague extends React.Component {
         name: this.state.name,
         description: this.state.description,
         date: { started: this.state.startDate },
-        rounds: 2,
-        matchFrequency: 3,
+        rounds: this.state.rounds,
+        matchFrequency: this.state.matchFrequency,
       },
       headers: {
         'x-auth-token': localStorage.getItem('token'),
@@ -67,8 +82,24 @@ class NewLeague extends React.Component {
               label="Nazwa"
               placeholder="Jak nazwiesz ligę?"
               onChange={this.handleInputChange}
-              width={12}
+              width={16}
             />
+            
+          </Form.Group>
+          <Form.Group>
+            <Form.Input 
+              name='rounds'
+              label='ile rund (maks. 9)?'
+              value={this.state.rounds}
+              onChange={this.handleNumberChange}
+              > 
+            </Form.Input>
+            <Form.Input 
+              name='matchFrequency'
+              label='Co ile dni kolejka (maks. 7)?'
+              value={this.state.matchFrequency}
+              onChange={this.handleNumberChange}> 
+            </Form.Input>
             <Form.Input name="date" label="Data startu">
               {
                 <DatePicker
@@ -85,7 +116,7 @@ class NewLeague extends React.Component {
             control={TextArea}
             maxLength="255"
             label="Opis (opcjonalny)"
-            placeholder="Dodaj kilka słów, jeśli chcesz"
+            placeholder="Dodaj kilka słów, jeśli chcesz, np.: zasady, dla kogo liga, itp."
             onChange={this.handleInputChange}
             // value={this.state.description}
           />
