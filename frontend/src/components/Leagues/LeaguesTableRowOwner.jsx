@@ -3,7 +3,6 @@ import { Table, Icon, Label } from 'semantic-ui-react';
 import { formatDate } from '../../utils/date';
 import axios from 'axios';
 import AskModal from '../Modals/AskModal';
-import StartLeagueModal from '../Modals/StartLeagueModal'
 import setHeaders from '../../utils/setHeaders';
 
 class LeaguesTableRowOwner extends React.Component {
@@ -20,22 +19,21 @@ class LeaguesTableRowOwner extends React.Component {
         header: `Czy napewno chcesz wystartować ligę ${leagueName}?`,
         positive: 'Tak',
         negative: 'Nie',
-        league: leagueName,
         open: true,
-        onClose: this.closeModal
-        // onPositive: (endDate, roundsNo) => {
-        //   axios({
-        //     url: `/api/leagues/${leagueName}/start`,
-        //     method: 'PUT',
-        //     ...setHeaders(),
-        //     data: {
-        //       end: endDate,
-        //       rounds: roundsNo,
-        //     }
-        //   }).then(() => {
-        //     this.props.refresh();
-        //   });
-        // },
+        onClose: this.closeModal,
+        onPositive: (endDate, roundsNo) => {
+          axios({
+            url: `/api/leagues/${leagueName}/start`,
+            method: 'PUT',
+            ...setHeaders(),
+            data: {
+              end: endDate,
+              rounds: roundsNo,
+            }
+          }).then(() => {
+            this.props.refresh();
+          });
+        },
       },
     });
   };
@@ -116,7 +114,7 @@ class LeaguesTableRowOwner extends React.Component {
         <Table.Cell>{data.status}</Table.Cell>
         <Table.Cell>{data.teams.length}</Table.Cell>
         <Table.Cell textAlign="left">{labels}</Table.Cell>
-        {data.status === 'created' ? <StartLeagueModal {...this.state.askModalProps}/> : <AskModal {...this.state.askModalProps}/>}
+        <AskModal {...this.state.askModalProps}/>
       </Table.Row>
     );
   }

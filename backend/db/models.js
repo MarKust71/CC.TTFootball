@@ -56,6 +56,8 @@ const Division = new Schema({
 const League = new Schema({
   name: { type: String, required: true },
   description: String,
+  matchFrequency: { type: Number, default: 0},
+  rounds: {type: Number, default: 1},
   division: { type: String, ref: 'Division', required: true },
   owner: { type: String, ref: 'User', required: true },
   teams: [

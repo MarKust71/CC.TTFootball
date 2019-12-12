@@ -38,6 +38,8 @@ class NewLeague extends React.Component {
         name: this.state.name,
         description: this.state.description,
         date: { started: this.state.startDate },
+        rounds: 2,
+        matchFrequency: 3,
       },
       headers: {
         'x-auth-token': localStorage.getItem('token'),
