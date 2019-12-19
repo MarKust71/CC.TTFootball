@@ -64,6 +64,7 @@ class ScoresView extends Scores {
               matchesPlayed: 0,
               matchesWon: 0,
               matchesLost: 0,
+              matchesTies: 0,
               goalsFor: 0,
               goalsAgainst: 0,
             },
@@ -87,11 +88,15 @@ class ScoresView extends Scores {
 
   newStateData = (team, stats) => {
     return {
-      team: team.name,
-      points: stats.matches.won * 3,
-      matchesPlayed: stats.matches.won + stats.matches.lost,
+      team: {
+        name: team.name,
+        players: `${team.players.first}/${team.players.second}`
+      },
+      points: stats.matches.won * 3 + stats.matches.ties * 1,
+      matchesPlayed: stats.matches.won + stats.matches.lost + stats.matches.ties,
       matchesWon: stats.matches.won,
       matchesLost: stats.matches.lost,
+      matchesTies: stats.matches.ties,
       goalsFor: stats.goals.for,
       goalsAgainst: stats.goals.against,
     };
@@ -140,7 +145,7 @@ class ScoresView extends Scores {
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell sorted={column === 'team' ? direction : null} onClick={this.handleSort('team')}>
-                Nazwa Drużyny
+                Drużyna
               </Table.HeaderCell>
               <Table.HeaderCell sorted={column === 'points' ? direction : null} onClick={this.handleSort('points')}>
                 Punkty
@@ -149,39 +154,46 @@ class ScoresView extends Scores {
                 sorted={column === 'matchesPlayed' ? direction : null}
                 onClick={this.handleSort('matchesPlayed')}
               >
-                Rozegrane mecze
+                Rozegrane <br/> mecze
               </Table.HeaderCell>
               <Table.HeaderCell
                 sorted={column === 'matchesWon' ? direction : null}
                 onClick={this.handleSort('matchesWon')}
               >
-                Wygrane mecze
+                Wygrane
               </Table.HeaderCell>
               <Table.HeaderCell
                 sorted={column === 'matchesLost' ? direction : null}
                 onClick={this.handleSort('matchesLost')}
               >
-                Przegrane mecze
+                Przegrane
+              </Table.HeaderCell>
+              <Table.HeaderCell
+                sorted={column === 'matchesTies' ? direction : null}
+                onClick={this.handleSort('matchesTies')}
+              >
+                Remisy
               </Table.HeaderCell>
               <Table.HeaderCell sorted={column === 'goalsFor' ? direction : null} onClick={this.handleSort('goalsFor')}>
-                Strzelone bramki
+                Strzelone<br/> bramki
               </Table.HeaderCell>
               <Table.HeaderCell
                 sorted={column === 'goalsAgainst' ? direction : null}
                 onClick={this.handleSort('goalsAgainst')}
               >
-                Stracone bramki
+                Stracone<br/> bramki
               </Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {_.map(data, ({ team, points, matchesPlayed, matchesWon, matchesLost, goalsFor, goalsAgainst }) => (
-              <Table.Row key={team}>
-                <Table.Cell>{team}</Table.Cell>
+            {_.map(data, ({ team, points, matchesPlayed, matchesWon, matchesLost, matchesTies, goalsFor, goalsAgainst }) => (
+              <Table.Row key={team.name}>
+                <Table.Cell> <b>{team.name}</b>  <br/> {team.players}</Table.Cell>
                 <Table.Cell>{points}</Table.Cell>
                 <Table.Cell>{matchesPlayed}</Table.Cell>
                 <Table.Cell>{matchesWon}</Table.Cell>
                 <Table.Cell>{matchesLost}</Table.Cell>
+                <Table.Cell>{matchesTies}</Table.Cell>
                 <Table.Cell>{goalsFor}</Table.Cell>
                 <Table.Cell>{goalsAgainst}</Table.Cell>
               </Table.Row>

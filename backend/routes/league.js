@@ -8,6 +8,7 @@ router.get('/', auth, async (req, res) => {
   const { League } = res.locals.models;
   const user = await getUser(res);
   if (!user) return res.status(401).send('Błąd tokena');
+  console.log(user)
 
   const parseJSON = x => {
     try {
@@ -25,11 +26,11 @@ router.get('/', auth, async (req, res) => {
 
   const createStatusHandler = status => {
     if (!status) {
-      return () => League.find().sort('name');
+      return () => League.find( { division: user.division}).sort('name');
     } else if (status === 'owner') {
       return () => League.find({ owner: user }).sort('name');
     } else {
-      return () => League.find({ status }).sort('name');
+      return () => League.find({ status, division: user.division }).sort('name');
     }
   };
 
@@ -85,6 +86,12 @@ router.post('/', auth, async (req, res) => {
       description: Joi.string()
         .max(255)
         .allow(''),
+      rounds: Joi.number()
+        .min(1)
+        .max(9),
+      matchFrequency: Joi.number()
+        .min(0)
+        .max(7),
       date: Joi.object({
         started: Joi.date()
           .greater('now')
@@ -158,33 +165,8 @@ router.post('/:id/team', auth, async (req, res) => {
 });
 
 router.put('/:id/start', auth, async (req, res) => {
-  const nextMonth = (date, offset = 1) => new Date(new Date(date).setMonth(new Date(date).getMonth() + offset));
-  const nextMonthJoi = ctx => nextMonth(ctx.start);
-  nextMonthJoi.description = 'next month';
-  const randomDate = (start, end, offset) =>
-    new Date(start.getTime() + Math.random() * (nextMonth(end, offset).getTime() - nextMonth(start, offset).getTime()));
   const now = new Date(Date.now());
-
-  const validate = req => {
-    const schema = {
-      start: Joi.date()
-        .min(now)
-        .default(now),
-      end: Joi.date()
-        .min(Joi.ref('start'))
-        .default(nextMonthJoi),
-      rounds: Joi.number()
-        .min(1)
-        .max(12)
-        .default(1),
-    };
-    return Joi.validate(req, schema);
-  };
-
   const { League, Match } = res.locals.models;
-
-  const { error, value } = validate(req.body);
-  if (error) return res.status(400).send(error.details);
 
   const league = await League.findByIdOrName(req.params.id);
   if (!league) return res.status(404).send('Nie znaleziono takiej ligi');
@@ -194,32 +176,39 @@ router.put('/:id/start', auth, async (req, res) => {
   if (!user) return res.status(401).send('Błąd tokena');
   if (user.nickname != league.owner) return res.status(403).send('Nie możesz edytować tej ligi');
 
-  const { start, end, rounds } = value;
 
   const matchesData = [];
-  for (let round = 0; round < rounds; ++round) {
-    const teams = _.shuffle(league.teams);
-    teams.forEach((x, i) => {
-      teams.slice(i + 1, teams.length).forEach(y => {
-        matchesData.push({
-          league,
-          teams: {
-            first: x.team,
-            second: y.team,
-          },
-          date: { scheduled: randomDate(start, end, round) },
-        });
-      });
-    });
+  let matchDate = new Date(Date.now());
+  const teams = _.shuffle(league.teams);
+  if (teams.length%2 !== 0) teams.unshift(null);
+  const numOfPairs = teams.length/2;
+  for (let round = 0; round < league.rounds; round++) {
+    const tempTeams = [...teams];
+    for (let i = 0; i< tempTeams.length-1; i++) {
+      for (y=0; y<numOfPairs; y++) {
+        if (tempTeams[y] !== null) {
+          matchesData.push({
+            league,
+            teams: {
+              first: tempTeams[y].team,
+              second: tempTeams[tempTeams.length-1-y].team,
+            },
+            date: { scheduled: new Date(matchDate) },
+          });
+        };
+      };
+      matchDate.setDate(matchDate.getDate() + league.matchFrequency);
+      tempTeams.splice(1,0, ...tempTeams.splice(-1, 1));
+    }
   }
-
+  
   const session = await League.startSession();
   await session.withTransaction(async () => {
     const matches = await Match.insertMany(matchesData);
     await league.updateOne({ $push: { matches: matches }, status: 'pending', date: { started: now } });
   });
-
   res.json(await League.findByIdOrName(req.params.id));
+  
 });
 
 module.exports = router;

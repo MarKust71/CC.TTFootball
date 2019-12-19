@@ -16,6 +16,7 @@ const User = new Schema({
     matches: {
       won: { type: Number, default: 0 },
       lost: { type: Number, default: 0 },
+      ties: {type: Number, default: 0},
     },
     goals: {
       for: { type: Number, default: 0 },
@@ -36,6 +37,7 @@ const Team = new Schema({
     matches: {
       won: { type: Number, default: 0 },
       lost: { type: Number, default: 0 },
+      ties: {type: Number, default: 0},
     },
     goals: {
       for: { type: Number, default: 0 },
@@ -54,6 +56,8 @@ const Division = new Schema({
 const League = new Schema({
   name: { type: String, required: true },
   description: String,
+  matchFrequency: { type: Number, default: 0},
+  rounds: {type: Number, default: 1},
   division: { type: String, ref: 'Division', required: true },
   owner: { type: String, ref: 'User', required: true },
   teams: [
@@ -63,6 +67,7 @@ const League = new Schema({
         matches: {
           won: { type: Number, default: 0 },
           lost: { type: Number, default: 0 },
+          ties: {type: Number, default: 0},
         },
         goals: {
           for: { type: Number, default: 0 },
@@ -92,7 +97,7 @@ const Match = new Schema({
     played: Date,
     aborted: Date,
   },
-  winner: { type: String, enum: ['first', 'second'] },
+  winner: { type: String, enum: ['first', 'second', 'tie'] },
   goals: {
     first: Number,
     second: Number,

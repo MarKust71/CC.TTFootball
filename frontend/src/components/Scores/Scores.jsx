@@ -72,6 +72,7 @@ class Scores extends React.Component {
                       matchesPlayed: actualTeam.statistics.matches.won + actualTeam.statistics.matches.lost,
                       matchesWon: actualTeam.statistics.matches.won,
                       matchesLost: actualTeam.statistics.matches.lost,
+                      matchesTies: actualTeam.statistics.matches.ties,
                       goalsFor: actualTeam.statistics.goals.for,
                       goalsAgainst: actualTeam.statistics.goals.against,
                     },
