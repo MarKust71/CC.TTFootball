@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
     }
   } else {
     if (process.env.PORT) {
-      res.send(`Hello, players! Welcome on port ${process.env.PORT}!`);
+      res.send(`Hello, players! Welcome on board ${process.env.HOST}:${process.env.PORT}!`);
     } else {
       res.send(`Hello, players! Welcome on board!`);
     }
