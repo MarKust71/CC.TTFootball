@@ -8,6 +8,7 @@ router.get('/', auth, async (req, res) => {
   const { League } = res.locals.models;
   const user = await getUser(res);
   if (!user) return res.status(401).send('Błąd tokena');
+  console.log(user)
 
   const parseJSON = x => {
     try {
@@ -25,11 +26,11 @@ router.get('/', auth, async (req, res) => {
 
   const createStatusHandler = status => {
     if (!status) {
-      return () => League.find().sort('name');
+      return () => League.find( { division: user.division}).sort('name');
     } else if (status === 'owner') {
       return () => League.find({ owner: user }).sort('name');
     } else {
-      return () => League.find({ status }).sort('name');
+      return () => League.find({ status, division: user.division }).sort('name');
     }
   };
 
