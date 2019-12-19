@@ -26,8 +26,8 @@ const main = async () => {
   // Database configuration
   const connection = await db.connect();
   const models = db.load(connection);
-  if (process.env.MODE_ENV === 'dev') {
-  // if (process.env.TEST_ENV || process.env.NODE_ENV) {
+  if (process.env.NODE_ENV === 'dev') {
+    // if (process.env.TEST_ENV || process.env.NODE_ENV) {
     if (process.env.DB_INIT === 'yes') {
       // await connection.dropDatabase();
       let stats;
