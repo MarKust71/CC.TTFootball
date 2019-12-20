@@ -26,9 +26,21 @@ const main = async () => {
   // Database configuration
   const connection = await db.connect();
   const models = db.load(connection);
-  if (process.env.TEST_ENV || process.env.NODE_ENV) {
-    await connection.dropDatabase();
-    await db.initialize(models);
+  if (process.env.NODE_ENV === 'dev') {
+    // if (process.env.TEST_ENV || process.env.NODE_ENV) {
+    if (process.env.DB_INIT === 'yes') {
+      // await connection.dropDatabase();
+      let stats;
+      stats = await connection.collections.divisions.stats();
+      if (stats.count > 0) {
+        await connection.collections.divisions.drop();
+      }
+      stats = await connection.collections.users.stats();
+      if (stats.count > 0) {
+        await connection.collections.users.drop();
+      }
+      await db.initialize(models);
+    }
   }
 
   db.register(app, connection, models);

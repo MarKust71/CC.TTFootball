@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
-const getByMode = (prod, dev) => (process.env.TEST_ENV || process.env.NODE_ENV ? dev : prod);
+const getByMode = (prod, dev) =>
+  process.env.NODE_ENV === 'prod' || process.env.NODE_ENV === 'production' ? prod : dev;
 
 const config = {
   host: getByMode(process.env.DB_HOST, process.env.DB_HOST_DEV),
@@ -11,8 +12,12 @@ const config = {
   protocol: getByMode(process.env.DB_PROT, process.env.DB_PROT_DEV),
 };
 
-const mongoUrl = `${config.protocol}://${config.username}:${config.password}@${config.host}:${config.port}/${config.name}`;
-
+let mongoUrl;
+if (process.env.NODE_ENV === 'dev') {
+  mongoUrl = `${config.protocol}://${config.host}:${config.port}/${config.name}`;
+} else {
+  mongoUrl = `${config.protocol}://${config.username}:${config.password}@${config.host}:${config.port}/${config.name}`;
+}
 const connectionOnSuccessHandler = connection => {
   console.log(`[MongoDB] Connection to ${mongoUrl} created`);
   return connection;
@@ -23,7 +28,11 @@ const connectionOnErrorHandler = e => {
   return Promise.reject(e);
 };
 
-const defaultOptions = { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false };
+const defaultOptions = { 
+  useNewUrlParser: true, 
+  useUnifiedTopology: true, 
+  useCreateIndex: true, 
+  useFindAndModify: false };
 
 const connect = (options = defaultOptions) => {
   return mongoose.createConnection(`${mongoUrl}`, options).then(connectionOnSuccessHandler, connectionOnErrorHandler);
