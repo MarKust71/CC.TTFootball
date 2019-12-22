@@ -17,7 +17,7 @@ import Loader from './components/Loader';
 import NewLeague from './Views/NewLeague';
 import ShowScores from './Views/Scores';
 import { Container } from 'semantic-ui-react';
-import Profile from './components/Homepage/Profile'
+import Profile from './components/Homepage/Profile';
 
 const App = () => {
   const { isLogged, changeStore } = useContext(Store);
@@ -37,6 +37,8 @@ const App = () => {
         const data = await response.json();
         changeStore('isLogged', true);
         changeStore('me', data);
+        console.log('me:', data);
+        console.log(this.context);
       } catch (ex) {
         console.error('Serwer nie odpowiada'); //Tu wyświetlić coś userowi że nie ma połączenia z serwerem
         console.error('Error', ex);
