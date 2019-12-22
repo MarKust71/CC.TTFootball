@@ -24,7 +24,6 @@ const App = () => {
   const [isLoading, setLoading] = useState(isLogged);
 
   useEffect(() => {
-    console.log(isLogged);
     if (!isLogged) return;
     (async () => {
       try {
@@ -38,7 +37,6 @@ const App = () => {
         const data = await response.json();
         changeStore('isLogged', true);
         changeStore('me', data);
-        console.log('me:', data, this.context);
       } catch (ex) {
         console.error('Serwer nie odpowiada'); //Tu wyświetlić coś userowi że nie ma połączenia z serwerem
         console.error('Error', ex);
