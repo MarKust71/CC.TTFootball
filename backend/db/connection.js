@@ -12,6 +12,7 @@ const config = {
   protocol: getByMode(process.env.DB_PROT, process.env.DB_PROT_DEV),
 };
 
+
 let mongoUrl;
 if (process.env.NODE_ENV === 'dev') {
   mongoUrl = `${config.protocol}://${config.host}:${config.port}/${config.name}`;

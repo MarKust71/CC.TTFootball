@@ -55,6 +55,8 @@ const main = async () => {
 
   // Routes
   //
+  app.use(express.static(path.join(__dirname, 'client/build')))
+  app.get('/*', (req, res)=> res.sendFile(path.join(__dirname,'client/build', 'index.html')))
   app.use('/', routerHome);
   app.use('/api/register', routerRegister);
   app.use('/api/login', routerLogin);
@@ -69,6 +71,7 @@ const main = async () => {
   app.use(errorHandler);
 
   // Listening
+  console.log(process.env.HOST, process.env.PORT)
   const host = process.env.HOST || '127.0.0.1';
   const port = process.env.PORT || 8080;
   app.listen(port, host, () =>
