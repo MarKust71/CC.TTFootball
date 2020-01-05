@@ -5,11 +5,11 @@ const { auth, getUser } = require('../middleware/auth');
 router.get('/', (req, res) => {
   const Model = res.locals.models.Team;
   getTeams(Model).then(result => {
-    if (!result.length) {
-      res.status(404).send(`Nie znaleziona żadnych drużyn.`);
-    } else {
+    // if (!result.length) {
+    //   res.status(404).send(`Nie znaleziona żadnych drużyn.`);
+    // } else {
       res.send(result);
-    }
+    // }
   });
 });
 

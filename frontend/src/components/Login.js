@@ -9,19 +9,19 @@ import Store from '../Store';
 class Login extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { isLogged: false, invalidData: false, termEmail: '', termPass: '' };
+    this.state = { isLogged: false, invalidData: false, termNick: '', termPass: '' };
   }
 
   static contextType = Store;
 
   onFormSubmit = async e => {
     e.preventDefault();
-    const [email, password] = [this.state.termEmail, this.state.termPass];
+    const [nick, password] = [this.state.termNick, this.state.termPass];
 
     const response = await fetch('/api/login', {
       method: 'POST',
       body: JSON.stringify({
-        email,
+        nick,
         password,
       }),
       headers: {
@@ -48,12 +48,12 @@ class Login extends React.Component {
         {this.state.invalidData && <NegativeMessage header="Błędny email lub hasło" />}
         <Form onSubmit={this.onFormSubmit}>
           <Form.Input
-            name="email"
-            type="email"
-            label="Email"
-            placeholder="Email"
-            value={this.state.termEmail}
-            onChange={e => this.setState({ termEmail: e.target.value })}
+            name="nick"
+            type="string"
+            label="Nick"
+            placeholder="Nick"
+            value={this.state.termNick}
+            onChange={e => this.setState({ termNick: e.target.value })}
           />
           <Form.Input
             type="password"

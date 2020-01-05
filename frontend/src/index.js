@@ -56,7 +56,7 @@ const App = () => {
             <PrivateRoute path="/Schedule" component={Schedule} />
             <PrivateRoute path="/Leagues" component={Leagues} />
             <PrivateRoute path="/Teams" component={Teams} />
-            <PrivateRoute exact path="/" component={Home} />
+            <PrivateRoute exact path="/" component={ShowScores} />
             <PrivateRoute exact path="/NewLeague" component={NewLeague} />
             <PrivateRoute exact path="/Scores" component={ShowScores} />
             <PrivateRoute exact path="/Profile" component={Profile} />

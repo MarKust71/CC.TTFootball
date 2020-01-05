@@ -14,9 +14,9 @@ class Register extends React.Component {
     surname: '',
     division: 'WRO',
     divisions: [
-      { text: 'Wrocek', value: 'WRO', selected: true },
-      { text: 'Warszawka', value: 'WAR' },
-      { text: 'Kraków', value: 'KRA' },
+      { text: 'Wrocław', value: 'WRO', selected: true },
+      { text: 'Warszawa', value: 'WAW' },
+      { text: 'Kraków', value: 'KRK' },
     ],
     invalidData: false
   };
@@ -33,7 +33,9 @@ class Register extends React.Component {
       console.error(ex);
     }
   };
-
+  componentDidMount() {
+    this.getDivisions();
+  }
  
   onFormChange = ({ target }, { name, value }) => {
     this.setState({ [name]: value });
@@ -46,11 +48,11 @@ class Register extends React.Component {
     const response = await fetch('/api/register', {
       method: 'POST',
       body: JSON.stringify({
-        email: email.value,
+        // email: email.value,
         password: pass.value,
         nickname: nick.value,
-        name: name.value,
-        surname: surname.value,
+        // name: name.value,
+        // surname: surname.value,
         division: this.state.division,
       }),
       headers: {
@@ -86,11 +88,11 @@ class Register extends React.Component {
         {this.state.invalidData && <NegativeMessage header="Coś poszło nie tak. Spróbuj ponownie wypełnić formularz" />}
         <Form onSubmit={this.onFormSubmit}>
           <Form.Input name="nickname" label="Nick" placeholder="Nick" onChange={this.onFormChange} />
-          <Form.Input name="email" type="email" label="Email" placeholder="Email" onChange={this.onFormChange} />
+          {/* <Form.Input name="email" type="email" label="Email" placeholder="Email" onChange={this.onFormChange} /> */}
           <Form.Input type="password" label="Hasło" placeholder="Hasło" onChange={this.onFormChange} />
           <Form.Input type="password" label="Powtórz hasło" placeholder="Powtórz hasło" onChange={this.onFormChange} />
-          <Form.Input label="Imie" placeholder="Imie" onChange={this.onFormChange} />
-          <Form.Input label="Nazwisko" placeholder="Nazwisko" onChange={this.onFormChange} />
+          {/* <Form.Input label="Imie" placeholder="Imie" onChange={this.onFormChange} /> */}
+          {/* <Form.Input label="Nazwisko" placeholder="Nazwisko" onChange={this.onFormChange} /> */}
           <Form.Select
             name="division"
             options={this.state.divisions}
@@ -98,9 +100,9 @@ class Register extends React.Component {
             value={this.state.division}
             onChange={this.onFormChange}
           />
-          <Form.Field>
+          {/* <Form.Field>
             <Checkbox label="Akceptuje regulamin i zgadzam się z warunkami użytkowania" />
-          </Form.Field>
+          </Form.Field> */}
           <Button type="submit">Rejestruj!</Button>
         </Form>
       </Segment>

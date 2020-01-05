@@ -3,11 +3,11 @@ const ObjectId = Schema.Types.ObjectId;
 
 const User = new Schema({
   _id: { type: String, alias: 'nickname' },
-  email: { type: String, required: true, unique: true },
+  // email: { type: String, unique: true },
   password: { type: String, required: true },
   role: { type: String, required: true, enum: ['player', 'admin'], default: 'player' },
-  name: String,
-  surname: String,
+  // name: String,
+  // surname: String,
   status: { type: String, required: true, enum: ['active', 'deleted'], default: 'active' },
   division: { type: String, ref: 'Division', required: true },
   teams: [{ type: ObjectId, ref: 'Team' }],

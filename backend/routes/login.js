@@ -14,11 +14,10 @@ router.get('/me', auth, async (req, res) => {
 router.post('/', async (req, res) => {
   function validate(req) {
     const schema = {
-      email: Joi.string()
-        .min(5)
+      nick: Joi.string()
+        .min(2)
         .max(255)
-        .required()
-        .email(),
+        .required(),
       password: Joi.string()
         .min(5)
         .max(1024)
@@ -32,7 +31,7 @@ router.post('/', async (req, res) => {
   if (error) return res.status(400).json(error.details);
 
   let user = await res.locals.models.User.findOne({
-    email: value.email,
+    _id: value.nick,
   });
   if (!user) return res.status(400).send('Błędny email lub hasło');
 

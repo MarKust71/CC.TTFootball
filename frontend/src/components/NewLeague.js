@@ -62,7 +62,7 @@ class NewLeague extends React.Component {
     })
       .then(postLeague => {
         alert(`Założone!!
-            ${postLeague.data.owner.name} - jesteś sędzią głównym w lidze: ${postLeague.data.name}`);
+            ${postLeague.data.owner._id} - jesteś sędzią głównym w lidze: ${postLeague.data.name}`);
         this.setState({ postSuccessful: true });
       })
       .catch(postLeague => {

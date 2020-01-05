@@ -18,7 +18,7 @@ const AppBar = () => {
         <img alt="nie ma obrazka" src="/images/nowelogo.jpg" />
       </div>
       <Menu secondary>
-        <Menu.Item as={Link}   to="/" >
+        <Menu.Item as={Link}   to="/Scores" >
           <p style={{color: '#373c8d', fontWeight: 'bold', fontSize: 'large'}}>
             PANkarzyki</p>
         </Menu.Item>
@@ -26,7 +26,7 @@ const AppBar = () => {
         {isLogged && (
           <>
           <Menu.Menu>
-            <Menu.Item as={NavLink} name="Główna" to="/" activeClassName="active" exact />
+            {/* <Menu.Item as={NavLink} name="Główna" to="/" activeClassName="active" exact /> */}
             <Menu.Item as={NavLink} name="Terminarz" to="/Schedule" activeClassName="active" />
             <Menu.Item as={NavLink} name="Ligi" to="/Leagues" activeClassName="active" />
             <Menu.Item as={NavLink} name="Drużyny" to="/Teams" activeClassName="active" />

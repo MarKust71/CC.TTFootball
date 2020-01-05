@@ -9,8 +9,8 @@ router.post('/', async (req, res) => {
   const { error, value } = validate(req.body);
   if (error) return res.status(400).send(error.details);
 
-  const userEmail = await User.findOne({ email: value.email });
-  if (userEmail) return res.status(400).send('Email zajęty!');
+  // const userEmail = await User.findOne({ email: value.email });
+  // if (userEmail) return res.status(400).send('Email zajęty!');
 
   const userLogin = await User.findOne({ _id: value.nickname });
   if (userLogin) return res.status(400).send('Login zajęty!');
@@ -36,14 +36,14 @@ function validate(req) {
     email: Joi.string()
       .min(5)
       .max(255)
-      .required()
+      .allow('')
       .email(),
     password: Joi.string()
       .min(5)
       .max(32)
       .required(),
-    name: Joi.string().max(32),
-    surname: Joi.string().max(32),
+    name: Joi.string().max(32).allow(''),
+    surname: Joi.string().max(32).allow(''),
     division: Joi.string()
       .max(32)
       .required(),

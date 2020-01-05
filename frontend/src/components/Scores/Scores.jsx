@@ -48,6 +48,8 @@ class Scores extends React.Component {
       let ret = await this.getLeagues(type);
       switch (type) {
         case 'forSelect':
+          // console.log(ret)
+          if (ret.length > 0){
           this.league = ret.sort((a, b) => (a.text.toLowerCase() < b.text.toLowerCase() ? -1 : 1));
           this.setState(() => {
             return {
@@ -55,10 +57,12 @@ class Scores extends React.Component {
               leagueId: this.league[0].key,
             };
           });
+          };
           break;
+        
         case 'all':
           this.leagueAll = ret.sort((a, b) => (a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1));
-          if (this.leagueAll[0].teams.length > 0) {
+          if (this.leagueAll.length > 0) {
             for (let i = 0; i < this.leagueAll[0].teams.length; i++) {
               let actualTeam = this.leagueAll[0].teams[i];
               this.setState(() => {

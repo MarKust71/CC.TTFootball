@@ -8,7 +8,7 @@ router.get('/', auth, async (req, res) => {
   const { League } = res.locals.models;
   const user = await getUser(res);
   if (!user) return res.status(401).send('Błąd tokena');
-  console.log(user)
+  
 
   const parseJSON = x => {
     try {
@@ -110,6 +110,7 @@ router.post('/', auth, async (req, res) => {
 
   const user = await getUser(res);
   if (!user) return res.status(401).send('Błąd tokena');
+  console.log(user)
 
   league = new League({ ...value, owner: user, division: user.division });
 
