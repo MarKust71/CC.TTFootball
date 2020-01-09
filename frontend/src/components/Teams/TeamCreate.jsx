@@ -36,6 +36,7 @@ class TeamCreate extends Teams {
     this.setState( () => { return { isMe: !!this.context.me }; } );
     // console.log('TeamsCreate->', this.context);
     this.getUsers();
+    
   }
 
   onInputChange = e => {
@@ -262,7 +263,7 @@ class TeamCreate extends Teams {
                         placeholder="wskaż gracza 1..."
                         selection
                         value={this.state.player1}
-                        options={this.users.filter( (el) => { return el.text === `${this.context.me._id}: ${this.context.me.surname}, ${this.context.me.name}`; })}
+                        options={this.users.filter( (el) => { return el.text === `${this.context.me._id}`; })}
                         onChange={(e, v) => this.onSelectChange(e, v)}
                       />
                     )}

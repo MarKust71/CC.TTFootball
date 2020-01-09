@@ -31,7 +31,6 @@ handleGoalsChange = event => {
 
 saveScore = () => {
     if (!this.state.firstTeamGoals || !this.state.secondTeamGoals) {
-        console.log('wychodze')
         return
     }
     axios({

@@ -68,11 +68,11 @@ class TeamView extends Teams {
       players: {
         first: {
           _id: players.first._id,
-          name: `${players.first.surname || '(brak)'}, ${players.first.name || '(brak)'}`
+          name: `${players.first._id}`
         },
         second: {
           _id: players.second._id,
-          name: `${players.second.surname || '(brak)'}, ${players.second.name || '(brak)'}`
+          name: `${players.second._id}`
         }
       },
       statistics: {
@@ -137,12 +137,12 @@ class TeamView extends Teams {
               </Divider>
               <Input 
                 label="Gracz 1:"
-                value={ this.state.players.first.name }
+                value={ this.state.players.first._id }
                 readOnly={ true }
               />
               <Input 
                 label="Gracz 2:"
-                value={ this.state.players.second.name }
+                value={ this.state.players.second._id }
                 readOnly={ true }
               />
             </Form.Group>

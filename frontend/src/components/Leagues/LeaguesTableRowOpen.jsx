@@ -84,7 +84,6 @@ class LeaguesTableRowOpen extends React.Component {
 
   openModal = () => {
     const name = localStorage.getItem('id');
-    console.log(name)
     axios
       .get(`/api/users/${name}/teams`, setHeaders())
       .then(resp => resp.data)

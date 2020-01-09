@@ -34,8 +34,8 @@ class Teams extends React.Component {
         this.users = res.data.map((el) => {
           return {
             key: el._id,
-            value: `${el.surname}, ${el.name}`,
-            text: `${el._id}: ${el.surname || '(brak)'}, ${el.name || '(brak)'}`
+            value: `${el._id}`,
+            text: `${el._id}`
           };
         }).sort((a, b) => { return (a.text.toLowerCase() < b.text.toLowerCase()) ? -1 : 1; });
       },

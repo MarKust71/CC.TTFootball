@@ -66,12 +66,13 @@ class Scores extends React.Component {
             for (let i = 0; i < this.leagueAll[0].teams.length; i++) {
               let actualTeam = this.leagueAll[0].teams[i];
               this.setState(() => {
-                // console.log(this.state.data)
                 return {
                   data: [
                     ...this.state.data,
                     {
-                      team: actualTeam.team.name,
+                      team: {
+                        name: actualTeam.team.name,
+                        players: `${actualTeam.team.players.first}/${actualTeam.team.players.second}`},
                       points: actualTeam.statistics.matches.won * 3,
                       matchesPlayed: actualTeam.statistics.matches.won + actualTeam.statistics.matches.lost,
                       matchesWon: actualTeam.statistics.matches.won,

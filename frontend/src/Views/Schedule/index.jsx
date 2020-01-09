@@ -7,8 +7,8 @@ import Store from '../../Store';
 
 const filterMyTeams = (obj, myName) => {
    return obj.status === 'active' &&  
-   (obj.players.first.name === myName ||
-     obj.players.second.name === myName )
+   (obj.players.first._id === myName ||
+     obj.players.second._id === myName )
 }
 
 const amIPlayingThisLeague = (league, myTeams) => {
@@ -81,7 +81,7 @@ class ScheduleView extends React.Component {
           'x-auth-token': localStorage.getItem('token'),
     },
     }).then( result => {
-      this.setState({ teams: result.data.filter(obj => filterMyTeams(obj, this.context.me.name) )
+      this.setState({ teams: result.data.filter(obj => filterMyTeams(obj, this.context.me._id) )
         .map(obj => {return {_id: obj._id, name: obj.name}})
        });
     })    

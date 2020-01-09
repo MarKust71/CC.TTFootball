@@ -73,11 +73,11 @@ const main = async () => {
 
   // Listening
   console.log(process.env.HOST, process.env.PORT)
-  const host = process.env.HOST || '127.0.0.1';
+  // const host = process.env.HOST || '127.0.0.1';
   const port = process.env.PORT || 8080;
-  app.listen(port, host, () =>
+  app.listen(port, () =>
     console.log(
-      `[App] Server is listening on http://${host}:${port}\n` +
+      `[App] Server is listening on port:${port}\n` +
         '========================================================',
     ),
   );

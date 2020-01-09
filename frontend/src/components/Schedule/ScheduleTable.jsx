@@ -12,7 +12,6 @@ class ScheduleTable extends React.Component {
     league: ''
   }
   getData() {
-    
     if (this.props.league !== '' & this.props.league !== this.state.league) {
       axios({
         url: `/api/matches/${this.props.league}/league`,
