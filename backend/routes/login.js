@@ -8,7 +8,6 @@ const router = express.Router();
 
 router.get('/me', auth, async (req, res) => {
   const user = await getUser(res);
-  console.log(user);
   res.json(user);
 });
 
