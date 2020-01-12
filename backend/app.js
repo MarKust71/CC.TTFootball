@@ -56,7 +56,7 @@ const main = async () => {
   // Routes
   //
   
-  app.use('/', routerHome);
+  // app.use('/', routerHome);
   app.use('/api/register', routerRegister);
   app.use('/api/login', routerLogin);
   app.use('/api/users', routerUsers);
