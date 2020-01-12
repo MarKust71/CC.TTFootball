@@ -53,7 +53,7 @@ class ComponentTeams extends Teams {
           <Header.Content>Zarządzanie drużynami</Header.Content>
         </Header>
 
-        {!this.state.isMe && (
+        {/* {!this.state.isMe && (
           <Segment>Zrób coś, bo nie widać "<i>context.me</i>"</Segment>
         )}
 
@@ -65,7 +65,7 @@ class ComponentTeams extends Teams {
               dywizja: <strong>{this.context.me.division}</strong>
             </p> 
           </Message>
-        )}
+        )} */}
 
         <Segment>
           <Grid>

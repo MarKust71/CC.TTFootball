@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
   user.password = await bcrypt.hash(user.password, salt);
 
   await user.save();
-  res.json(_.pick(user, ['nickname', 'email', 'name', 'surname']));
+  res.json(_.pick(user, ['nickname']));
 });
 
 function validate(req) {

@@ -12,12 +12,8 @@ class Register extends React.Component {
     passwordr: '',
     name: '',
     surname: '',
-    division: 'WRO',
-    divisions: [
-      { text: 'Wrocław', value: 'WRO', selected: true },
-      { text: 'Warszawa', value: 'WAW' },
-      { text: 'Kraków', value: 'KRK' },
-    ],
+    division: '',
+    divisions: [],
     invalidData: false
   };
 
@@ -65,7 +61,7 @@ class Register extends React.Component {
       const response = await fetch('api/login',{
         method: 'POST',
         body: JSON.stringify({
-          email: email.value,
+          nick: nick.value,
           password: pass.value
         }),
         headers: {

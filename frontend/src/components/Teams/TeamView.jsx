@@ -153,7 +153,7 @@ class TeamView extends Teams {
                 Ligi
               </Header>
             </Divider>
-            {this.state.leagues.length === 0 && (
+            {this.state.leagues.length === 0  && this.state.team !== '' && (
               <Message info>
                 <p>Wygląda na to, że drużyny nie przypisano do żadnej ligi</p>
               </Message>
@@ -192,14 +192,14 @@ class TeamView extends Teams {
             </Table>
           </Segment>
         </Segment.Group>
-        <Form>
-          {/* { this.state.editable && <Form.Button name='btnVerify' onClick={this.onClickVerify} floated='right'>Weryfikuj</Form.Button> } */}
+        {/* <Form>
+          { this.state.editable && <Form.Button name='btnVerify' onClick={this.onClickVerify} floated='right'>Weryfikuj</Form.Button> }
           <Form.Group>
             { !this.state.editable && <Form.Button name="btnEdit" onClick={this.onClickEdit} floated='left'>Edytuj</Form.Button> }
             { this.state.editable && <Form.Button name="btnSave" onClick={this.onFormSubmit} floated='left'>Zapisz</Form.Button> }
             { this.state.editable && <Form.Button name="btnCancel" onClick={this.onClickCancel}>Anuluj</Form.Button>}
           </Form.Group>
-        </Form>
+        </Form> */}
       </>)}
     </> )
   };
