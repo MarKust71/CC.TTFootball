@@ -45,7 +45,6 @@ class ScoresView extends Scores {
 
     const teams = this.leagueAll[leagueAllIndex].teams;
     this.prepareState(teams);
-
     if (teams.length > 0) {
       this.setState(() => {
         return {
@@ -67,6 +66,7 @@ class ScoresView extends Scores {
               matchesTies: 0,
               goalsFor: 0,
               goalsAgainst: 0,
+              balance: 0,
             },
           ],
         };
@@ -84,6 +84,8 @@ class ScoresView extends Scores {
         this.state.data = [...this.state.data, this.newStateData(team, stats)];
       }
     }
+    this.state.data.sort((a, b) => b.points - a.points || b.balance - a.balance)
+                    .forEach((e, index, arr) => arr[index].position= index + 1)
   };
 
   newStateData = (team, stats) => {
@@ -99,6 +101,8 @@ class ScoresView extends Scores {
       matchesTies: stats.matches.ties,
       goalsFor: stats.goals.for,
       goalsAgainst: stats.goals.against,
+      balance: stats.goals.for - stats.goals.against,
+      position: '',
     };
   };
 
@@ -144,6 +148,9 @@ class ScoresView extends Scores {
           <Table sortable celled fixed>
           <Table.Header>
             <Table.Row>
+              <Table.HeaderCell sorted={column === 'position' ? direction : null} onClick={this.handleSort('position')}>
+                Pozycja
+              </Table.HeaderCell>
               <Table.HeaderCell sorted={column === 'team' ? direction : null} onClick={this.handleSort('team')}>
                 Drużyna
               </Table.HeaderCell>
@@ -183,11 +190,18 @@ class ScoresView extends Scores {
               >
                 Stracone<br/> bramki
               </Table.HeaderCell>
+              <Table.HeaderCell
+                sorted={column === 'balance' ? direction : null}
+                onClick={this.handleSort('balance')}
+              >
+                Bilans<br/> bramek
+              </Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {_.map(data, ({ team, points, matchesPlayed, matchesWon, matchesLost, matchesTies, goalsFor, goalsAgainst }) => (
+            {_.map(data, ({ team, points, matchesPlayed, matchesWon, matchesLost, matchesTies, goalsFor, goalsAgainst, balance, position }) => (
               <Table.Row key={team.name}>
+                <Table.Cell> {position} </Table.Cell>
                 <Table.Cell> <b>{team.name}</b>  <br/> {team.players}</Table.Cell>
                 <Table.Cell>{points}</Table.Cell>
                 <Table.Cell>{matchesPlayed}</Table.Cell>
@@ -196,6 +210,7 @@ class ScoresView extends Scores {
                 <Table.Cell>{matchesTies}</Table.Cell>
                 <Table.Cell>{goalsFor}</Table.Cell>
                 <Table.Cell>{goalsAgainst}</Table.Cell>
+                <Table.Cell>{balance}</Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>
