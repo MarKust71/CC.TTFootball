@@ -154,9 +154,6 @@ class ScoresView extends Scores {
               <Table.HeaderCell sorted={column === 'team' ? direction : null} onClick={this.handleSort('team')}>
                 Drużyna
               </Table.HeaderCell>
-              <Table.HeaderCell sorted={column === 'points' ? direction : null} onClick={this.handleSort('points')}>
-                Punkty
-              </Table.HeaderCell>
               <Table.HeaderCell
                 sorted={column === 'matchesPlayed' ? direction : null}
                 onClick={this.handleSort('matchesPlayed')}
@@ -196,6 +193,9 @@ class ScoresView extends Scores {
               >
                 Bilans<br/> bramek
               </Table.HeaderCell>
+              <Table.HeaderCell sorted={column === 'points' ? direction : null} onClick={this.handleSort('points')}>
+                Punkty
+              </Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -203,7 +203,6 @@ class ScoresView extends Scores {
               <Table.Row key={team.name}>
                 <Table.Cell> {position} </Table.Cell>
                 <Table.Cell> <b>{team.name}</b>  <br/> {team.players}</Table.Cell>
-                <Table.Cell>{points}</Table.Cell>
                 <Table.Cell>{matchesPlayed}</Table.Cell>
                 <Table.Cell>{matchesWon}</Table.Cell>
                 <Table.Cell>{matchesLost}</Table.Cell>
@@ -211,6 +210,7 @@ class ScoresView extends Scores {
                 <Table.Cell>{goalsFor}</Table.Cell>
                 <Table.Cell>{goalsAgainst}</Table.Cell>
                 <Table.Cell>{balance}</Table.Cell>
+                <Table.Cell><b>{points}</b></Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>

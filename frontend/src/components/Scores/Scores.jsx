@@ -48,7 +48,6 @@ class Scores extends React.Component {
       let ret = await this.getLeagues(type);
       switch (type) {
         case 'forSelect':
-          // console.log(ret)
           if (ret.length > 0){
           this.league = ret.sort((a, b) => (a.text.toLowerCase() < b.text.toLowerCase() ? -1 : 1));
           this.setState(() => {
@@ -63,30 +62,39 @@ class Scores extends React.Component {
         case 'all':
           this.leagueAll = ret.sort((a, b) => (a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1));
           if (this.leagueAll.length > 0) {
+            let tempData = [];
             for (let i = 0; i < this.leagueAll[0].teams.length; i++) {
               let actualTeam = this.leagueAll[0].teams[i];
-              this.setState(() => {
-                return {
-                  data: [
-                    ...this.state.data,
-                    {
-                      team: {
-                        name: actualTeam.team.name,
-                        players: `${actualTeam.team.players.first}/${actualTeam.team.players.second}`},
-                      points: actualTeam.statistics.matches.won * 3,
-                      matchesPlayed: actualTeam.statistics.matches.won + actualTeam.statistics.matches.lost,
-                      matchesWon: actualTeam.statistics.matches.won,
-                      matchesLost: actualTeam.statistics.matches.lost,
-                      matchesTies: actualTeam.statistics.matches.ties,
-                      goalsFor: actualTeam.statistics.goals.for,
-                      goalsAgainst: actualTeam.statistics.goals.against,
-                      balance: actualTeam.statistics.goals.for - actualTeam.statistics.goals.against,
-                    },
-                  ],
-                };
-              });
+              tempData = [
+                ...tempData,
+                {
+                  team: {
+                    name: actualTeam.team.name,
+                    players: `${actualTeam.team.players.first}/${actualTeam.team.players.second}`},
+                  points: actualTeam.statistics.matches.won * 3 + actualTeam.statistics.matches.ties * 1,
+                  matchesPlayed: actualTeam.statistics.matches.won + actualTeam.statistics.matches.lost,
+                  matchesWon: actualTeam.statistics.matches.won,
+                  matchesLost: actualTeam.statistics.matches.lost,
+                  matchesTies: actualTeam.statistics.matches.ties,
+                  goalsFor: actualTeam.statistics.goals.for,
+                  goalsAgainst: actualTeam.statistics.goals.against,
+                  balance: actualTeam.statistics.goals.for - actualTeam.statistics.goals.against,
+                  position: '',
+                },
+              ]
+            }  
+            if (tempData.length > 0) {
+              tempData.sort((a, b) => b.points - a.points || b.balance - a.balance)
+                      .forEach((e, index, arr) => arr[index].position= index + 1);
             }
+              
+            this.setState(() => {
+              return {
+                data: tempData,
+              };
+            });
           }
+          
           break;
         default:
           break;
