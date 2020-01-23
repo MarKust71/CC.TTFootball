@@ -72,7 +72,7 @@ class Scores extends React.Component {
                     name: actualTeam.team.name,
                     players: `${actualTeam.team.players.first}/${actualTeam.team.players.second}`},
                   points: actualTeam.statistics.matches.won * 3 + actualTeam.statistics.matches.ties * 1,
-                  matchesPlayed: actualTeam.statistics.matches.won + actualTeam.statistics.matches.lost,
+                  matchesPlayed: actualTeam.statistics.matches.won + actualTeam.statistics.matches.lost + actualTeam.statistics.matches.ties,
                   matchesWon: actualTeam.statistics.matches.won,
                   matchesLost: actualTeam.statistics.matches.lost,
                   matchesTies: actualTeam.statistics.matches.ties,

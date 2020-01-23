@@ -212,4 +212,23 @@ router.put('/:id/start', auth, async (req, res) => {
   
 });
 
+router.put('/:id/end', auth, async (req, res) => {
+  const now = new Date(Date.now());
+  const { League } = res.locals.models;
+
+  const league = await League.findByIdOrName(req.params.id);
+  if (!league) return res.status(404).send('Nie znaleziono takiej ligi');
+  if (league.status === 'closed') return res.status(400).send('Ta liga już została zakończona');
+
+  const user = await getUser(res);
+  if (!user) return res.status(401).send('Błąd tokena');
+  if (user.nickname != league.owner) return res.status(403).send('Nie możesz edytować tej ligi');
+  
+  const session = await League.startSession();
+  await session.withTransaction(async () => {
+    await league.updateOne({  status: 'closed', date: { closed: now } });
+  });
+  res.json(await League.findByIdOrName(req.params.id));
+});
+
 module.exports = router;

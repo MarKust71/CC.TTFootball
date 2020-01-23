@@ -21,14 +21,12 @@ class LeaguesTableRowOwner extends React.Component {
         negative: 'Nie',
         open: true,
         onClose: this.closeModal,
-        onPositive: (endDate, roundsNo) => {
+        onPositive: () => {
           axios({
             url: `/api/leagues/${leagueName}/start`,
             method: 'PUT',
             ...setHeaders(),
             data: {
-              end: endDate,
-              rounds: roundsNo,
             }
           }).then(() => {
             this.props.refresh();
@@ -54,6 +52,7 @@ class LeaguesTableRowOwner extends React.Component {
   // };
 
   openModalCloseLeague = () => {
+    const leagueName = this.props.data.name;
     this.setState({
       askModalProps: {
         header: `Czy napewno chcesz zamknąć ligę ${this.props.data.name}`,
@@ -63,6 +62,15 @@ class LeaguesTableRowOwner extends React.Component {
         onClose: this.closeModal,
         onPositive: () => {
           console.log('Positive');
+          axios({
+            url: `/api/leagues/${leagueName}/end`,
+            method: 'PUT',
+            ...setHeaders(),
+            data: {
+            }
+          }).then(() => {
+            this.props.refresh();
+          });
         },
       },
     });
@@ -75,18 +83,20 @@ class LeaguesTableRowOwner extends React.Component {
   selectLabels = status => {
     if (status === 'created') {
       return (
+        <>
         <Label as="a" color="blue" ribbon="right" onClick={this.openModalStartLeague}>
           <Icon name="hand pointer" size="large" />
           Rozpocznij ligę
         </Label>
+        <Label as="a" color="yellow" ribbon="right" onClick={this.openModalCloseLeague}>
+        <Icon name="hand pointer" size="large" />
+        Zakończ ligę
+      </Label>
+      </>
       );
     } else if (status === 'pending') {
       return (
         <div>
-          {/* <Label as="a" color="blue" ribbon="right" onClick={this.openModalScheduleLeague}>
-            <Icon name="hand pointer" size="large" />
-            Rozlosuj mecze
-          </Label> */}
           <Label as="a" color="yellow" ribbon="right" onClick={this.openModalCloseLeague}>
             <Icon name="hand pointer" size="large" />
             Zakończ ligę
